@@ -11,7 +11,6 @@ import com.otaliastudios.opengl.draw.EglDrawable
  * Base class for a program, can create the program and load shaders.
  * Programs should define low-level functions to draw.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 abstract class EglProgram {
 
     // Creates a program with given vertex shader and pixel shader.

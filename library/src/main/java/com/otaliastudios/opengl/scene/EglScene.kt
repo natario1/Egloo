@@ -16,7 +16,6 @@ import com.otaliastudios.opengl.program.EglTextureProgram
  * and contain information about the [projectionMatrix] and the [viewMatrix],
  * both of which can be accessed and modified.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 open class EglScene {
 
     val projectionMatrix = Egl.IDENTITY_MATRIX.clone()

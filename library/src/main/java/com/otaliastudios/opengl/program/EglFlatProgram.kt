@@ -2,17 +2,13 @@ package com.otaliastudios.opengl.program
 
 
 import android.opengl.GLES20
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.draw.EglDrawable
 import java.nio.FloatBuffer
 
 /**
  * An [EglProgram] that uses basic flat-shading rendering,
  * based on FlatShadedProgram from grafika.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 open class EglFlatProgram : EglProgram() {
 
     companion object {
@@ -33,33 +29,29 @@ open class EglFlatProgram : EglProgram() {
                         "}\n"
     }
 
-    private var mProgramHandle = createProgram(VERTEX_SHADER, FRAGMENT_SHADER)
+    private var programHandle = createProgram(VERTEX_SHADER, FRAGMENT_SHADER)
     init {
-        if (mProgramHandle == 0) {
+        if (programHandle == 0) {
             throw RuntimeException("Could not create program.")
         }
     }
 
-    private val maPositionLocation: Int
-    private val muMVPMatrixLocation: Int
-    private val muColorLocation: Int
+    private val aPositionLocation: Int
+    private val uMVPMatrixLocation: Int
+    private val uColorLocation: Int
     init {
-        maPositionLocation = GLES20.glGetAttribLocation(mProgramHandle, "aPosition")
-        Egl.checkLocation(maPositionLocation, "aPosition")
-        muMVPMatrixLocation = GLES20.glGetUniformLocation(mProgramHandle, "uMVPMatrix")
-        Egl.checkLocation(muMVPMatrixLocation, "uMVPMatrix")
-        muColorLocation = GLES20.glGetUniformLocation(mProgramHandle, "uColor")
-        Egl.checkLocation(muColorLocation, "uColor")
+        aPositionLocation = GLES20.glGetAttribLocation(programHandle, "aPosition")
+        Egl.checkLocation(aPositionLocation, "aPosition")
+        uMVPMatrixLocation = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix")
+        Egl.checkLocation(uMVPMatrixLocation, "uMVPMatrix")
+        uColorLocation = GLES20.glGetUniformLocation(programHandle, "uColor")
+        Egl.checkLocation(uColorLocation, "uColor")
     }
 
-
-    fun release(doEglCleanup: Boolean) {
-        if (doEglCleanup) GLES20.glDeleteProgram(mProgramHandle)
-        mProgramHandle = -1
-    }
-
-    fun release() {
-        release(true)
+    @JvmOverloads
+    fun release(doEglCleanup: Boolean = true) {
+        if (doEglCleanup) GLES20.glDeleteProgram(programHandle)
+        programHandle = -1
     }
 
     /**
@@ -77,23 +69,23 @@ open class EglFlatProgram : EglProgram() {
         Egl.check("draw start")
 
         // Select the program.
-        GLES20.glUseProgram(mProgramHandle)
+        GLES20.glUseProgram(programHandle)
         Egl.check("glUseProgram")
 
         // Copy the model / view / projection matrix over.
-        GLES20.glUniformMatrix4fv(muMVPMatrixLocation, 1, false, mvpMatrix, 0)
+        GLES20.glUniformMatrix4fv(uMVPMatrixLocation, 1, false, mvpMatrix, 0)
         Egl.check("glUniformMatrix4fv")
 
         // Copy the color vector in.
-        GLES20.glUniform4fv(muColorLocation, 1, color, 0)
+        GLES20.glUniform4fv(uColorLocation, 1, color, 0)
         Egl.check("glUniform4fv")
 
         // Enable the "aPosition" vertex attribute.
-        GLES20.glEnableVertexAttribArray(maPositionLocation)
+        GLES20.glEnableVertexAttribArray(aPositionLocation)
         Egl.check("glEnableVertexAttribArray")
 
         // Connect vertexBuffer to "aPosition".
-        GLES20.glVertexAttribPointer(maPositionLocation, coordsPerVertex,
+        GLES20.glVertexAttribPointer(aPositionLocation, coordsPerVertex,
                 GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
         Egl.check("glVertexAttribPointer")
 
@@ -102,7 +94,7 @@ open class EglFlatProgram : EglProgram() {
         Egl.check("glDrawArrays")
 
         // Done -- disable vertex array and program.
-        GLES20.glDisableVertexAttribArray(maPositionLocation)
+        GLES20.glDisableVertexAttribArray(aPositionLocation)
         GLES20.glUseProgram(0)
     }
 

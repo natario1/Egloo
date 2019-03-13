@@ -3,10 +3,7 @@ package com.otaliastudios.opengl.program
 
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.draw.EglDrawable
 import java.nio.FloatBuffer
 
 /**
@@ -17,7 +14,6 @@ import java.nio.FloatBuffer
  * The texture ID is passed outside so the callers can draw on that texture ID and then
  * call draw() here.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 open class EglTextureProgram : EglProgram() {
 
     companion object {
@@ -44,40 +40,37 @@ open class EglTextureProgram : EglProgram() {
                         "void main() {\n" +
                         "    gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
                         "}\n"
+
+        private const val TEXTURE_TARGET = GLES11Ext.GL_TEXTURE_EXTERNAL_OES
     }
 
     // Stuff from Texture2dProgram
-    private val mTextureTarget = GLES11Ext.GL_TEXTURE_EXTERNAL_OES
-    private var mProgramHandle = createProgram(SIMPLE_VERTEX_SHADER, SIMPLE_FRAGMENT_SHADER)
+    private var programHandle = createProgram(SIMPLE_VERTEX_SHADER, SIMPLE_FRAGMENT_SHADER)
     init {
-        if (mProgramHandle == 0) {
+        if (programHandle == 0) {
             throw RuntimeException("Could not create program.")
         }
     }
 
-    private val maPositionLocation: Int
-    private val maTextureCoordLocation: Int
-    private val muMVPMatrixLocation: Int
-    private val muTexMatrixLocation: Int
+    private val aPositionLocation: Int
+    private val aTextureCoordLocation: Int
+    private val uMVPMatrixLocation: Int
+    private val uTexMatrixLocation: Int
     init {
-        maPositionLocation = GLES20.glGetAttribLocation(mProgramHandle, "aPosition")
-        Egl.checkLocation(maPositionLocation, "aPosition")
-        maTextureCoordLocation = GLES20.glGetAttribLocation(mProgramHandle, "aTextureCoord")
-        Egl.checkLocation(maTextureCoordLocation, "aTextureCoord")
-        muMVPMatrixLocation = GLES20.glGetUniformLocation(mProgramHandle, "uMVPMatrix")
-        Egl.checkLocation(muMVPMatrixLocation, "uMVPMatrix")
-        muTexMatrixLocation = GLES20.glGetUniformLocation(mProgramHandle, "uTexMatrix")
-        Egl.checkLocation(muTexMatrixLocation, "uTexMatrix")
+        aPositionLocation = GLES20.glGetAttribLocation(programHandle, "aPosition")
+        Egl.checkLocation(aPositionLocation, "aPosition")
+        aTextureCoordLocation = GLES20.glGetAttribLocation(programHandle, "aTextureCoord")
+        Egl.checkLocation(aTextureCoordLocation, "aTextureCoord")
+        uMVPMatrixLocation = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix")
+        Egl.checkLocation(uMVPMatrixLocation, "uMVPMatrix")
+        uTexMatrixLocation = GLES20.glGetUniformLocation(programHandle, "uTexMatrix")
+        Egl.checkLocation(uTexMatrixLocation, "uTexMatrix")
     }
 
-
-    fun release(doEglCleanup: Boolean) {
-        if (doEglCleanup) GLES20.glDeleteProgram(mProgramHandle)
-        mProgramHandle = -1
-    }
-
-    fun release() {
-        release(true)
+    @JvmOverloads
+    fun release(doEglCleanup: Boolean = true) {
+        if (doEglCleanup) GLES20.glDeleteProgram(programHandle)
+        programHandle = -1
     }
 
     fun createTexture(): Int {
@@ -86,7 +79,7 @@ open class EglTextureProgram : EglProgram() {
         Egl.check("glGenTextures")
 
         val texId = textures[0]
-        GLES20.glBindTexture(mTextureTarget, texId)
+        GLES20.glBindTexture(TEXTURE_TARGET, texId)
         Egl.check("glBindTexture $texId")
 
         GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
@@ -105,33 +98,33 @@ open class EglTextureProgram : EglProgram() {
         Egl.check("draw start")
 
         // Select the program.
-        GLES20.glUseProgram(mProgramHandle)
+        GLES20.glUseProgram(programHandle)
         Egl.check("glUseProgram")
 
         // Set the texture.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        GLES20.glBindTexture(mTextureTarget, textureId)
+        GLES20.glBindTexture(TEXTURE_TARGET, textureId)
 
         // Copy the texture transformation matrix over.
-        GLES20.glUniformMatrix4fv(muTexMatrixLocation, 1, false, textureMatrix, 0)
+        GLES20.glUniformMatrix4fv(uTexMatrixLocation, 1, false, textureMatrix, 0)
         Egl.check("glUniformMatrix4fv")
 
         // Copy the model / view / projection matrix over.
-        GLES20.glUniformMatrix4fv(muMVPMatrixLocation, 1, false, mvpMatrix, 0)
+        GLES20.glUniformMatrix4fv(uMVPMatrixLocation, 1, false, mvpMatrix, 0)
         Egl.check("glUniformMatrix4fv")
 
         // Enable the "aPosition" vertex attribute.
         // Connect vertexBuffer to "aPosition".
-        GLES20.glEnableVertexAttribArray(maPositionLocation)
+        GLES20.glEnableVertexAttribArray(aPositionLocation)
         Egl.check("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(maPositionLocation, coordsPerVertex, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
+        GLES20.glVertexAttribPointer(aPositionLocation, coordsPerVertex, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
         Egl.check("glVertexAttribPointer")
 
         // Enable the "aTextureCoord" vertex attribute.
         // Connect texBuffer to "aTextureCoord".
-        GLES20.glEnableVertexAttribArray(maTextureCoordLocation)
+        GLES20.glEnableVertexAttribArray(aTextureCoordLocation)
         Egl.check("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(maTextureCoordLocation, 2, GLES20.GL_FLOAT, false, texCoordStride, texCoordBuffer)
+        GLES20.glVertexAttribPointer(aTextureCoordLocation, 2, GLES20.GL_FLOAT, false, texCoordStride, texCoordBuffer)
         Egl.check("glVertexAttribPointer")
 
 
@@ -140,9 +133,9 @@ open class EglTextureProgram : EglProgram() {
         Egl.check("glDrawArrays")
 
         // Done -- disable vertex array, texture, and program.
-        GLES20.glDisableVertexAttribArray(maPositionLocation)
-        GLES20.glDisableVertexAttribArray(maTextureCoordLocation)
-        GLES20.glBindTexture(mTextureTarget, 0)
+        GLES20.glDisableVertexAttribArray(aPositionLocation)
+        GLES20.glDisableVertexAttribArray(aTextureCoordLocation)
+        GLES20.glBindTexture(TEXTURE_TARGET, 0)
         GLES20.glUseProgram(0)
     }
 }

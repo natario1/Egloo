@@ -20,18 +20,19 @@ fun FloatArray.makeIdentity(): FloatArray {
     return this
 }
 
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 object Egl {
 
     // Identity matrix for general use.
+    @JvmStatic
     val IDENTITY_MATRIX = FloatArray(16)
+
     init {
         IDENTITY_MATRIX.makeIdentity()
     }
 
     // Allocates a direct float buffer, and populates it with the float array data.
     // Allocate a direct ByteBuffer, using 4 bytes per float, and copy coords into it.
-    fun floatBufferOf(coords: FloatArray): FloatBuffer {
+    internal fun floatBufferOf(coords: FloatArray): FloatBuffer {
         val bb = ByteBuffer.allocateDirect(coords.size * 4)
         bb.order(ByteOrder.nativeOrder())
         val fb = bb.asFloatBuffer()
@@ -39,7 +40,7 @@ object Egl {
         return fb
     }
 
-    fun setFloatBuffer(buffer: FloatBuffer, coords: FloatArray) {
+    internal fun setFloatBuffer(buffer: FloatBuffer, coords: FloatArray) {
         buffer.put(coords)
         buffer.position(0)
     }
@@ -47,6 +48,7 @@ object Egl {
     /**
      * Checks for GLES errors.
      */
+    @JvmStatic
     fun check(opName: String) {
         val error = GLES20.glGetError()
         if (error != GLES20.GL_NO_ERROR) {
@@ -59,6 +61,7 @@ object Egl {
     /**
      * Checks for EGL errors.
      */
+    @JvmStatic
     fun checkEgl(eglOpName: String) {
         val error = EGL14.eglGetError()
         if (error != EGL14.EGL_SUCCESS) {
@@ -69,6 +72,7 @@ object Egl {
     }
 
     // Check for valid location.
+    @JvmStatic
     fun checkLocation(location: Int, label: String) {
         if (location < 0) {
             val message = "Unable to locate $label in program"

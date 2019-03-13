@@ -18,7 +18,6 @@ import androidx.annotation.RequiresApi
  * @param sharedContext The context to share, or null if sharing is not desired.
  * @param flags Configuration bit flags, e.g. FLAG_RECORDABLE.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) {
 
     internal var eglDisplay: EGLDisplay? = EGL14.EGL_NO_DISPLAY
@@ -218,17 +217,18 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
          * pixel format that cannot be converted efficiently to something usable by the video
          * encoder.
          */
-        val FLAG_RECORDABLE = 0x01
+        const val FLAG_RECORDABLE = 0x01
 
         /**
          * Constructor flag: ask for GLES3, fall back to GLES2 if not available.  Without this
          * flag, GLES2 is used.
          */
-        val FLAG_TRY_GLES3 = 0x02
+        const val FLAG_TRY_GLES3 = 0x02
 
         /**
          * Writes the current display, context, and surface to the log.
          */
+        @JvmStatic
         fun logCurrent(msg: String) {
             val display = EGL14.eglGetCurrentDisplay()
             val context = EGL14.eglGetCurrentContext()

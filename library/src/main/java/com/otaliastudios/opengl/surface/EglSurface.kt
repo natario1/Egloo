@@ -19,7 +19,6 @@ import java.nio.ByteOrder
  * Common base class for EGL surfaces.
  * There can be multiple base surfaces associated with a single [EglCore] object.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 open class EglSurface internal constructor(protected var eglCore: EglCore) {
 
     /**

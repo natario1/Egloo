@@ -14,7 +14,6 @@ import javax.microedition.khronos.egl.EGLDisplay
 /**
  * Helper for [GLSurfaceView.setEGLContextFactory].
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 object EglContextFactory {
     private val TAG = EglContextFactory::class.java.simpleName
 

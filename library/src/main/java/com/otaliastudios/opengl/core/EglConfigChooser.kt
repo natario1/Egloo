@@ -16,7 +16,6 @@ import javax.microedition.khronos.egl.EGLDisplay
  * Helper for [GLSurfaceView.setEGLConfigChooser], plus
  * some handy methods for configs.
  */
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 object EglConfigChooser {
     private val TAG = EglConfigChooser::class.java.simpleName
     private const val EGL_RECORDABLE_ANDROID = 0x3142 // Android-specific extension.
@@ -30,6 +29,7 @@ object EglConfigChooser {
     /**
      * Finds a suitable EGLConfig by querying [EGL14].
      */
+    @JvmStatic
     fun getConfig(display: android.opengl.EGLDisplay, version: Int, recordable: Boolean): android.opengl.EGLConfig? {
         val attributes = getConfigSpec(version, recordable)
         val configs = arrayOfNulls<android.opengl.EGLConfig>(1)
