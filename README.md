@@ -8,7 +8,7 @@ Most of the ideas here were taken from the invaluable [Google's Grafika](https:/
 but refactored to follow a more object-oriented interface and rewritten in Kotlin.
 
 ```groovy
-implementation 'com.otaliastudios.opengl:egl-core:0.1.0'
+implementation 'com.otaliastudios.opengl:egl-core:0.1.1'
 ```
 
 See this in action in a zoomable and pannable Surface [in the ZoomLayout project](https://github.com/natario1/ZoomLayout).

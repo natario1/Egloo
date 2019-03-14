@@ -5,7 +5,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 ext {
-    libVersion = '0.1.0'
+    libVersion = '0.1.1'
     libGroup = 'com.otaliastudios.opengl'
     libName = 'EglCore'
     libDescription = 'Utilities for EGL / OpenGL drawing on Android, written in Kotlin and based on Google\'s Grafika.'
