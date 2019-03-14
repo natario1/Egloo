@@ -12,7 +12,7 @@ import com.otaliastudios.opengl.core.EglCore
  * Recordable EGL window surface.
  * It's good practice to explicitly release() the surface, preferably from a "finally" block.
  */
-class EglWindowSurface : EglSurface {
+open class EglWindowSurface : EglSurface {
     private var surface: Surface? = null
     private var releaseSurface = false
 

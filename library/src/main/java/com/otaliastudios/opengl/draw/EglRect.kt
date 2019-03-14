@@ -12,7 +12,7 @@ import java.nio.FloatBuffer
  * Includes stuff from grafika's Drawable2d FULL_RECTANGLE.
  */
 @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-internal class EglRect: EglDrawable() {
+open class EglRect: EglDrawable() {
 
     companion object {
 

@@ -8,7 +8,6 @@ import com.otaliastudios.opengl.program.EglFlatProgram
 import com.otaliastudios.opengl.program.EglTextureProgram
 import java.nio.FloatBuffer
 
-@RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
 abstract class EglDrawable {
 
     /**
