@@ -11,4 +11,7 @@ but refactored to follow a more object-oriented interface and rewritten in Kotli
 implementation 'com.otaliastudios.opengl:egl-core:0.1.1'
 ```
 
-See this in action in a zoomable and pannable Surface [in the ZoomLayout project](https://github.com/natario1/ZoomLayout).
+See this in action in more popular projects:
+
+- in a zoomable and pannable Surface [in the ZoomLayout project](https://github.com/natario1/ZoomLayout)
+- for transcoding videos [in the Transcoder project](https://github.com/natario/Transcoder)
