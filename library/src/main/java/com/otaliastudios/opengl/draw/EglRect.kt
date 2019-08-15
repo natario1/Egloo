@@ -4,7 +4,7 @@ import android.graphics.RectF
 import android.opengl.GLES20
 import com.otaliastudios.opengl.core.Egl
 import com.otaliastudios.opengl.extensions.floatBufferOf
-import com.otaliastudios.opengl.extensions.toBuffer
+import java.lang.IllegalArgumentException
 import java.nio.FloatBuffer
 
 @Suppress("unused")
@@ -25,17 +25,30 @@ open class EglRect: EglDrawable() {
     override var vertexArray: FloatBuffer = FULL_RECTANGLE_COORDS
 
     @Suppress("unused")
-    fun setVertexArray(array: FloatArray) {
-        vertexArray = array.toBuffer()
+    open fun setVertexArray(array: FloatArray) {
+        if (array.size != 4 * coordsPerVertex) {
+            throw IllegalArgumentException("Vertex array should have 8 values.")
+        }
+        vertexArray.clear()
+        vertexArray.put(array)
+        vertexArray.rewind()
     }
 
-    fun setVertexArray(rect: RectF) {
-        vertexArray = floatBufferOf(
-                rect.left, rect.bottom,
-                rect.right, rect.bottom,
-                rect.left, rect.top,
-                rect.right, rect.top
-        )
+    open fun setVertexArray(rect: RectF) {
+        vertexArray.clear()
+        // 1
+        vertexArray.put(rect.left)
+        vertexArray.put(rect.bottom)
+        // 2
+        vertexArray.put(rect.right)
+        vertexArray.put(rect.bottom)
+        // 3
+        vertexArray.put(rect.left)
+        vertexArray.put(rect.top)
+        // 4
+        vertexArray.put(rect.right)
+        vertexArray.put(rect.top)
+        vertexArray.rewind()
     }
 
     override fun draw() {
