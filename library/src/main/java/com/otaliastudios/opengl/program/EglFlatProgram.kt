@@ -1,7 +1,9 @@
 package com.otaliastudios.opengl.program
 
 
+import android.graphics.Color
 import android.opengl.GLES20
+import androidx.annotation.ColorInt
 import com.otaliastudios.opengl.core.Egl
 import com.otaliastudios.opengl.draw.EglDrawable
 
@@ -15,6 +17,15 @@ open class EglFlatProgram : EglProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
     private val vertexPositionHandle = getAttribHandle("aPosition")
     private val vertexMvpMatrixHandle = getUniformHandle("uMVPMatrix")
     private val fragmentColorHandle = getUniformHandle("uColor")
+
+    fun setColor(@ColorInt color: Int) {
+        this.color = floatArrayOf(
+                Color.red(color) / 255F,
+                Color.green(color) / 255F,
+                Color.blue(color) / 255F,
+                Color.alpha(color) / 255F
+        )
+    }
 
     @Suppress("MemberVisibilityCanBePrivate")
     var color: FloatArray = floatArrayOf(1F, 1F, 1F, 1F)
@@ -51,14 +62,16 @@ open class EglFlatProgram : EglProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
         internal val TAG = EglFlatProgram::class.java.simpleName
 
         private const val VERTEX_SHADER =
-                "uniform mat4 uMVPMatrix;\n" +
+                "" +
+                        "uniform mat4 uMVPMatrix;\n" +
                         "attribute vec4 aPosition;\n" +
                         "void main() {\n" +
                         "    gl_Position = uMVPMatrix * aPosition;\n" +
                         "}\n"
 
         private const val FRAGMENT_SHADER =
-                "precision mediump float;\n" +
+                "" +
+                        "precision mediump float;\n" +
                         "uniform vec4 uColor;\n" +
                         "void main() {\n" +
                         "    gl_FragColor = uColor;\n" +

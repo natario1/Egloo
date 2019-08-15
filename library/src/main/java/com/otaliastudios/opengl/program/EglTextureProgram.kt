@@ -98,7 +98,8 @@ open class EglTextureProgram @JvmOverloads constructor(
         private const val COORDINATES_STRIDE = 2 * Egl.SIZE_OF_FLOAT
 
         private const val SIMPLE_VERTEX_SHADER =
-                "uniform mat4 uMVPMatrix;\n" +
+                "" +
+                        "uniform mat4 uMVPMatrix;\n" +
                         "uniform mat4 uTexMatrix;\n" +
                         "attribute vec4 aPosition;\n" +
                         "attribute vec4 aTextureCoord;\n" +
@@ -109,7 +110,8 @@ open class EglTextureProgram @JvmOverloads constructor(
                         "}\n"
 
         private const val SIMPLE_FRAGMENT_SHADER =
-                "#extension GL_OES_EGL_image_external : require\n" +
+                "" +
+                        "#extension GL_OES_EGL_image_external : require\n" +
                         "precision mediump float;\n" +
                         "varying vec2 vTextureCoord;\n" +
                         "uniform samplerExternalOES sTexture;\n" +
