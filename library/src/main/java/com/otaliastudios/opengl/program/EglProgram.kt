@@ -85,6 +85,10 @@ abstract class EglProgram(
 
     protected open fun onPostDraw(drawable: EglDrawable) {}
 
+    protected fun getAttribHandle(name: String) = EglHandle.getAttrib(handle, name)
+
+    protected fun getUniformHandle(name: String) = EglHandle.getUniform(handle, name)
+
     companion object {
         @Suppress("unused")
         internal val TAG = EglProgram::class.java.simpleName

@@ -20,11 +20,6 @@ abstract class EglDrawable {
     abstract var vertexArray: FloatBuffer
 
     /**
-     * Returns the number of vertices stored in the vertex array.
-     */
-    abstract val vertexCount: Int
-
-    /**
      * Returns the number of position coordinates per vertex.  This will be 2 or 3.
      */
     abstract val coordsPerVertex: Int
@@ -34,6 +29,12 @@ abstract class EglDrawable {
      */
     open val vertexStride: Int
         get() = coordsPerVertex * Egl.SIZE_OF_FLOAT
+
+    /**
+     * Returns the number of vertices stored in the vertex array.
+     */
+    open val vertexCount: Int
+        get() = vertexArray.capacity() / coordsPerVertex
 
     /**
      * Draws this drawable.

@@ -12,18 +12,9 @@ import com.otaliastudios.opengl.draw.EglDrawable
 @Suppress("unused")
 open class EglFlatProgram : EglProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
 
-    @Suppress("JoinDeclarationAndAssignment")
-    private val vertexPositionHandle: Int
-    private val vertexMvpMatrixHandle: Int
-    private val fragmentColorHandle: Int
-    init {
-        vertexPositionHandle = GLES20.glGetAttribLocation(handle, "aPosition")
-        Egl.checkGlProgramLocation(vertexPositionHandle, "aPosition")
-        vertexMvpMatrixHandle = GLES20.glGetUniformLocation(handle, "uMVPMatrix")
-        Egl.checkGlProgramLocation(vertexMvpMatrixHandle, "uMVPMatrix")
-        fragmentColorHandle = GLES20.glGetUniformLocation(handle, "uColor")
-        Egl.checkGlProgramLocation(fragmentColorHandle, "uColor")
-    }
+    private val vertexPositionHandle = getAttribHandle("aPosition")
+    private val vertexMvpMatrixHandle = getUniformHandle("uMVPMatrix")
+    private val fragmentColorHandle = getUniformHandle("uColor")
 
     @Suppress("MemberVisibilityCanBePrivate")
     var color: FloatArray = floatArrayOf(1F, 1F, 1F, 1F)
@@ -32,27 +23,27 @@ open class EglFlatProgram : EglProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
 
         // Copy the modelViewProjectionMatrix over.
-        GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle, 1, false,
+        GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle.value, 1, false,
                 modelViewProjectionMatrix, 0)
         Egl.checkGlError("glUniformMatrix4fv")
 
         // Copy the color vector in.
-        GLES20.glUniform4fv(fragmentColorHandle, 1, color, 0)
+        GLES20.glUniform4fv(fragmentColorHandle.value, 1, color, 0)
         Egl.checkGlError("glUniform4fv")
 
         // Enable the "aPosition" vertex attribute.
-        GLES20.glEnableVertexAttribArray(vertexPositionHandle)
+        GLES20.glEnableVertexAttribArray(vertexPositionHandle.value)
         Egl.checkGlError("glEnableVertexAttribArray")
 
         // Connect vertexBuffer to "aPosition".
-        GLES20.glVertexAttribPointer(vertexPositionHandle, drawable.coordsPerVertex, GLES20.GL_FLOAT,
-                false, drawable.vertexStride, drawable.vertexArray)
+        GLES20.glVertexAttribPointer(vertexPositionHandle.value, drawable.coordsPerVertex,
+                GLES20.GL_FLOAT, false, drawable.vertexStride, drawable.vertexArray)
         Egl.checkGlError("glVertexAttribPointer")
     }
 
     override fun onPostDraw(drawable: EglDrawable) {
         super.onPostDraw(drawable)
-        GLES20.glDisableVertexAttribArray(vertexPositionHandle)
+        GLES20.glDisableVertexAttribArray(vertexPositionHandle.value)
     }
 
     companion object {
