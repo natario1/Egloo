@@ -5,6 +5,11 @@ import com.otaliastudios.opengl.core.Egl
 import com.otaliastudios.opengl.program.EglProgram
 import java.nio.FloatBuffer
 
+// TODO: EglPoint
+// TODO: EglCircle
+// TODO: Egl3dRect
+// TODO: Egl3dPoint
+// TODO: Egl3dCircle
 abstract class EglDrawable {
 
     /**
