@@ -1,8 +1,6 @@
 package com.otaliastudios.opengl.surface
 
 
-import android.graphics.SurfaceTexture
-import android.view.Surface
 import com.otaliastudios.opengl.core.EglCore
 
 
