@@ -27,10 +27,31 @@ abstract class EglProgram(
     protected var handle = createProgram()
         private set
 
-    init {
-        if (handle == 0) {
-            throw RuntimeException("Could not create program.")
+    // Creates a program with given vertex shader and pixel shader.
+    private fun createProgram(): Int {
+        val pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader)
+        if (pixelShader == 0) throw RuntimeException("Could not load fragment shader")
+        val vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShader)
+        if (vertexShader == 0) throw RuntimeException("Could not load vertex shader")
+
+        val program = GLES20.glCreateProgram()
+        Egl.checkGlError("glCreateProgram")
+        if (program == 0) {
+            throw RuntimeException("Could not create program")
         }
+        GLES20.glAttachShader(program, vertexShader)
+        Egl.checkGlError("glAttachShader")
+        GLES20.glAttachShader(program, pixelShader)
+        Egl.checkGlError("glAttachShader")
+        GLES20.glLinkProgram(program)
+        val linkStatus = IntArray(1)
+        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0)
+        if (linkStatus[0] != GLES20.GL_TRUE) {
+            val message = "Could not link program: " + GLES20.glGetProgramInfoLog(program)
+            GLES20.glDeleteProgram(program)
+            throw RuntimeException(message)
+        }
+        return program
     }
 
     @Suppress("unused")
@@ -63,33 +84,6 @@ abstract class EglProgram(
     }
 
     protected open fun onPostDraw(drawable: EglDrawable) {}
-
-    // Creates a program with given vertex shader and pixel shader.
-    private fun createProgram(): Int {
-        val pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader)
-        if (pixelShader == 0) throw RuntimeException("Could not load fragment shader")
-        val vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShader)
-        if (vertexShader == 0) throw RuntimeException("Could not load vertex shader")
-
-        val program = GLES20.glCreateProgram()
-        Egl.checkGlError("glCreateProgram")
-        if (program == 0) {
-            throw RuntimeException("Could not create program")
-        }
-        GLES20.glAttachShader(program, vertexShader)
-        Egl.checkGlError("glAttachShader")
-        GLES20.glAttachShader(program, pixelShader)
-        Egl.checkGlError("glAttachShader")
-        GLES20.glLinkProgram(program)
-        val linkStatus = IntArray(1)
-        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0)
-        if (linkStatus[0] != GLES20.GL_TRUE) {
-            val message = "Could not link program: " + GLES20.glGetProgramInfoLog(program)
-            GLES20.glDeleteProgram(program)
-            throw RuntimeException(message)
-        }
-        return program
-    }
 
     companion object {
         @Suppress("unused")

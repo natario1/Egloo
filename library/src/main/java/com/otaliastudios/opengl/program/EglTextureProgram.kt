@@ -10,6 +10,7 @@ import com.otaliastudios.opengl.extensions.floatBufferOf
 /**
  * An [EglProgram] that uses a simple vertex shader and a texture fragment shader.
  */
+@Suppress("unused")
 open class EglTextureProgram @JvmOverloads constructor(
         private val textureUnit: Int = GLES20.GL_TEXTURE0
 ) : EglProgram(SIMPLE_VERTEX_SHADER, SIMPLE_FRAGMENT_SHADER) {
@@ -17,19 +18,19 @@ open class EglTextureProgram @JvmOverloads constructor(
     private val textureTarget = GLES11Ext.GL_TEXTURE_EXTERNAL_OES
 
     @Suppress("JoinDeclarationAndAssignment")
-    private val aPositionLocation: Int
-    private val aTextureCoordLocation: Int
-    private val uMVPMatrixLocation: Int
-    private val uTexMatrixLocation: Int
+    private val vertexPositionHandle: Int
+    private val vertexMvpMatrixHandle: Int
+    private val textureCoordsHandle: Int
+    private val textureTransformHandle: Int
     init {
-        aPositionLocation = GLES20.glGetAttribLocation(handle, "aPosition")
-        Egl.checkGlProgramLocation(aPositionLocation, "aPosition")
-        aTextureCoordLocation = GLES20.glGetAttribLocation(handle, "aTextureCoord")
-        Egl.checkGlProgramLocation(aTextureCoordLocation, "aTextureCoord")
-        uMVPMatrixLocation = GLES20.glGetUniformLocation(handle, "uMVPMatrix")
-        Egl.checkGlProgramLocation(uMVPMatrixLocation, "uMVPMatrix")
-        uTexMatrixLocation = GLES20.glGetUniformLocation(handle, "uTexMatrix")
-        Egl.checkGlProgramLocation(uTexMatrixLocation, "uTexMatrix")
+        vertexPositionHandle = GLES20.glGetAttribLocation(handle, "aPosition")
+        Egl.checkGlProgramLocation(vertexPositionHandle, "aPosition")
+        textureCoordsHandle = GLES20.glGetAttribLocation(handle, "aTextureCoord")
+        Egl.checkGlProgramLocation(textureCoordsHandle, "aTextureCoord")
+        vertexMvpMatrixHandle = GLES20.glGetUniformLocation(handle, "uMVPMatrix")
+        Egl.checkGlProgramLocation(vertexMvpMatrixHandle, "uMVPMatrix")
+        textureTransformHandle = GLES20.glGetUniformLocation(handle, "uTexMatrix")
+        Egl.checkGlProgramLocation(textureTransformHandle, "uTexMatrix")
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -60,36 +61,36 @@ open class EglTextureProgram @JvmOverloads constructor(
         GLES20.glBindTexture(textureTarget, textureId)
 
         // Copy the modelViewProjectionMatrix over.
-        GLES20.glUniformMatrix4fv(uMVPMatrixLocation, 1, false,
+        GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle, 1, false,
                 modelViewProjectionMatrix, 0)
         Egl.checkGlError("glUniformMatrix4fv")
 
         // Copy the texture transformation matrix over.
-        GLES20.glUniformMatrix4fv(uTexMatrixLocation, 1, false,
+        GLES20.glUniformMatrix4fv(textureTransformHandle, 1, false,
                 textureTransform, 0)
         Egl.checkGlError("glUniformMatrix4fv")
 
         // Enable the "aPosition" vertex attribute.
         // Connect vertexBuffer to "aPosition".
-        GLES20.glEnableVertexAttribArray(aPositionLocation)
+        GLES20.glEnableVertexAttribArray(vertexPositionHandle)
         Egl.checkGlError("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(aPositionLocation, drawable.coordsPerVertex, GLES20.GL_FLOAT,
+        GLES20.glVertexAttribPointer(vertexPositionHandle, drawable.coordsPerVertex, GLES20.GL_FLOAT,
                 false, drawable.vertexStride, drawable.vertexArray)
         Egl.checkGlError("glVertexAttribPointer")
 
         // Enable the "aTextureCoord" vertex attribute.
         // Connect texBuffer to "aTextureCoord".
-        GLES20.glEnableVertexAttribArray(aTextureCoordLocation)
+        GLES20.glEnableVertexAttribArray(textureCoordsHandle)
         Egl.checkGlError("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(aTextureCoordLocation, 2, GLES20.GL_FLOAT,
+        GLES20.glVertexAttribPointer(textureCoordsHandle, 2, GLES20.GL_FLOAT,
                 false, COORDINATES_STRIDE, FULL_COORDINATES)
         Egl.checkGlError("glVertexAttribPointer")
     }
 
     override fun onPostDraw(drawable: EglDrawable) {
         super.onPostDraw(drawable)
-        GLES20.glDisableVertexAttribArray(aPositionLocation)
-        GLES20.glDisableVertexAttribArray(aTextureCoordLocation)
+        GLES20.glDisableVertexAttribArray(vertexPositionHandle)
+        GLES20.glDisableVertexAttribArray(textureCoordsHandle)
         GLES20.glBindTexture(textureTarget, 0)
     }
 

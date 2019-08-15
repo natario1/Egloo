@@ -9,48 +9,50 @@ import com.otaliastudios.opengl.draw.EglDrawable
  * An [EglProgram] that uses basic flat-shading rendering,
  * based on FlatShadedProgram from grafika.
  */
+@Suppress("unused")
 open class EglFlatProgram : EglProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
 
     @Suppress("JoinDeclarationAndAssignment")
-    private val aPositionLocation: Int
-    private val uMVPMatrixLocation: Int
-    private val uColorLocation: Int
+    private val vertexPositionHandle: Int
+    private val vertexMvpMatrixHandle: Int
+    private val fragmentColorHandle: Int
     init {
-        aPositionLocation = GLES20.glGetAttribLocation(handle, "aPosition")
-        Egl.checkGlProgramLocation(aPositionLocation, "aPosition")
-        uMVPMatrixLocation = GLES20.glGetUniformLocation(handle, "uMVPMatrix")
-        Egl.checkGlProgramLocation(uMVPMatrixLocation, "uMVPMatrix")
-        uColorLocation = GLES20.glGetUniformLocation(handle, "uColor")
-        Egl.checkGlProgramLocation(uColorLocation, "uColor")
+        vertexPositionHandle = GLES20.glGetAttribLocation(handle, "aPosition")
+        Egl.checkGlProgramLocation(vertexPositionHandle, "aPosition")
+        vertexMvpMatrixHandle = GLES20.glGetUniformLocation(handle, "uMVPMatrix")
+        Egl.checkGlProgramLocation(vertexMvpMatrixHandle, "uMVPMatrix")
+        fragmentColorHandle = GLES20.glGetUniformLocation(handle, "uColor")
+        Egl.checkGlProgramLocation(fragmentColorHandle, "uColor")
     }
 
+    @Suppress("MemberVisibilityCanBePrivate")
     var color: FloatArray = floatArrayOf(1F, 1F, 1F, 1F)
 
     override fun onPreDraw(drawable: EglDrawable, modelViewProjectionMatrix: FloatArray) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
 
         // Copy the modelViewProjectionMatrix over.
-        GLES20.glUniformMatrix4fv(uMVPMatrixLocation, 1, false,
+        GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle, 1, false,
                 modelViewProjectionMatrix, 0)
         Egl.checkGlError("glUniformMatrix4fv")
 
         // Copy the color vector in.
-        GLES20.glUniform4fv(uColorLocation, 1, color, 0)
+        GLES20.glUniform4fv(fragmentColorHandle, 1, color, 0)
         Egl.checkGlError("glUniform4fv")
 
         // Enable the "aPosition" vertex attribute.
-        GLES20.glEnableVertexAttribArray(aPositionLocation)
+        GLES20.glEnableVertexAttribArray(vertexPositionHandle)
         Egl.checkGlError("glEnableVertexAttribArray")
 
         // Connect vertexBuffer to "aPosition".
-        GLES20.glVertexAttribPointer(aPositionLocation, drawable.coordsPerVertex, GLES20.GL_FLOAT,
+        GLES20.glVertexAttribPointer(vertexPositionHandle, drawable.coordsPerVertex, GLES20.GL_FLOAT,
                 false, drawable.vertexStride, drawable.vertexArray)
         Egl.checkGlError("glVertexAttribPointer")
     }
 
     override fun onPostDraw(drawable: EglDrawable) {
         super.onPostDraw(drawable)
-        GLES20.glDisableVertexAttribArray(aPositionLocation)
+        GLES20.glDisableVertexAttribArray(vertexPositionHandle)
     }
 
     companion object {
