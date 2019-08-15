@@ -2,10 +2,9 @@ package com.otaliastudios.opengl.surface
 
 
 import android.graphics.Bitmap
-import android.graphics.SurfaceTexture
 import android.opengl.EGL14
+import android.opengl.EGLSurface
 import android.opengl.GLES20
-import android.view.Surface
 import com.otaliastudios.opengl.core.Egl
 import com.otaliastudios.opengl.core.EglCore
 import java.io.*
@@ -16,38 +15,30 @@ import java.nio.ByteOrder
  * Common base class for EGL surfaces.
  * There can be multiple base surfaces associated with a single [EglCore] object.
  */
-open class EglSurface internal constructor(protected var eglCore: EglCore) {
+abstract class EglSurface protected constructor(
+        protected var eglCore: EglCore,
+        protected var eglSurface: EGLSurface) {
 
-    /**
-     * Creates an offscreen surface.
-     */
-    internal constructor(eglCore: EglCore, width: Int, height: Int): this(eglCore) {
-        eglSurface = eglCore.createOffscreenSurface(width, height)
-        this.width = width
-        this.height = height
-    }
-
-    /**
-     * Creates a window surface.
-     */
-    internal constructor(eglCore: EglCore, surface: Surface): this(eglCore) {
-        eglSurface = eglCore.createWindowSurface(surface)
-        // Don't cache width/height here, because the size of the underlying surface can change
-        // width = eglCore.querySurface(eglSurface, EGL14.EGL_WIDTH);
-        // height = eglCore.querySurface(eglSurface, EGL14.EGL_HEIGHT);
-    }
-
-    /**
-     * Creates a window surface.
-     */
-    internal constructor(eglCore: EglCore, surfaceTexture: SurfaceTexture): this(eglCore) {
-        eglSurface = eglCore.createWindowSurface(surfaceTexture)
-        // Same as above
-    }
-
-    protected var eglSurface = EGL14.EGL_NO_SURFACE
     private var width = -1
     private var height = -1
+
+    /**
+     * Can be called by subclasses whose width is guaranteed to never change,
+     * so we can cache this value. For window surfaces, this should not be called.
+     */
+    @Suppress("unused")
+    protected fun setWidth(width: Int) {
+        this.width = width
+    }
+
+    /**
+     * Can be called by subclasses whose height is guaranteed to never change,
+     * so we can cache this value. For window surfaces, this should not be called.
+     */
+    @Suppress("unused")
+    protected fun setHeight(height: Int) {
+        this.height = height
+    }
 
     /**
      * Returns the surface's width, in pixels.
@@ -56,6 +47,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
      * of changing size, we may not see the new size right away (e.g. in the "surfaceChanged"
      * callback).  The size should match after the next buffer swap.
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun getWidth(): Int {
         return if (width < 0) {
             eglCore.querySurface(eglSurface, EGL14.EGL_WIDTH)
@@ -67,6 +59,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
     /**
      * Returns the surface's height, in pixels.
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun getHeight(): Int {
         return if (height < 0) {
             eglCore.querySurface(eglSurface, EGL14.EGL_HEIGHT)
@@ -89,6 +82,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
      * Whether this surface is current on the
      * attached [EglCore].
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun isCurrent(): Boolean {
         return eglCore.isSurfaceCurrent(eglSurface)
     }
@@ -96,6 +90,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
     /**
      * Makes our EGL context and surface current.
      */
+    @Suppress("unused")
     fun makeCurrent() {
         eglCore.makeSurfaceCurrent(eglSurface)
     }
@@ -104,6 +99,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
      * Makes our EGL context and surface current for drawing,
      * using the supplied surface for reading.
      */
+    @Suppress("unused")
     fun makeCurrent(readSurface: EglSurface) {
         eglCore.makeSurfaceCurrent(eglSurface, readSurface.eglSurface)
     }
@@ -111,6 +107,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
     /**
      * Makes no surface current for the attached [eglCore].
      */
+    @Suppress("unused")
     fun makeNothingCurrent() {
         eglCore.makeNoSurfaceCurrent()
     }
@@ -119,6 +116,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
      * Sends the presentation time stamp to EGL.
      * [nsecs] is the timestamp in nanoseconds.
      */
+    @Suppress("unused")
     fun setPresentationTime(nsecs: Long) {
         eglCore.setSurfacePresentationTime(eglSurface, nsecs)
     }
@@ -127,7 +125,8 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
      * Saves the EGL surface to the given output stream.
      * Expects that this object's EGL surface is current.
      */
-    fun saveFrameToOutputStream(stream: OutputStream, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun toOutputStream(stream: OutputStream, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
         if (!isCurrent()) throw RuntimeException("Expected EGL context/surface is not current")
         // glReadPixels fills in a "direct" ByteBuffer with what is essentially big-endian RGBA
         // data (i.e. a byte of red, followed by a byte of green...).  While the Bitmap
@@ -154,12 +153,13 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
      * Saves the EGL surface to a file.
      * Expects that this object's EGL surface is current.
      */
+    @Suppress("unused")
     @Throws(IOException::class)
-    fun saveFrameToFile(file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
+    fun toFile(file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
         var stream: BufferedOutputStream? = null
         try {
             stream = BufferedOutputStream(FileOutputStream(file.toString()))
-            saveFrameToOutputStream(stream, format)
+            toOutputStream(stream, format)
         } finally {
             stream?.close()
         }
@@ -169,37 +169,17 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
      * Saves the EGL surface to given format.
      * Expects that this object's EGL surface is current.
      */
-    fun saveFrameToByteArray(format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): ByteArray {
+    @Suppress("unused")
+    fun toByteArray(format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): ByteArray {
         val stream = ByteArrayOutputStream()
         stream.use {
-            saveFrameToOutputStream(it, format)
+            toOutputStream(it, format)
             return it.toByteArray()
         }
     }
 
     companion object {
+        @Suppress("HasPlatformType", "unused")
         protected val TAG = EglSurface::class.java.simpleName
-
-        /**
-         * Set releaseSurface to true if you want the Surface to be released when release() is
-         * called.  This is convenient, but can interfere with framework classes that expect to
-         * manage the Surface themselves (e.g. if you release a SurfaceView's Surface, the
-         * surfaceDestroyed() callback won't fire).
-         */
-        @JvmOverloads
-        @JvmStatic
-        fun createWindowSurface(eglCore: EglCore, surface: Surface, releaseSurface: Boolean = false): EglWindowSurface {
-            return EglWindowSurface(eglCore, surface, releaseSurface)
-        }
-
-        @JvmStatic
-        fun createWindowSurface(eglCore: EglCore, surfaceTexture: SurfaceTexture): EglWindowSurface {
-            return EglWindowSurface(eglCore, surfaceTexture)
-        }
-
-        @JvmStatic
-        fun createOffscreenSurface(eglCore: EglCore, width: Int, height: Int): EglSurface {
-            return EglSurface(eglCore, width, height)
-        }
     }
 }
