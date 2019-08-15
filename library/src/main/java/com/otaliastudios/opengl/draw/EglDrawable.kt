@@ -1,13 +1,8 @@
 package com.otaliastudios.opengl.draw
 
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.core.floatBufferOf
-import com.otaliastudios.opengl.core.toBuffer
-import com.otaliastudios.opengl.program.EglFlatProgram
-import com.otaliastudios.opengl.program.EglTextureProgram
+import com.otaliastudios.opengl.program.EglProgram
 import java.nio.FloatBuffer
 
 abstract class EglDrawable {
@@ -22,7 +17,7 @@ abstract class EglDrawable {
      * Returns the array of vertices.
      * To avoid allocations, this returns internal state.  The caller must not modify it.
      */
-    abstract val vertexArray: FloatBuffer
+    abstract var vertexArray: FloatBuffer
 
     /**
      * Returns the number of vertices stored in the vertex array.
@@ -38,30 +33,12 @@ abstract class EglDrawable {
      * Returns the width, in bytes, of the data for each vertex.
      */
     open val vertexStride: Int
-        get() = coordsPerVertex * SIZE_OF_FLOAT
+        get() = coordsPerVertex * Egl.SIZE_OF_FLOAT
 
     /**
-     * Texture drawing: returns the array of texture coordinates.
-     * Defaults to [FULL_TEXTURE_COORDS].
+     * Draws this drawable.
+     * This function should not be called directly.
+     * Instead, this drawable should be passed to some [EglProgram].
      */
-    open val texCoordArray: FloatBuffer = FULL_TEXTURE_COORDS
-
-    /**
-     * Texture drawing: Returns the width, in bytes, of the data for each texture coordinate.
-     * Defaults to 2 * [SIZE_OF_FLOAT].
-     */
-    open val texCoordStride: Int = 2 * SIZE_OF_FLOAT
-
-    companion object {
-        const val SIZE_OF_FLOAT = 4
-
-        // Texture coordinates in GL go from 0 to 1 on both axes
-        val FULL_TEXTURE_COORDS = floatBufferOf(
-                0.0f, 0.0f, // 0 bottom left
-                1.0f, 0.0f, // 1 bottom right
-                0.0f, 1.0f, // 2 top left
-                1.0f, 1.0f // 3 top right
-        )
-    }
-
+    abstract fun draw()
 }

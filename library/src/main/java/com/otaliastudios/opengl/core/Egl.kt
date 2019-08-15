@@ -12,6 +12,8 @@ import com.otaliastudios.opengl.extensions.makeIdentity
  */
 object Egl {
 
+    const val SIZE_OF_FLOAT = 4
+
     /**
      * Identify matrix for general use.
      */
