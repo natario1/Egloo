@@ -41,11 +41,11 @@ open class EglFlatProgram : EglProgram() {
     private val uColorLocation: Int
     init {
         aPositionLocation = GLES20.glGetAttribLocation(programHandle, "aPosition")
-        Egl.checkLocation(aPositionLocation, "aPosition")
+        Egl.checkGlProgramLocation(aPositionLocation, "aPosition")
         uMVPMatrixLocation = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix")
-        Egl.checkLocation(uMVPMatrixLocation, "uMVPMatrix")
+        Egl.checkGlProgramLocation(uMVPMatrixLocation, "uMVPMatrix")
         uColorLocation = GLES20.glGetUniformLocation(programHandle, "uColor")
-        Egl.checkLocation(uColorLocation, "uColor")
+        Egl.checkGlProgramLocation(uColorLocation, "uColor")
     }
 
     @JvmOverloads
@@ -66,32 +66,32 @@ open class EglFlatProgram : EglProgram() {
     fun draw(mvpMatrix: FloatArray, color: FloatArray,
                      vertexBuffer: FloatBuffer, firstVertex: Int,
                      vertexCount: Int, vertexStride: Int, coordsPerVertex: Int) {
-        Egl.check("draw start")
+        Egl.checkGlError("draw start")
 
         // Select the program.
         GLES20.glUseProgram(programHandle)
-        Egl.check("glUseProgram")
+        Egl.checkGlError("glUseProgram")
 
         // Copy the model / view / projection matrix over.
         GLES20.glUniformMatrix4fv(uMVPMatrixLocation, 1, false, mvpMatrix, 0)
-        Egl.check("glUniformMatrix4fv")
+        Egl.checkGlError("glUniformMatrix4fv")
 
         // Copy the color vector in.
         GLES20.glUniform4fv(uColorLocation, 1, color, 0)
-        Egl.check("glUniform4fv")
+        Egl.checkGlError("glUniform4fv")
 
         // Enable the "aPosition" vertex attribute.
         GLES20.glEnableVertexAttribArray(aPositionLocation)
-        Egl.check("glEnableVertexAttribArray")
+        Egl.checkGlError("glEnableVertexAttribArray")
 
         // Connect vertexBuffer to "aPosition".
         GLES20.glVertexAttribPointer(aPositionLocation, coordsPerVertex,
                 GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
-        Egl.check("glVertexAttribPointer")
+        Egl.checkGlError("glVertexAttribPointer")
 
         // Draw the rect.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, firstVertex, vertexCount)
-        Egl.check("glDrawArrays")
+        Egl.checkGlError("glDrawArrays")
 
         // Done -- disable vertex array and program.
         GLES20.glDisableVertexAttribArray(aPositionLocation)

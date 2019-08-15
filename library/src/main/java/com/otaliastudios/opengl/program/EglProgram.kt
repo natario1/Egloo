@@ -2,10 +2,7 @@ package com.otaliastudios.opengl.program
 
 
 import android.opengl.GLES20
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.draw.EglDrawable
 
 /**
  * Base class for a program, can create the program and load shaders.
@@ -21,14 +18,14 @@ abstract class EglProgram {
         if (vertexShader == 0) throw RuntimeException("Could not load vertex shader")
 
         val program = GLES20.glCreateProgram()
-        Egl.check("glCreateProgram")
+        Egl.checkGlError("glCreateProgram")
         if (program == 0) {
             throw RuntimeException("Could not create program")
         }
         GLES20.glAttachShader(program, vertexShader)
-        Egl.check("glAttachShader")
+        Egl.checkGlError("glAttachShader")
         GLES20.glAttachShader(program, pixelShader)
-        Egl.check("glAttachShader")
+        Egl.checkGlError("glAttachShader")
         GLES20.glLinkProgram(program)
         val linkStatus = IntArray(1)
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0)
@@ -44,7 +41,7 @@ abstract class EglProgram {
     // Compiles the given shader, returns a handle.
     protected fun loadShader(shaderType: Int, source: String): Int {
         val shader = GLES20.glCreateShader(shaderType)
-        Egl.check("glCreateShader type=$shaderType")
+        Egl.checkGlError("glCreateShader type=$shaderType")
         GLES20.glShaderSource(shader, source)
         GLES20.glCompileShader(shader)
         val compiled = IntArray(1)

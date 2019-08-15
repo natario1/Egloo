@@ -4,6 +4,8 @@ package com.otaliastudios.opengl.draw
 import android.os.Build
 import androidx.annotation.RequiresApi
 import com.otaliastudios.opengl.core.Egl
+import com.otaliastudios.opengl.core.floatBufferOf
+import com.otaliastudios.opengl.core.toBuffer
 import com.otaliastudios.opengl.program.EglFlatProgram
 import com.otaliastudios.opengl.program.EglTextureProgram
 import java.nio.FloatBuffer
@@ -54,11 +56,12 @@ abstract class EglDrawable {
         const val SIZE_OF_FLOAT = 4
 
         // Texture coordinates in GL go from 0 to 1 on both axes
-        val FULL_TEXTURE_COORDS = Egl.floatBufferOf(floatArrayOf(
+        val FULL_TEXTURE_COORDS = floatBufferOf(
                 0.0f, 0.0f, // 0 bottom left
                 1.0f, 0.0f, // 1 bottom right
                 0.0f, 1.0f, // 2 top left
-                1.0f, 1.0f)) // 3 top right
+                1.0f, 1.0f // 3 top right
+        )
     }
 
 }

@@ -5,10 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.SurfaceTexture
 import android.opengl.EGL14
 import android.opengl.GLES20
-import android.os.Build
-import android.util.Log
 import android.view.Surface
-import androidx.annotation.RequiresApi
 import com.otaliastudios.opengl.core.Egl
 import com.otaliastudios.opengl.core.EglCore
 import java.io.*
@@ -145,7 +142,7 @@ open class EglSurface internal constructor(protected var eglCore: EglCore) {
         val buf = ByteBuffer.allocateDirect(width * height * 4)
         buf.order(ByteOrder.LITTLE_ENDIAN)
         GLES20.glReadPixels(0, 0, width, height, GLES20.GL_RGBA, GLES20.GL_UNSIGNED_BYTE, buf)
-        Egl.check("glReadPixels")
+        Egl.checkGlError("glReadPixels")
         buf.rewind()
         val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
         bitmap.copyPixelsFromBuffer(buf)

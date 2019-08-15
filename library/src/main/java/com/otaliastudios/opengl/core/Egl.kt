@@ -1,55 +1,30 @@
 package com.otaliastudios.opengl.core
 
 
-import android.annotation.TargetApi
 import android.opengl.EGL14
 import android.opengl.GLES20
 import android.opengl.GLU
-import android.opengl.Matrix
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
+import com.otaliastudios.opengl.extensions.makeIdentity
 
-
-fun FloatArray.makeIdentity(): FloatArray {
-    if (size != 16) throw RuntimeException("Need a 16 values matrix.")
-    Matrix.setIdentityM(this, 0)
-    return this
-}
-
+/**
+ * Contains static utilities for EGL and GLES.
+ */
 object Egl {
 
-    // Identity matrix for general use.
+    /**
+     * Identify matrix for general use.
+     */
     @JvmStatic
-    val IDENTITY_MATRIX = FloatArray(16)
-
-    init {
-        IDENTITY_MATRIX.makeIdentity()
-    }
-
-    // Allocates a direct float buffer, and populates it with the float array data.
-    // Allocate a direct ByteBuffer, using 4 bytes per float, and copy coords into it.
-    internal fun floatBufferOf(coords: FloatArray): FloatBuffer {
-        val bb = ByteBuffer.allocateDirect(coords.size * 4)
-        bb.order(ByteOrder.nativeOrder())
-        val fb = bb.asFloatBuffer()
-        setFloatBuffer(fb, coords)
-        return fb
-    }
-
-    internal fun setFloatBuffer(buffer: FloatBuffer, coords: FloatArray) {
-        buffer.put(coords)
-        buffer.position(0)
+    val IDENTITY_MATRIX = FloatArray(16).apply {
+        makeIdentity()
     }
 
     /**
      * Checks for GLES errors.
      */
     @JvmStatic
-    fun check(opName: String) {
+    fun checkGlError(opName: String) {
         val error = GLES20.glGetError()
         if (error != GLES20.GL_NO_ERROR) {
             val message = "Error during $opName: glError 0x${Integer.toHexString(error)}: ${GLU.gluErrorString(error)}"
@@ -62,22 +37,36 @@ object Egl {
      * Checks for EGL errors.
      */
     @JvmStatic
-    fun checkEgl(eglOpName: String) {
+    fun checkEglError(opName: String) {
         val error = EGL14.eglGetError()
         if (error != EGL14.EGL_SUCCESS) {
-            val message = "Error during $eglOpName: EGL error 0x${Integer.toHexString(error)}"
+            val message = "Error during $opName: EGL error 0x${Integer.toHexString(error)}"
             Log.e("Egl", message)
             throw RuntimeException(message)
         }
     }
 
-    // Check for valid location.
+    /**
+     * Checks for program handles.
+     */
     @JvmStatic
-    fun checkLocation(location: Int, label: String) {
+    fun checkGlProgramLocation(location: Int, label: String) {
         if (location < 0) {
             val message = "Unable to locate $label in program"
             Log.e("Egl", message)
             throw RuntimeException(message)
         }
+    }
+
+    /**
+     * Writes the current display, context, and surface to the log.
+     */
+    @Suppress("unused")
+    @JvmStatic
+    fun logCurrent(msg: String) {
+        val display = EGL14.eglGetCurrentDisplay()
+        val context = EGL14.eglGetCurrentContext()
+        val surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW)
+        Log.i("Egl", "Current EGL ($msg): display=$display, context=$context, surface=$surface")
     }
 }

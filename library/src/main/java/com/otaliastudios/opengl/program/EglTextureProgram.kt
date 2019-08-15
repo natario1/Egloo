@@ -58,13 +58,13 @@ open class EglTextureProgram : EglProgram() {
     private val uTexMatrixLocation: Int
     init {
         aPositionLocation = GLES20.glGetAttribLocation(programHandle, "aPosition")
-        Egl.checkLocation(aPositionLocation, "aPosition")
+        Egl.checkGlProgramLocation(aPositionLocation, "aPosition")
         aTextureCoordLocation = GLES20.glGetAttribLocation(programHandle, "aTextureCoord")
-        Egl.checkLocation(aTextureCoordLocation, "aTextureCoord")
+        Egl.checkGlProgramLocation(aTextureCoordLocation, "aTextureCoord")
         uMVPMatrixLocation = GLES20.glGetUniformLocation(programHandle, "uMVPMatrix")
-        Egl.checkLocation(uMVPMatrixLocation, "uMVPMatrix")
+        Egl.checkGlProgramLocation(uMVPMatrixLocation, "uMVPMatrix")
         uTexMatrixLocation = GLES20.glGetUniformLocation(programHandle, "uTexMatrix")
-        Egl.checkLocation(uTexMatrixLocation, "uTexMatrix")
+        Egl.checkGlProgramLocation(uTexMatrixLocation, "uTexMatrix")
     }
 
     @JvmOverloads
@@ -76,17 +76,17 @@ open class EglTextureProgram : EglProgram() {
     fun createTexture(): Int {
         val textures = IntArray(1)
         GLES20.glGenTextures(1, textures, 0)
-        Egl.check("glGenTextures")
+        Egl.checkGlError("glGenTextures")
 
         val texId = textures[0]
         GLES20.glBindTexture(TEXTURE_TARGET, texId)
-        Egl.check("glBindTexture $texId")
+        Egl.checkGlError("glBindTexture $texId")
 
         GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
         GLES20.glTexParameterf(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
         GLES20.glTexParameteri(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
-        Egl.check("glTexParameter")
+        Egl.checkGlError("glTexParameter")
 
         return texId
     }
@@ -95,11 +95,11 @@ open class EglTextureProgram : EglProgram() {
              vertexBuffer: FloatBuffer, firstVertex: Int, vertexCount: Int, vertexStride: Int,
              coordsPerVertex: Int,
              texCoordBuffer: FloatBuffer, texCoordStride: Int) {
-        Egl.check("draw start")
+        Egl.checkGlError("draw start")
 
         // Select the program.
         GLES20.glUseProgram(programHandle)
-        Egl.check("glUseProgram")
+        Egl.checkGlError("glUseProgram")
 
         // Set the texture.
         GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
@@ -107,30 +107,30 @@ open class EglTextureProgram : EglProgram() {
 
         // Copy the texture transformation matrix over.
         GLES20.glUniformMatrix4fv(uTexMatrixLocation, 1, false, textureMatrix, 0)
-        Egl.check("glUniformMatrix4fv")
+        Egl.checkGlError("glUniformMatrix4fv")
 
         // Copy the model / view / projection matrix over.
         GLES20.glUniformMatrix4fv(uMVPMatrixLocation, 1, false, mvpMatrix, 0)
-        Egl.check("glUniformMatrix4fv")
+        Egl.checkGlError("glUniformMatrix4fv")
 
         // Enable the "aPosition" vertex attribute.
         // Connect vertexBuffer to "aPosition".
         GLES20.glEnableVertexAttribArray(aPositionLocation)
-        Egl.check("glEnableVertexAttribArray")
+        Egl.checkGlError("glEnableVertexAttribArray")
         GLES20.glVertexAttribPointer(aPositionLocation, coordsPerVertex, GLES20.GL_FLOAT, false, vertexStride, vertexBuffer)
-        Egl.check("glVertexAttribPointer")
+        Egl.checkGlError("glVertexAttribPointer")
 
         // Enable the "aTextureCoord" vertex attribute.
         // Connect texBuffer to "aTextureCoord".
         GLES20.glEnableVertexAttribArray(aTextureCoordLocation)
-        Egl.check("glEnableVertexAttribArray")
+        Egl.checkGlError("glEnableVertexAttribArray")
         GLES20.glVertexAttribPointer(aTextureCoordLocation, 2, GLES20.GL_FLOAT, false, texCoordStride, texCoordBuffer)
-        Egl.check("glVertexAttribPointer")
+        Egl.checkGlError("glVertexAttribPointer")
 
 
         // Draw the rect.
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, firstVertex, vertexCount)
-        Egl.check("glDrawArrays")
+        Egl.checkGlError("glDrawArrays")
 
         // Done -- disable vertex array, texture, and program.
         GLES20.glDisableVertexAttribArray(aPositionLocation)
