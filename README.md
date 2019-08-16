@@ -1,13 +1,13 @@
 # Egloo
 
 Egloo (formerly EglCore) is a simple and lightweight framework for OpenGL ES drawing and EGL management
-in Android that uses object-oriented components - hence the name Egl*oo*. It can serve as a basis for 
+in Android that uses object-oriented components - hence the name Egl**oo**. It can serve as a basis for 
 complex drawing operations, but is mostly designed for helping in making common tasks simpler,
 even for people that do not have any OpenGL experience.
 
 Approaching OpenGL from Android can be hard because of the deep differences in the OpenGL API design
 with respect to a typical object-oriented context. Egloo tries to take some of these difficulties away
-by creating a **thin** layer of abstraction around EGL and GLES calls.
+by creating a **thin**, flexible layer of abstraction around EGL and GLES calls.
 
 ```groovy
 implementation 'com.otaliastudios.opengl:egloo:0.2.0'
@@ -34,7 +34,9 @@ You can take a look at the demo app or see Egloo in action in more popular proje
 - Programs abstraction [[docs]](#programs-how-to-draw)
 - Scenes to hold view and projection matrix [[docs]](#scenes)
 
-The complete sample function below will draw a red triangle:
+### Sample Usage
+
+The function below will create a context, draw a red triangle and release:
 
 ```kotlin
 // Configure an EGL context and window
@@ -42,14 +44,10 @@ val core = EglCore()
 val window = EglWindowSurface(core, outputSurface)
 window.makeCurrent()
 
-// GlDrawable: what to draw
-val drawable = GlTriangle()
-
-// GlProgram: how to draw
-val program = GlFlatProgram()
-program.setColor(Color.RED)
-
 // Draw
+val drawable = GlTriangle() // GlDrawable: what to draw
+val program = GlFlatProgram() // GlProgram: how to draw
+program.setColor(Color.RED)
 program.draw(drawable)
 
 // Publish what we have drawn
@@ -222,6 +220,7 @@ camera.setPreviewTexture(programTexture)
 // Now the program texture receives the camera frames
 // And we can render them using the program
 val rect = GlRect() // Draw the full frame
+programTexture.getTransformMatrix(program.textureTransform)
 program.draw(rect)
 ```
 
