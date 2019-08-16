@@ -10,12 +10,10 @@ import android.os.Handler
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
-import com.otaliastudios.opengl.core.Egl
 import com.otaliastudios.opengl.core.EglCore
-import com.otaliastudios.opengl.draw.EglRect
-import com.otaliastudios.opengl.program.EglFlatProgram
-import com.otaliastudios.opengl.program.EglTextureProgram
-import com.otaliastudios.opengl.scene.EglScene
+import com.otaliastudios.opengl.draw.GlRect
+import com.otaliastudios.opengl.program.GlFlatProgram
+import com.otaliastudios.opengl.scene.GlScene
 import com.otaliastudios.opengl.surface.EglWindowSurface
 import kotlin.math.roundToInt
 
@@ -24,10 +22,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var surfaceView: SurfaceView
     private var eglCore: EglCore? = null
     private var eglSurface: EglWindowSurface? = null
-    private var eglFlatProgram: EglFlatProgram? = null
+    private var eglFlatProgram: GlFlatProgram? = null
 
-    private val eglScene = EglScene()
-    private val eglRect = EglRect()
+    private val eglScene = GlScene()
+    private val eglRect = GlRect()
     private val rect = RectF()
 
     private val drawAnimator = ValueAnimator.ofFloat(0F, 1F).also {
@@ -65,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         eglCore = EglCore()
         eglSurface = EglWindowSurface(eglCore!!, surfaceView.holder.surface!!)
         eglSurface!!.makeCurrent()
-        eglFlatProgram = EglFlatProgram()
+        eglFlatProgram = GlFlatProgram()
         drawAnimator.start()
     }
 

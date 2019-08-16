@@ -2,13 +2,13 @@ package com.otaliastudios.opengl.draw
 
 import android.graphics.RectF
 import android.opengl.GLES20
-import com.otaliastudios.opengl.core.Egl
+import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.extensions.floatBufferOf
 import java.lang.IllegalArgumentException
 import java.nio.FloatBuffer
 
 @Suppress("unused")
-open class EglRect: EglDrawable() {
+open class GlRect: GlDrawable() {
 
     companion object {
         // A full square, extending from -1 to +1 in both dimensions.
@@ -53,6 +53,6 @@ open class EglRect: EglDrawable() {
 
     override fun draw() {
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexCount)
-        Egl.checkGlError("glDrawArrays")
+        Egloo.checkGlError("glDrawArrays")
     }
 }

@@ -1,22 +1,22 @@
 package com.otaliastudios.opengl.draw
 
 
-import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.program.EglProgram
+import com.otaliastudios.opengl.core.Egloo
+import com.otaliastudios.opengl.program.GlProgram
 import java.nio.FloatBuffer
 
-// TODO: EglPoint
-// TODO: EglCircle
-// TODO: Egl3dRect
-// TODO: Egl3dPoint
-// TODO: Egl3dCircle
-abstract class EglDrawable {
+// TODO: GlPoint
+// TODO: GlCircle
+// TODO: Gl3dRect
+// TODO: Gl3dPoint
+// TODO: Gl3dCircle
+abstract class GlDrawable {
 
     /**
      * The model matrix for this object. Defaults to the
      * identity matrix, but can be accessed and modified.
      */
-    val modelMatrix = Egl.IDENTITY_MATRIX.clone()
+    val modelMatrix = Egloo.IDENTITY_MATRIX.clone()
 
     /**
      * Returns the array of vertices.
@@ -33,7 +33,7 @@ abstract class EglDrawable {
      * Returns the width, in bytes, of the data for each vertex.
      */
     open val vertexStride: Int
-        get() = coordsPerVertex * Egl.SIZE_OF_FLOAT
+        get() = coordsPerVertex * Egloo.SIZE_OF_FLOAT
 
     /**
      * Returns the number of vertices stored in the vertex array.
@@ -44,7 +44,7 @@ abstract class EglDrawable {
     /**
      * Draws this drawable.
      * This function should not be called directly.
-     * Instead, this drawable should be passed to some [EglProgram].
+     * Instead, this drawable should be passed to some [GlProgram].
      */
     abstract fun draw()
 }

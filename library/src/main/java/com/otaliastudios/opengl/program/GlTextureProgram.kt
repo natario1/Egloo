@@ -3,17 +3,17 @@ package com.otaliastudios.opengl.program
 
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
-import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.draw.EglDrawable
+import com.otaliastudios.opengl.core.Egloo
+import com.otaliastudios.opengl.draw.GlDrawable
 import com.otaliastudios.opengl.extensions.floatBufferOf
 
 /**
- * An [EglProgram] that uses a simple vertex shader and a texture fragment shader.
+ * An [GlProgram] that uses a simple vertex shader and a texture fragment shader.
  */
 @Suppress("unused")
-open class EglTextureProgram @JvmOverloads constructor(
+open class GlTextureProgram @JvmOverloads constructor(
         private val textureUnit: Int = GLES20.GL_TEXTURE0
-) : EglProgram(SIMPLE_VERTEX_SHADER, SIMPLE_FRAGMENT_SHADER) {
+) : GlProgram(SIMPLE_VERTEX_SHADER, SIMPLE_FRAGMENT_SHADER) {
 
     private val textureTarget = GLES11Ext.GL_TEXTURE_EXTERNAL_OES
 
@@ -27,24 +27,24 @@ open class EglTextureProgram @JvmOverloads constructor(
     init {
         val textures = IntArray(1)
         GLES20.glGenTextures(1, textures, 0)
-        Egl.checkGlError("glGenTextures")
+        Egloo.checkGlError("glGenTextures")
 
         textureId = textures[0]
         GLES20.glActiveTexture(textureUnit)
         GLES20.glBindTexture(textureTarget, textureId)
-        Egl.checkGlError("glBindTexture $textureId")
+        Egloo.checkGlError("glBindTexture $textureId")
 
         GLES20.glTexParameterf(textureTarget, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
         GLES20.glTexParameterf(textureTarget, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
         GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
         GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
-        Egl.checkGlError("glTexParameter")
+        Egloo.checkGlError("glTexParameter")
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    var textureTransform: FloatArray = Egl.IDENTITY_MATRIX.clone()
+    var textureTransform: FloatArray = Egloo.IDENTITY_MATRIX.clone()
 
-    override fun onPreDraw(drawable: EglDrawable, modelViewProjectionMatrix: FloatArray) {
+    override fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
         GLES20.glActiveTexture(textureUnit)
         GLES20.glBindTexture(textureTarget, textureId)
@@ -52,31 +52,31 @@ open class EglTextureProgram @JvmOverloads constructor(
         // Copy the modelViewProjectionMatrix over.
         GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle.value, 1, false,
                 modelViewProjectionMatrix, 0)
-        Egl.checkGlError("glUniformMatrix4fv")
+        Egloo.checkGlError("glUniformMatrix4fv")
 
         // Copy the texture transformation matrix over.
         GLES20.glUniformMatrix4fv(textureTransformHandle.value, 1, false,
                 textureTransform, 0)
-        Egl.checkGlError("glUniformMatrix4fv")
+        Egloo.checkGlError("glUniformMatrix4fv")
 
         // Enable the "aPosition" vertex attribute.
         // Connect vertexBuffer to "aPosition".
         GLES20.glEnableVertexAttribArray(vertexPositionHandle.value)
-        Egl.checkGlError("glEnableVertexAttribArray")
+        Egloo.checkGlError("glEnableVertexAttribArray")
         GLES20.glVertexAttribPointer(vertexPositionHandle.value, drawable.coordsPerVertex,
                 GLES20.GL_FLOAT, false, drawable.vertexStride, drawable.vertexArray)
-        Egl.checkGlError("glVertexAttribPointer")
+        Egloo.checkGlError("glVertexAttribPointer")
 
         // Enable the "aTextureCoord" vertex attribute.
         // Connect texBuffer to "aTextureCoord".
         GLES20.glEnableVertexAttribArray(textureCoordsHandle.value)
-        Egl.checkGlError("glEnableVertexAttribArray")
+        Egloo.checkGlError("glEnableVertexAttribArray")
         GLES20.glVertexAttribPointer(textureCoordsHandle.value, 2, GLES20.GL_FLOAT,
                 false, COORDINATES_STRIDE, FULL_COORDINATES)
-        Egl.checkGlError("glVertexAttribPointer")
+        Egloo.checkGlError("glVertexAttribPointer")
     }
 
-    override fun onPostDraw(drawable: EglDrawable) {
+    override fun onPostDraw(drawable: GlDrawable) {
         super.onPostDraw(drawable)
         GLES20.glDisableVertexAttribArray(vertexPositionHandle.value)
         GLES20.glDisableVertexAttribArray(textureCoordsHandle.value)
@@ -85,7 +85,7 @@ open class EglTextureProgram @JvmOverloads constructor(
 
     companion object {
         @Suppress("unused")
-        internal val TAG = EglTextureProgram::class.java.simpleName
+        internal val TAG = GlTextureProgram::class.java.simpleName
 
         // Texture coordinates in GL go from 0 to 1 on both axes.
         private val FULL_COORDINATES = floatBufferOf(
@@ -95,7 +95,7 @@ open class EglTextureProgram @JvmOverloads constructor(
                 1.0f, 1.0f  // top right
         )
 
-        private const val COORDINATES_STRIDE = 2 * Egl.SIZE_OF_FLOAT
+        private const val COORDINATES_STRIDE = 2 * Egloo.SIZE_OF_FLOAT
 
         private const val SIMPLE_VERTEX_SHADER =
                 "" +
