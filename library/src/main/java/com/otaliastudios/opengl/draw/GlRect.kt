@@ -8,7 +8,7 @@ import java.lang.IllegalArgumentException
 import java.nio.FloatBuffer
 
 @Suppress("unused")
-open class GlRect: GlDrawable() {
+open class GlRect: Gl2dDrawable() {
 
     companion object {
         // A full square, extending from -1 to +1 in both dimensions.
@@ -19,8 +19,6 @@ open class GlRect: GlDrawable() {
                 -1.0f, 1.0f,  // top left
                 1.0f, 1.0f)   // top right
     }
-
-    override val coordsPerVertex = 2
 
     override var vertexArray: FloatBuffer = FULL_RECTANGLE_COORDS
 
