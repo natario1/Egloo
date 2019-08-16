@@ -7,19 +7,11 @@ even for people that do not have any OpenGL experience.
 
 Approaching OpenGL from Android can be hard because of the deep differences in the OpenGL API design
 with respect to a typical object-oriented context. Egloo tries to take some of these difficulties away
-by creating a layer of abstraction around EGL and GLES calls.
-
-However, this layer is pretty thin - OpenGL is just under the surface, which is important for having
-the flexibility to perform more complex operations.
+by creating a **thin** layer of abstraction around EGL and GLES calls.
 
 ```groovy
 implementation 'com.otaliastudios.opengl:egloo:0.2.0'
 ```
-
-You can take a look at the demo app or see Egloo in action in more popular projects:
-
-- in a zoomable Surface in the [ZoomLayout](https://github.com/natario1/ZoomLayout) library
-- for transcoding videos in the [Transcoder](https://github.com/natario1/Transcoder) library
 
 &#10240;  <!-- Hack to add whitespace -->
 
@@ -28,6 +20,11 @@ You can take a look at the demo app or see Egloo in action in more popular proje
 </p>
 
 &#10240;  <!-- Hack to add whitespace -->
+
+You can take a look at the demo app or see Egloo in action in more popular projects:
+
+- in a zoomable Surface in the [ZoomLayout](https://github.com/natario1/ZoomLayout) library
+- for transcoding videos in the [Transcoder](https://github.com/natario1/Transcoder) library
 
 ## Features
 
