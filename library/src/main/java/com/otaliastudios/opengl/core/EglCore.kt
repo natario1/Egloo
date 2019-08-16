@@ -15,7 +15,7 @@ import android.view.Surface
  * @param sharedContext The context to share, or null if sharing is not desired.
  * @param flags Configuration bit flags, e.g. FLAG_RECORDABLE.
  */
-class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) {
+class EglCore @JvmOverloads constructor(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) {
 
     private var eglDisplay: EGLDisplay? = EGL14.EGL_NO_DISPLAY
     private var eglContext = EGL14.EGL_NO_CONTEXT
@@ -43,7 +43,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
                 val attributes = intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 3, EGL14.EGL_NONE)
                 val context = EGL14.eglCreateContext(eglDisplay, config, sharedContext, attributes, 0)
                 try {
-                    Egl.checkEglError("eglCreateContext (3)")
+                    Egloo.checkEglError("eglCreateContext (3)")
                     eglConfig = config
                     eglContext = context
                     glVersion = 3
@@ -60,7 +60,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
             if (config != null) {
                 val attributes = intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE)
                 val context = EGL14.eglCreateContext(eglDisplay, config, sharedContext, attributes, 0)
-                Egl.checkEglError("eglCreateContext (2)")
+                Egloo.checkEglError("eglCreateContext (2)")
                 eglConfig = config
                 eglContext = context
                 glVersion = 2
@@ -124,7 +124,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
         // Create a window surface, and attach it to the Surface we received.
         val surfaceAttribs = intArrayOf(EGL14.EGL_NONE)
         val eglSurface = EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, surface, surfaceAttribs, 0)
-        Egl.checkEglError("eglCreateWindowSurface")
+        Egloo.checkEglError("eglCreateWindowSurface")
         if (eglSurface == null) throw RuntimeException("surface was null")
         return eglSurface
     }
@@ -135,7 +135,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
     internal fun createOffscreenSurface(width: Int, height: Int): EGLSurface {
         val surfaceAttribs = intArrayOf(EGL14.EGL_WIDTH, width, EGL14.EGL_HEIGHT, height, EGL14.EGL_NONE)
         val eglSurface = EGL14.eglCreatePbufferSurface(eglDisplay, eglConfig, surfaceAttribs, 0)
-        Egl.checkEglError("eglCreatePbufferSurface")
+        Egloo.checkEglError("eglCreatePbufferSurface")
         if (eglSurface == null) throw RuntimeException("surface was null")
         return eglSurface
     }

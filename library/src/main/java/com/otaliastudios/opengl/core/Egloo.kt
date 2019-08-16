@@ -10,7 +10,7 @@ import com.otaliastudios.opengl.extensions.makeIdentity
 /**
  * Contains static utilities for EGL and GLES.
  */
-object Egl {
+object Egloo {
 
     const val SIZE_OF_FLOAT = 4
 
@@ -30,7 +30,7 @@ object Egl {
         val error = GLES20.glGetError()
         if (error != GLES20.GL_NO_ERROR) {
             val message = "Error during $opName: glError 0x${Integer.toHexString(error)}: ${GLU.gluErrorString(error)}"
-            Log.e("Egl", message)
+            Log.e("Egloo", message)
             throw RuntimeException(message)
         }
     }
@@ -43,7 +43,7 @@ object Egl {
         val error = EGL14.eglGetError()
         if (error != EGL14.EGL_SUCCESS) {
             val message = "Error during $opName: EGL error 0x${Integer.toHexString(error)}"
-            Log.e("Egl", message)
+            Log.e("Egloo", message)
             throw RuntimeException(message)
         }
     }
@@ -55,7 +55,7 @@ object Egl {
     fun checkGlProgramLocation(location: Int, label: String) {
         if (location < 0) {
             val message = "Unable to locate $label in program"
-            Log.e("Egl", message)
+            Log.e("Egloo", message)
             throw RuntimeException(message)
         }
     }
@@ -69,6 +69,6 @@ object Egl {
         val display = EGL14.eglGetCurrentDisplay()
         val context = EGL14.eglGetCurrentContext()
         val surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW)
-        Log.i("Egl", "Current EGL ($msg): display=$display, context=$context, surface=$surface")
+        Log.i("Egloo", "Current EGL ($msg): display=$display, context=$context, surface=$surface")
     }
 }

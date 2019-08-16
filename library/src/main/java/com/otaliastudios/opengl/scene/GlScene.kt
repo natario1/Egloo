@@ -1,44 +1,47 @@
 package com.otaliastudios.opengl.scene
 
 
+import android.opengl.GLES20
 import android.opengl.Matrix
-import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.draw.EglDrawable
-import com.otaliastudios.opengl.program.EglProgram
+import com.otaliastudios.opengl.core.Egloo
+import com.otaliastudios.opengl.draw.GlDrawable
+import com.otaliastudios.opengl.program.GlProgram
 
 /**
- * Scenes can be to draw [EglDrawable]s through [EglProgram]s.
+ * Scenes can be to draw [GlDrawable]s through [GlProgram]s.
  *
  * The advantage is that they contain information about the [projectionMatrix] and the [viewMatrix],
  * both of which can be accessed and modified and held by this single object.
  *
- * The [EglScene] object will combine these two with the drawables [EglDrawable.modelMatrix]
+ * The [GlScene] object will combine these two with the drawables [GlDrawable.modelMatrix]
  * and pass the resulting model-view-projection matrix to the program.
  */
 @Suppress("unused")
-open class EglScene {
+open class GlScene {
 
     @Suppress("MemberVisibilityCanBePrivate")
-    val projectionMatrix = Egl.IDENTITY_MATRIX.clone()
+    val projectionMatrix = Egloo.IDENTITY_MATRIX.clone()
 
     @Suppress("MemberVisibilityCanBePrivate")
-    val viewMatrix = Egl.IDENTITY_MATRIX.clone()
+    val viewMatrix = Egloo.IDENTITY_MATRIX.clone()
 
     private val modelViewMatrix = FloatArray(16)
     private val modelViewProjectionMatrix = FloatArray(16)
 
-    private fun computeModelViewProjectionMatrix(drawable: EglDrawable) {
+    private val viewportArray = IntArray(4)
+
+    private fun computeModelViewProjectionMatrix(drawable: GlDrawable) {
         Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix,0, drawable.modelMatrix, 0)
         Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0)
     }
 
-    fun draw(program: EglProgram, drawable: EglDrawable) {
+    fun draw(program: GlProgram, drawable: GlDrawable) {
         computeModelViewProjectionMatrix(drawable)
         program.draw(drawable, modelViewProjectionMatrix)
     }
 
     companion object {
         @Suppress("unused")
-        internal val TAG = EglScene::class.java.simpleName
+        internal val TAG = GlScene::class.java.simpleName
     }
 }

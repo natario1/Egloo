@@ -4,15 +4,15 @@ package com.otaliastudios.opengl.program
 import android.graphics.Color
 import android.opengl.GLES20
 import androidx.annotation.ColorInt
-import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.draw.EglDrawable
+import com.otaliastudios.opengl.core.Egloo
+import com.otaliastudios.opengl.draw.GlDrawable
 
 /**
- * An [EglProgram] that uses basic flat-shading rendering,
+ * An [GlProgram] that uses basic flat-shading rendering,
  * based on FlatShadedProgram from grafika.
  */
 @Suppress("unused")
-open class EglFlatProgram : EglProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
+open class GlFlatProgram : GlProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
 
     private val vertexPositionHandle = getAttribHandle("aPosition")
     private val vertexMvpMatrixHandle = getUniformHandle("uMVPMatrix")
@@ -30,36 +30,36 @@ open class EglFlatProgram : EglProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
     @Suppress("MemberVisibilityCanBePrivate")
     var color: FloatArray = floatArrayOf(1F, 1F, 1F, 1F)
 
-    override fun onPreDraw(drawable: EglDrawable, modelViewProjectionMatrix: FloatArray) {
+    override fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
 
         // Copy the modelViewProjectionMatrix over.
         GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle.value, 1, false,
                 modelViewProjectionMatrix, 0)
-        Egl.checkGlError("glUniformMatrix4fv")
+        Egloo.checkGlError("glUniformMatrix4fv")
 
         // Copy the color vector in.
         GLES20.glUniform4fv(fragmentColorHandle.value, 1, color, 0)
-        Egl.checkGlError("glUniform4fv")
+        Egloo.checkGlError("glUniform4fv")
 
         // Enable the "aPosition" vertex attribute.
         GLES20.glEnableVertexAttribArray(vertexPositionHandle.value)
-        Egl.checkGlError("glEnableVertexAttribArray")
+        Egloo.checkGlError("glEnableVertexAttribArray")
 
         // Connect vertexBuffer to "aPosition".
         GLES20.glVertexAttribPointer(vertexPositionHandle.value, drawable.coordsPerVertex,
                 GLES20.GL_FLOAT, false, drawable.vertexStride, drawable.vertexArray)
-        Egl.checkGlError("glVertexAttribPointer")
+        Egloo.checkGlError("glVertexAttribPointer")
     }
 
-    override fun onPostDraw(drawable: EglDrawable) {
+    override fun onPostDraw(drawable: GlDrawable) {
         super.onPostDraw(drawable)
         GLES20.glDisableVertexAttribArray(vertexPositionHandle.value)
     }
 
     companion object {
         @Suppress("unused")
-        internal val TAG = EglFlatProgram::class.java.simpleName
+        internal val TAG = GlFlatProgram::class.java.simpleName
 
         private const val VERTEX_SHADER =
                 "" +

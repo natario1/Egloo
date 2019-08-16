@@ -2,24 +2,24 @@ package com.otaliastudios.opengl.program
 
 
 import android.opengl.GLES20
-import com.otaliastudios.opengl.core.Egl
-import com.otaliastudios.opengl.draw.EglDrawable
+import com.otaliastudios.opengl.core.Egloo
+import com.otaliastudios.opengl.draw.GlDrawable
 
 /**
  * Base class for a program that accepts a vertex and a fragment shader in the constructor.
  * The program will be created automatically and released when [release] is called.
  *
  * Subclasses are required to do two things - typically, during the [onPreDraw] callback:
- * 1 Inspect the [EglDrawable] properties:
- *   - [EglDrawable.vertexArray]
- *   - [EglDrawable.coordsPerVertex]
- *   - [EglDrawable.vertexStride]
+ * 1 Inspect the [GlDrawable] properties:
+ *   - [GlDrawable.vertexArray]
+ *   - [GlDrawable.coordsPerVertex]
+ *   - [GlDrawable.vertexStride]
  *   These should be passed to the vertex shader.
  * 2 Pass the MVP matrix to the vertex shader as well.
  *
  * The vertex shader should then use the two to compute the gl_Position.
  */
-abstract class EglProgram(
+abstract class GlProgram(
         @Suppress("MemberVisibilityCanBePrivate") val vertexShader: String,
         @Suppress("MemberVisibilityCanBePrivate") val fragmentShader: String
 ) {
@@ -35,14 +35,14 @@ abstract class EglProgram(
         if (vertexShader == 0) throw RuntimeException("Could not load vertex shader")
 
         val program = GLES20.glCreateProgram()
-        Egl.checkGlError("glCreateProgram")
+        Egloo.checkGlError("glCreateProgram")
         if (program == 0) {
             throw RuntimeException("Could not create program")
         }
         GLES20.glAttachShader(program, vertexShader)
-        Egl.checkGlError("glAttachShader")
+        Egloo.checkGlError("glAttachShader")
         GLES20.glAttachShader(program, pixelShader)
-        Egl.checkGlError("glAttachShader")
+        Egloo.checkGlError("glAttachShader")
         GLES20.glLinkProgram(program)
         val linkStatus = IntArray(1)
         GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0)
@@ -63,40 +63,40 @@ abstract class EglProgram(
     }
 
     @JvmOverloads
-    fun draw(drawable: EglDrawable,
+    fun draw(drawable: GlDrawable,
              modelViewProjectionMatrix: FloatArray = drawable.modelMatrix) {
-        Egl.checkGlError("draw start")
+        Egloo.checkGlError("draw start")
         GLES20.glUseProgram(handle)
-        Egl.checkGlError("glUseProgram")
+        Egloo.checkGlError("glUseProgram")
 
         onPreDraw(drawable, modelViewProjectionMatrix)
         onDraw(drawable)
         onPostDraw(drawable)
 
         GLES20.glUseProgram(0)
-        Egl.checkGlError("draw end")
+        Egloo.checkGlError("draw end")
     }
 
-    protected open fun onPreDraw(drawable: EglDrawable, modelViewProjectionMatrix: FloatArray) {}
+    protected open fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {}
 
-    protected open fun onDraw(drawable: EglDrawable) {
+    protected open fun onDraw(drawable: GlDrawable) {
         drawable.draw()
     }
 
-    protected open fun onPostDraw(drawable: EglDrawable) {}
+    protected open fun onPostDraw(drawable: GlDrawable) {}
 
-    protected fun getAttribHandle(name: String) = EglHandle.getAttrib(handle, name)
+    protected fun getAttribHandle(name: String) = GlHandle.getAttrib(handle, name)
 
-    protected fun getUniformHandle(name: String) = EglHandle.getUniform(handle, name)
+    protected fun getUniformHandle(name: String) = GlHandle.getUniform(handle, name)
 
     companion object {
         @Suppress("unused")
-        internal val TAG = EglProgram::class.java.simpleName
+        internal val TAG = GlProgram::class.java.simpleName
 
         // Compiles the given shader, returns a handle.
         private fun loadShader(shaderType: Int, source: String): Int {
             val shader = GLES20.glCreateShader(shaderType)
-            Egl.checkGlError("glCreateShader type=$shaderType")
+            Egloo.checkGlError("glCreateShader type=$shaderType")
             GLES20.glShaderSource(shader, source)
             GLES20.glCompileShader(shader)
             val compiled = IntArray(1)

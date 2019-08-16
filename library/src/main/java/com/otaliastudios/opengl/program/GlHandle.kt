@@ -1,12 +1,12 @@
 package com.otaliastudios.opengl.program
 
 import android.opengl.GLES20
-import com.otaliastudios.opengl.core.Egl
+import com.otaliastudios.opengl.core.Egloo
 
 /**
  * A simple helper class for holding handles to program variables.
  */
-class EglHandle private constructor(
+class GlHandle private constructor(
         program: Int,
         type: Type,
         @Suppress("CanBeParameter") val name: String
@@ -20,11 +20,11 @@ class EglHandle private constructor(
             Type.ATTRIB -> GLES20.glGetAttribLocation(program, name)
             Type.UNIFORM -> GLES20.glGetUniformLocation(program, name)
         }
-        Egl.checkGlProgramLocation(value, name)
+        Egloo.checkGlProgramLocation(value, name)
     }
 
     companion object {
-        fun getAttrib(program: Int, name: String) = EglHandle(program, Type.ATTRIB, name)
-        fun getUniform(program: Int, name: String) = EglHandle(program, Type.UNIFORM, name)
+        fun getAttrib(program: Int, name: String) = GlHandle(program, Type.ATTRIB, name)
+        fun getUniform(program: Int, name: String) = GlHandle(program, Type.UNIFORM, name)
     }
 }

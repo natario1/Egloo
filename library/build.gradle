@@ -5,11 +5,11 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 ext {
-    libVersion = '0.1.1'
+    libVersion = '0.2.0'
     libGroup = 'com.otaliastudios.opengl'
-    libName = 'EglCore'
-    libDescription = 'Utilities for EGL / OpenGL drawing on Android, written in Kotlin and based on Google\'s Grafika.'
-    libArtifactId = 'egl-core'
+    libName = 'Egloo'
+    libDescription = 'Simple and lightweight OpenGL ES drawing and EGL management for Android, with object-oriented components based on Google\'s Grafika.'
+    libArtifactId = 'egloo'
     githubUrl = "https://github.com/natario1/${libName}"
     githubGit = "https://github.com/natario1/${libName}.git"
     libLicenseName = 'MIT License'
