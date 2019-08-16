@@ -1,12 +1,9 @@
 package com.otaliastudios.opengl.core
 
-import android.annotation.TargetApi
 import android.opengl.EGL14
 import android.opengl.EGLExt
 import android.opengl.GLSurfaceView
-import android.os.Build
 import android.util.Log
-import androidx.annotation.RequiresApi
 import javax.microedition.khronos.egl.EGL10
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.egl.EGLDisplay
@@ -20,9 +17,11 @@ object EglConfigChooser {
     private val TAG = EglConfigChooser::class.java.simpleName
     private const val EGL_RECORDABLE_ANDROID = 0x3142 // Android-specific extension.
 
+    @Suppress("unused")
     @JvmField
     val GLES2: GLSurfaceView.EGLConfigChooser = Chooser(2)
 
+    @Suppress("unused")
     @JvmField
     val GLES3: GLSurfaceView.EGLConfigChooser = Chooser(3)
 
@@ -63,6 +62,8 @@ object EglConfigChooser {
                 EGL14.EGL_GREEN_SIZE, 8,
                 EGL14.EGL_BLUE_SIZE, 8,
                 EGL14.EGL_ALPHA_SIZE, 8,
+                // We can create both window surfaces and pbuffer surfaces.
+                EGL14.EGL_SURFACE_TYPE, EGL14.EGL_WINDOW_BIT or EGL14.EGL_PBUFFER_BIT,
                 EGL14.EGL_RENDERABLE_TYPE, renderableType,
                 if (recordable) EGL_RECORDABLE_ANDROID else EGL14.EGL_NONE,
                 if (recordable) 1 else 0,

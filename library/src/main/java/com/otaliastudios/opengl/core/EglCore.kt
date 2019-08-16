@@ -1,13 +1,10 @@
 package com.otaliastudios.opengl.core
 
 
-import android.annotation.TargetApi
 import android.graphics.SurfaceTexture
 import android.opengl.*
-import android.os.Build
 import android.util.Log
 import android.view.Surface
-import androidx.annotation.RequiresApi
 
 
 /**
@@ -20,10 +17,10 @@ import androidx.annotation.RequiresApi
  */
 class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) {
 
-    internal var eglDisplay: EGLDisplay? = EGL14.EGL_NO_DISPLAY
-    internal var eglContext = EGL14.EGL_NO_CONTEXT
-    internal var eglConfig: EGLConfig? = null
-    internal var glVersion = -1 // 2 or 3
+    private var eglDisplay: EGLDisplay? = EGL14.EGL_NO_DISPLAY
+    private var eglContext = EGL14.EGL_NO_CONTEXT
+    private var eglConfig: EGLConfig? = null
+    private var glVersion = -1 // 2 or 3
 
     init {
         eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY)
@@ -46,7 +43,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
                 val attributes = intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 3, EGL14.EGL_NONE)
                 val context = EGL14.eglCreateContext(eglDisplay, config, sharedContext, attributes, 0)
                 try {
-                    Egl.checkEgl("eglCreateContext (3)")
+                    Egl.checkEglError("eglCreateContext (3)")
                     eglConfig = config
                     eglContext = context
                     glVersion = 3
@@ -63,7 +60,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
             if (config != null) {
                 val attributes = intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE)
                 val context = EGL14.eglCreateContext(eglDisplay, config, sharedContext, attributes, 0)
-                Egl.checkEgl("eglCreateContext (2)")
+                Egl.checkEglError("eglCreateContext (2)")
                 eglConfig = config
                 eglContext = context
                 glVersion = 2
@@ -74,18 +71,12 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
     }
 
     /**
-     * Queries a string value.
-     */
-    fun queryString(what: Int): String {
-        return EGL14.eglQueryString(eglDisplay, what)
-    }
-
-    /**
      * Discards all resources held by this class, notably the EGL context.  This must be
      * called from the thread where the context was created.
      *
      * On completion, no context will be current.
      */
+    @Suppress("MemberVisibilityCanBePrivate")
     fun release() {
         if (eglDisplay !== EGL14.EGL_NO_DISPLAY) {
             // Android is unusual in that it uses a reference-counted EGLDisplay.  So for
@@ -133,7 +124,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
         // Create a window surface, and attach it to the Surface we received.
         val surfaceAttribs = intArrayOf(EGL14.EGL_NONE)
         val eglSurface = EGL14.eglCreateWindowSurface(eglDisplay, eglConfig, surface, surfaceAttribs, 0)
-        Egl.checkEgl("eglCreateWindowSurface")
+        Egl.checkEglError("eglCreateWindowSurface")
         if (eglSurface == null) throw RuntimeException("surface was null")
         return eglSurface
     }
@@ -144,7 +135,7 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
     internal fun createOffscreenSurface(width: Int, height: Int): EGLSurface {
         val surfaceAttribs = intArrayOf(EGL14.EGL_WIDTH, width, EGL14.EGL_HEIGHT, height, EGL14.EGL_NONE)
         val eglSurface = EGL14.eglCreatePbufferSurface(eglDisplay, eglConfig, surfaceAttribs, 0)
-        Egl.checkEgl("eglCreatePbufferSurface")
+        Egl.checkEglError("eglCreatePbufferSurface")
         if (eglSurface == null) throw RuntimeException("surface was null")
         return eglSurface
     }
@@ -197,7 +188,8 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
      * Returns true if our context and the specified surface are current.
      */
     internal fun isSurfaceCurrent(eglSurface: EGLSurface): Boolean {
-        return eglContext == EGL14.eglGetCurrentContext() && eglSurface == EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW)
+        return eglContext == EGL14.eglGetCurrentContext()
+                && eglSurface == EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW)
     }
 
     /**
@@ -207,6 +199,14 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
         val value = IntArray(1)
         EGL14.eglQuerySurface(eglDisplay, eglSurface, what, value, 0)
         return value[0]
+    }
+
+    /**
+     * Queries a string value.
+     */
+    @Suppress("unused")
+    fun queryString(what: Int): String {
+        return EGL14.eglQueryString(eglDisplay, what)
     }
 
     companion object {
@@ -224,16 +224,5 @@ class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) 
          * flag, GLES2 is used.
          */
         const val FLAG_TRY_GLES3 = 0x02
-
-        /**
-         * Writes the current display, context, and surface to the log.
-         */
-        @JvmStatic
-        fun logCurrent(msg: String) {
-            val display = EGL14.eglGetCurrentDisplay()
-            val context = EGL14.eglGetCurrentContext()
-            val surface = EGL14.eglGetCurrentSurface(EGL14.EGL_DRAW)
-            Log.i(TAG, "Current EGL ($msg): display=$display, context=$context, surface=$surface)")
-        }
     }
 }

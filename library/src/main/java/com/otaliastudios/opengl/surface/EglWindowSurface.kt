@@ -2,16 +2,15 @@ package com.otaliastudios.opengl.surface
 
 
 import android.graphics.SurfaceTexture
-import android.os.Build
 import android.view.Surface
-import androidx.annotation.RequiresApi
 import com.otaliastudios.opengl.core.EglCore
 
 
 /**
  * Recordable EGL window surface.
- * It's good practice to explicitly release() the surface, preferably from a "finally" block.
+ * It's good practice to explicitly release() the surface, preferably from a finally block.
  */
+@Suppress("unused")
 open class EglWindowSurface : EglSurface {
     private var surface: Surface? = null
     private var releaseSurface = false
@@ -22,8 +21,10 @@ open class EglWindowSurface : EglSurface {
      * manage the Surface themselves (e.g. if you release a SurfaceView's Surface, the
      * surfaceDestroyed() callback won't fire).
      */
+    @Suppress("unused")
     @JvmOverloads
-    internal constructor(eglCore: EglCore, surface: Surface, releaseSurface: Boolean = false) : super(eglCore, surface) {
+    constructor(eglCore: EglCore, surface: Surface, releaseSurface: Boolean = false)
+            : super(eglCore, eglCore.createWindowSurface(surface)) {
         this.surface = surface
         this.releaseSurface = releaseSurface
     }
@@ -31,20 +32,22 @@ open class EglWindowSurface : EglSurface {
     /**
      * Associates an EGL surface with the SurfaceTexture.
      */
-    internal constructor(eglCore: EglCore, surfaceTexture: SurfaceTexture) : super(eglCore, surfaceTexture)
+    @Suppress("unused")
+    constructor(eglCore: EglCore, surfaceTexture: SurfaceTexture)
+            : super(eglCore, eglCore.createWindowSurface(surfaceTexture))
 
     /**
-     * Calls eglSwapBuffers.  Use this to "publish" the current frame.
+     * Calls eglSwapBuffers. Use this to "publish" the current frame.
      * Returns false on failure.
-     * This is here because I *think* it makes no sense for offscreen surfaces.
      */
+    @Suppress("unused")
     fun swapBuffers(): Boolean {
+        // This makes no sense for offscreen surfaces
         return eglCore.swapSurfaceBuffers(eglSurface)
     }
 
     /**
-     * Releases any resources associated with the EGL surface (and, if configured to do so,
-     * with the Surface as well).
+     * Releases any resources associated with the EGL surface.
      * Does not require that the surface's EGL context be current.
      */
     override fun release() {
@@ -54,25 +57,4 @@ open class EglWindowSurface : EglSurface {
             surface = null
         }
     }
-
-    /**
-     * Recreate the EGLSurface, using the new EglCore. The caller should have already
-     * freed the old EGLSurface with release().
-     *
-     * This is useful when we want to update the EGLSurface associated with a Surface.
-     * For example, if we want to share with a different EGLContext, which can only
-     * be done by tearing down and recreating the context.  (That's handled by the caller;
-     * this just creates a new EGLSurface for the Surface we were handed earlier.)
-     *
-     * If the previous EGLSurface isn't fully destroyed, e.g. it's still current on a
-     * context somewhere, the create call will fail with complaints from the Surface
-     * about already being connected.
-     *
-     * REMOVING - doesn't seem so useful outside of grafika experiments
-     */
-    /* fun recreate(newEglCore: EglCore) {
-        if (surface == null) throw RuntimeException("not implemented for SurfaceTexture")
-        eglCore = newEglCore // switch to new context
-        eglSurface = eglCore.createWindowSurface(surface!!)
-    } */
 }
