@@ -15,7 +15,10 @@ import com.otaliastudios.opengl.core.EglCore
 import com.otaliastudios.opengl.draw.GlCircle
 import com.otaliastudios.opengl.draw.GlRect
 import com.otaliastudios.opengl.draw.GlTriangle
+import com.otaliastudios.opengl.extensions.clear
 import com.otaliastudios.opengl.extensions.makeIdentity
+import com.otaliastudios.opengl.extensions.scaleX
+import com.otaliastudios.opengl.extensions.scaleY
 import com.otaliastudios.opengl.program.GlFlatProgram
 import com.otaliastudios.opengl.scene.GlScene
 import com.otaliastudios.opengl.surface.EglWindowSurface
@@ -60,16 +63,13 @@ class MainActivity : AppCompatActivity() {
                 GLES20.glViewport(0, 0, width, height)
                 // Triangle and circle are exact drawables. For them, the -1...1 range should be
                 // square. TODO find better APIs. Drawables could read glViewport at read time.
-                var xScale = 1F; var yScale = 1F
                 if (width > height) {
-                    xScale = height.toFloat() / width
+                    circle.modelMatrix.clear().scaleX(height.toFloat() / width)
+                    triangle.modelMatrix.clear().scaleX(height.toFloat() / width)
                 } else if (width < height) {
-                    yScale = width.toFloat() / height
+                    circle.modelMatrix.clear().scaleY(width.toFloat() / height)
+                    triangle.modelMatrix.clear().scaleY(width.toFloat() / height)
                 }
-                circle.modelMatrix.makeIdentity()
-                triangle.modelMatrix.makeIdentity()
-                Matrix.scaleM(circle.modelMatrix, 0, xScale, yScale, 1F);
-                Matrix.scaleM(triangle.modelMatrix, 0, xScale, yScale, 1F);
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder?) {
