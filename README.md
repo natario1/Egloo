@@ -8,7 +8,7 @@ Most of the ideas here were taken from the invaluable [Google's Grafika](https:/
 but refactored to follow a more object-oriented interface and rewritten in Kotlin.
 
 ```groovy
-implementation 'com.otaliastudios.opengl:egl-core:0.1.1'
+implementation 'com.otaliastudios.opengl:egloo:0.1.1'
 ```
 
 You can take a look at the demo app or see this in action in more popular projects:
