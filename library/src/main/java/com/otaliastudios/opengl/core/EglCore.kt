@@ -15,7 +15,7 @@ import android.view.Surface
  * @param sharedContext The context to share, or null if sharing is not desired.
  * @param flags Configuration bit flags, e.g. FLAG_RECORDABLE.
  */
-class EglCore(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) {
+class EglCore @JvmOverloads constructor(sharedContext: EGLContext = EGL14.EGL_NO_CONTEXT, flags: Int = 0) {
 
     private var eglDisplay: EGLDisplay? = EGL14.EGL_NO_DISPLAY
     private var eglContext = EGL14.EGL_NO_CONTEXT
