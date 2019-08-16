@@ -1,6 +1,7 @@
 package com.otaliastudios.opengl.scene
 
 
+import android.opengl.GLES20
 import android.opengl.Matrix
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.draw.GlDrawable
@@ -26,6 +27,8 @@ open class GlScene {
 
     private val modelViewMatrix = FloatArray(16)
     private val modelViewProjectionMatrix = FloatArray(16)
+
+    private val viewportArray = IntArray(4)
 
     private fun computeModelViewProjectionMatrix(drawable: GlDrawable) {
         Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix,0, drawable.modelMatrix, 0)

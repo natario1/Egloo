@@ -5,11 +5,6 @@ import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.program.GlProgram
 import java.nio.FloatBuffer
 
-// TODO: GlPoint
-// TODO: GlCircle
-// TODO: Gl3dRect
-// TODO: Gl3dPoint
-// TODO: Gl3dCircle
 abstract class GlDrawable {
 
     /**

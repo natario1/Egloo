@@ -24,3 +24,10 @@ fun FloatArray.toBuffer(): FloatBuffer {
 fun floatBufferOf(vararg elements: Float): FloatBuffer {
     return floatArrayOf(*elements).toBuffer()
 }
+
+fun floatBufferOf(size: Int): FloatBuffer {
+    return ByteBuffer
+            .allocateDirect(size * 4)
+            .order(ByteOrder.nativeOrder())
+            .asFloatBuffer()
+}
