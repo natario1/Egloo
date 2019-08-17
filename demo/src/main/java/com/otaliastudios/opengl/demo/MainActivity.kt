@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
     private val rect = GlRect()
     private val triangle = GlTriangle()
     private val circle = GlCircle()
-    private val square = GlSquare()
 
     private val rectF = RectF()
 
@@ -113,9 +112,6 @@ class MainActivity : AppCompatActivity() {
         flatProgram!!.setColor(Color.rgb(180, 30, 30))
         circle.radius = floatValue(0.15F, 0F)
         scene.draw(flatProgram!!, circle)
-
-        flatProgram!!.setColor(Color.WHITE)
-        scene.draw(flatProgram!!, square)
 
         // Publish.
         eglSurface!!.swapBuffers()
