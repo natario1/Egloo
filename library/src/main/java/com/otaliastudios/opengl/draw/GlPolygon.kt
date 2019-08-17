@@ -43,14 +43,14 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
         set(value) {
             field = value
             updateArray()
-            // onViewportSizeChanged()
+            onViewportSizeChanged()
         }
 
     var centerY = 0F
         set(value) {
             field = value
             updateArray()
-            // onViewportSizeChanged()
+            onViewportSizeChanged()
         }
 
     override var vertexArray = floatBufferOf((sides + 2) * coordsPerVertex)

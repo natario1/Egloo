@@ -13,6 +13,7 @@ import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.otaliastudios.opengl.core.EglCore
 import com.otaliastudios.opengl.draw.GlCircle
 import com.otaliastudios.opengl.draw.GlRect
+import com.otaliastudios.opengl.draw.GlSquare
 import com.otaliastudios.opengl.draw.GlTriangle
 import com.otaliastudios.opengl.program.GlFlatProgram
 import com.otaliastudios.opengl.scene.GlScene
@@ -30,6 +31,7 @@ class MainActivity : AppCompatActivity() {
     private val rect = GlRect()
     private val triangle = GlTriangle()
     private val circle = GlCircle()
+    private val square = GlSquare()
 
     private val rectF = RectF()
 
@@ -111,6 +113,9 @@ class MainActivity : AppCompatActivity() {
         flatProgram!!.setColor(Color.rgb(180, 30, 30))
         circle.radius = floatValue(0.15F, 0F)
         scene.draw(flatProgram!!, circle)
+
+        flatProgram!!.setColor(Color.WHITE)
+        scene.draw(flatProgram!!, square)
 
         // Publish.
         eglSurface!!.swapBuffers()
