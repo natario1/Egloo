@@ -6,6 +6,7 @@ import android.opengl.Matrix
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.draw.GlDrawable
 import com.otaliastudios.opengl.program.GlProgram
+import com.otaliastudios.opengl.viewport.GlViewportAware
 
 /**
  * Scenes can be to draw [GlDrawable]s through [GlProgram]s.
@@ -17,7 +18,7 @@ import com.otaliastudios.opengl.program.GlProgram
  * and pass the resulting model-view-projection matrix to the program.
  */
 @Suppress("unused")
-open class GlScene {
+open class GlScene : GlViewportAware() {
 
     @Suppress("MemberVisibilityCanBePrivate")
     val projectionMatrix = Egloo.IDENTITY_MATRIX.clone()
@@ -28,14 +29,15 @@ open class GlScene {
     private val modelViewMatrix = FloatArray(16)
     private val modelViewProjectionMatrix = FloatArray(16)
 
-    private val viewportArray = IntArray(4)
-
     private fun computeModelViewProjectionMatrix(drawable: GlDrawable) {
         Matrix.multiplyMM(modelViewMatrix, 0, viewMatrix,0, drawable.modelMatrix, 0)
         Matrix.multiplyMM(modelViewProjectionMatrix, 0, projectionMatrix, 0, modelViewMatrix, 0)
     }
 
     fun draw(program: GlProgram, drawable: GlDrawable) {
+        ensureViewportSize()
+        drawable.setViewportSize(viewportWidth, viewportHeight)
+
         computeModelViewProjectionMatrix(drawable)
         program.draw(drawable, modelViewProjectionMatrix)
     }

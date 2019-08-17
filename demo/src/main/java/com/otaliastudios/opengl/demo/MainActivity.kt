@@ -4,7 +4,6 @@ import android.animation.ValueAnimator
 import android.graphics.Color
 import android.graphics.RectF
 import android.opengl.GLES20
-import android.opengl.Matrix
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -15,10 +14,6 @@ import com.otaliastudios.opengl.core.EglCore
 import com.otaliastudios.opengl.draw.GlCircle
 import com.otaliastudios.opengl.draw.GlRect
 import com.otaliastudios.opengl.draw.GlTriangle
-import com.otaliastudios.opengl.extensions.clear
-import com.otaliastudios.opengl.extensions.makeIdentity
-import com.otaliastudios.opengl.extensions.scaleX
-import com.otaliastudios.opengl.extensions.scaleY
 import com.otaliastudios.opengl.program.GlFlatProgram
 import com.otaliastudios.opengl.scene.GlScene
 import com.otaliastudios.opengl.surface.EglWindowSurface
@@ -61,15 +56,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
                 GLES20.glViewport(0, 0, width, height)
-                // Triangle and circle are exact drawables. For them, the -1...1 range should be
-                // square. TODO find better APIs. Drawables could read glViewport at read time.
-                if (width > height) {
-                    circle.modelMatrix.clear().scaleX(height.toFloat() / width)
-                    triangle.modelMatrix.clear().scaleX(height.toFloat() / width)
-                } else if (width < height) {
-                    circle.modelMatrix.clear().scaleY(width.toFloat() / height)
-                    triangle.modelMatrix.clear().scaleY(width.toFloat() / height)
-                }
+                scene.setViewportSize(width, height)
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder?) {
