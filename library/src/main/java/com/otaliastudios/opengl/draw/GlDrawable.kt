@@ -3,9 +3,10 @@ package com.otaliastudios.opengl.draw
 
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.program.GlProgram
+import com.otaliastudios.opengl.viewport.GlViewportAware
 import java.nio.FloatBuffer
 
-abstract class GlDrawable {
+abstract class GlDrawable : GlViewportAware() {
 
     /**
      * The model matrix for this object. Defaults to the
