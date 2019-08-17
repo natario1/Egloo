@@ -28,8 +28,8 @@ open class GlTextureProgram @JvmOverloads constructor(
         val textures = IntArray(1)
         GLES20.glGenTextures(1, textures, 0)
         Egloo.checkGlError("glGenTextures")
-
         textureId = textures[0]
+
         GLES20.glActiveTexture(textureUnit)
         GLES20.glBindTexture(textureTarget, textureId)
         Egloo.checkGlError("glBindTexture $textureId")
@@ -39,6 +39,9 @@ open class GlTextureProgram @JvmOverloads constructor(
         GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
         GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
         Egloo.checkGlError("glTexParameter")
+
+        GLES20.glBindTexture(textureTarget, 0)
+        GLES20.glActiveTexture(0)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -81,6 +84,7 @@ open class GlTextureProgram @JvmOverloads constructor(
         GLES20.glDisableVertexAttribArray(vertexPositionHandle.value)
         GLES20.glDisableVertexAttribArray(textureCoordsHandle.value)
         GLES20.glBindTexture(textureTarget, 0)
+        GLES20.glActiveTexture(0)
     }
 
     companion object {
