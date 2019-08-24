@@ -1,3 +1,9 @@
+### v0.2.3
+
+- Fix a bug with GlRect ([#6][6])
+
+https://github.com/natario1/Egloo/compare/v0.2.2...v0.2.3
+
 ### v0.2.2
 
 - Fix a bug with GlTextureProgram implementation ([#5][5])

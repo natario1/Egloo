@@ -13,14 +13,14 @@ open class GlRect: Gl2dDrawable() {
     companion object {
         // A full square, extending from -1 to +1 in both dimensions.
         // When the MVP matrix is identity, this will exactly cover the viewport.
-        private val FULL_RECTANGLE_COORDS = floatBufferOf(
+        private val FULL_RECTANGLE_COORDS = floatArrayOf(
                 -1.0f, -1.0f, // bottom left
                 1.0f, -1.0f,  // bottom right
                 -1.0f, 1.0f,  // top left
                 1.0f, 1.0f)   // top right
     }
 
-    override var vertexArray: FloatBuffer = FULL_RECTANGLE_COORDS
+    override var vertexArray: FloatBuffer = floatBufferOf(*FULL_RECTANGLE_COORDS.clone())
 
     @Suppress("unused")
     open fun setVertexArray(array: FloatArray) {
