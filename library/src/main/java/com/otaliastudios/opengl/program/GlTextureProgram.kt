@@ -41,7 +41,8 @@ open class GlTextureProgram @JvmOverloads constructor(
         Egloo.checkGlError("glTexParameter")
 
         GLES20.glBindTexture(textureTarget, 0)
-        GLES20.glActiveTexture(0)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+        Egloo.checkGlError("init end")
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
@@ -84,7 +85,8 @@ open class GlTextureProgram @JvmOverloads constructor(
         GLES20.glDisableVertexAttribArray(vertexPositionHandle.value)
         GLES20.glDisableVertexAttribArray(textureCoordsHandle.value)
         GLES20.glBindTexture(textureTarget, 0)
-        GLES20.glActiveTexture(0)
+        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
+        Egloo.checkGlError("onPostDraw end")
     }
 
     companion object {
