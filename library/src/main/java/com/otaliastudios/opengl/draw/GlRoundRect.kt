@@ -35,17 +35,17 @@ open class GlRoundRect : Gl2dDrawable() {
     }
 
     @Suppress("unused")
-    fun setCornersPx(@Px corners: Float) {
+    fun setCornersPx(@Px corners: Int) {
         setCornersPx(corners, corners, corners, corners)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun setCornersPx(@Px topLeft: Float, @Px topRight: Float, @Px bottomLeft: Float,
-                     @Px bottomRight: Float) {
-        topLeftCorner = topLeft
-        topRightCorner = topRight
-        bottomLeftCorner = bottomLeft
-        bottomRightCorner = bottomRight
+    fun setCornersPx(@Px topLeft: Int, @Px topRight: Int, @Px bottomLeft: Int,
+                     @Px bottomRight: Int) {
+        topLeftCorner = topLeft.toFloat()
+        topRightCorner = topRight.toFloat()
+        bottomLeftCorner = bottomLeft.toFloat()
+        bottomRightCorner = bottomRight.toFloat()
         recompute()
     }
 

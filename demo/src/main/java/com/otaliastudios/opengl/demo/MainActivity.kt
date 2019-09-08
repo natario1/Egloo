@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         rectF.top = floatValue(0.4F, 1F)
         rectF.right = floatValue(0.4F, 1F)
         roundRect.setRect(rectF)
-        roundRect.setCornersPx(floatValue(50F, 0F))
+        roundRect.setCornersPx(intValue(50, 0))
         // Animate the color
         flatProgram!!.setColor(Color.rgb(
                 intValue(0, 50),
