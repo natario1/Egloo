@@ -2,8 +2,10 @@ package com.otaliastudios.opengl.demo
 
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.opengl.GLES20
+import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -50,6 +52,8 @@ class MainActivity : AppCompatActivity() {
         // We prefer to crash if there's something wrong.
         val handler = Handler()
         surfaceView = findViewById(R.id.surface_view)
+        surfaceView.setZOrderOnTop(true)
+        surfaceView.holder.setFormat(PixelFormat.RGBA_8888)
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder?) {
                 handler.post { onSurfaceCreated() }

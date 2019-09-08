@@ -74,6 +74,7 @@ install.repositories.mavenInstaller.pom.project {
             url libLicenseUrl
         }
     }
+
     developers {
         developer {
             id = 'natario'
