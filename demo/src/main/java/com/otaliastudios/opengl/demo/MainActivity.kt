@@ -2,8 +2,10 @@ package com.otaliastudios.opengl.demo
 
 import android.animation.ValueAnimator
 import android.graphics.Color
+import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.opengl.GLES20
+import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -11,10 +13,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.otaliastudios.opengl.core.EglCore
-import com.otaliastudios.opengl.draw.GlCircle
-import com.otaliastudios.opengl.draw.GlRect
-import com.otaliastudios.opengl.draw.GlSquare
-import com.otaliastudios.opengl.draw.GlTriangle
+import com.otaliastudios.opengl.draw.*
 import com.otaliastudios.opengl.program.GlFlatProgram
 import com.otaliastudios.opengl.scene.GlScene
 import com.otaliastudios.opengl.surface.EglWindowSurface
@@ -28,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private var flatProgram: GlFlatProgram? = null
 
     private val scene = GlScene()
-    private val rect = GlRect()
+    private val roundRect = GlRoundRect()
     private val triangle = GlTriangle()
     private val circle = GlCircle()
 
@@ -50,6 +49,8 @@ class MainActivity : AppCompatActivity() {
         // We prefer to crash if there's something wrong.
         val handler = Handler()
         surfaceView = findViewById(R.id.surface_view)
+        surfaceView.setZOrderOnTop(true)
+        surfaceView.holder.setFormat(PixelFormat.RGBA_8888)
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder?) {
                 handler.post { onSurfaceCreated() }
@@ -92,7 +93,8 @@ class MainActivity : AppCompatActivity() {
         rectF.left = floatValue(-0.4F, -1F)
         rectF.top = floatValue(0.4F, 1F)
         rectF.right = floatValue(0.4F, 1F)
-        rect.setVertexArray(rectF)
+        roundRect.setRect(rectF)
+        roundRect.setCornersPx(intValue(50, 0))
         // Animate the color
         flatProgram!!.setColor(Color.rgb(
                 intValue(0, 50),
@@ -100,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 intValue(100, 150)
         ))
         // Draw
-        scene.draw(flatProgram!!, rect)
+        scene.draw(flatProgram!!, roundRect)
 
         // Draw the triangle.
         flatProgram!!.setColor(Color.RED)

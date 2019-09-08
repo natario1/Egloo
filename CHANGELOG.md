@@ -1,3 +1,9 @@
+### v0.2.4
+
+- Added GlRoundRect ([#7][7])
+
+https://github.com/natario1/Egloo/compare/v0.2.3...v0.2.4
+
 ### v0.2.3
 
 - Fix a bug with GlRect ([#6][6])
@@ -17,3 +23,4 @@ https://github.com/natario1/Egloo/compare/v0.2.1...v0.2.2
 
 [3]: https://github.com/natario1/Egloo/pull/3
 [5]: https://github.com/natario1/Egloo/pull/5
+[7]: https://github.com/natario1/Egloo/pull/7
