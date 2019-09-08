@@ -160,6 +160,7 @@ Drawables are very easy to implement. We offer a few implementations:
 |`GlTriangle`|A regular 2D triangle, extending `GlPolygon`.|
 |`GlSquare`|A 2D square, extending `GlPolygon`.|
 |`GlCircle`|A 2D circle, implemented as a `GlPolygon` with 360 sides.|
+|`GlRoundRect`|A 2D rounded rect, with customizable corners.|
 
 Each drawable can have different methods to customize its appearance and behavior.
 

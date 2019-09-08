@@ -13,10 +13,7 @@ import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.otaliastudios.opengl.core.EglCore
-import com.otaliastudios.opengl.draw.GlCircle
-import com.otaliastudios.opengl.draw.GlRect
-import com.otaliastudios.opengl.draw.GlSquare
-import com.otaliastudios.opengl.draw.GlTriangle
+import com.otaliastudios.opengl.draw.*
 import com.otaliastudios.opengl.program.GlFlatProgram
 import com.otaliastudios.opengl.scene.GlScene
 import com.otaliastudios.opengl.surface.EglWindowSurface
@@ -30,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     private var flatProgram: GlFlatProgram? = null
 
     private val scene = GlScene()
-    private val rect = GlRect()
+    private val roundRect = GlRoundRect()
     private val triangle = GlTriangle()
     private val circle = GlCircle()
 
@@ -96,7 +93,8 @@ class MainActivity : AppCompatActivity() {
         rectF.left = floatValue(-0.4F, -1F)
         rectF.top = floatValue(0.4F, 1F)
         rectF.right = floatValue(0.4F, 1F)
-        rect.setVertexArray(rectF)
+        roundRect.setRect(rectF)
+        roundRect.setCornersPx(floatValue(50F, 0F))
         // Animate the color
         flatProgram!!.setColor(Color.rgb(
                 intValue(0, 50),
@@ -104,7 +102,7 @@ class MainActivity : AppCompatActivity() {
                 intValue(100, 150)
         ))
         // Draw
-        scene.draw(flatProgram!!, rect)
+        scene.draw(flatProgram!!, roundRect)
 
         // Draw the triangle.
         flatProgram!!.setColor(Color.RED)
