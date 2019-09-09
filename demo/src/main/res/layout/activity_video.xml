@@ -7,8 +7,8 @@
     android:background="#444444"
     tools:context=".VideoActivity">
 
-    <SurfaceView
-        android:id="@+id/surface_view"
+    <android.opengl.GLSurfaceView
+        android:id="@+id/gl_surface_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
