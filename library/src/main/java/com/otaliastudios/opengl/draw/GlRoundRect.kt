@@ -23,12 +23,8 @@ open class GlRoundRect : Gl2dDrawable() {
     private var bottom = -1F
     private var left = -1F
     private var right = 1F
-    private var currentVertexCount = 1
 
     override var vertexArray = floatBufferOf((4 * POINTS_PER_CORNER + 2) * coordsPerVertex)
-
-    override val vertexCount: Int
-        get() = currentVertexCount
 
     init {
         recompute()
@@ -139,8 +135,7 @@ open class GlRoundRect : Gl2dDrawable() {
         // Close the fan
         array.put(array.get(2))
         array.put(array.get(3))
-        currentVertexCount = array.position() / coordsPerVertex
-        array.rewind()
+        array.flip()
     }
 
     private fun addCornerArc(array: FloatBuffer,

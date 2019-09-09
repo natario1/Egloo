@@ -11,7 +11,7 @@ fun FloatArray.toBuffer(): FloatBuffer {
             .order(ByteOrder.nativeOrder())
             .asFloatBuffer()
             .put(this)
-    buffer.rewind()
+    buffer.flip()
     return buffer
 }
 
@@ -23,5 +23,7 @@ fun floatBufferOf(size: Int): FloatBuffer {
     return ByteBuffer
             .allocateDirect(size * 4)
             .order(ByteOrder.nativeOrder())
-            .asFloatBuffer()
+            .asFloatBuffer().also {
+                it.limit(it.capacity())
+            }
 }

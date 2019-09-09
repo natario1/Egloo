@@ -73,7 +73,7 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
         }
         array.put(array.get(2)) // Close the fan
         array.put(array.get(3)) // Close the fan
-        array.rewind()
+        array.flip()
     }
 
     override fun onViewportSizeChanged() {

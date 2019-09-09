@@ -35,7 +35,7 @@ abstract class GlDrawable : GlViewportAware() {
      * Returns the number of vertices stored in the vertex array.
      */
     open val vertexCount: Int
-        get() = vertexArray.capacity() / coordsPerVertex
+        get() = vertexArray.limit() / coordsPerVertex
 
     /**
      * Draws this drawable.
