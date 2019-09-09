@@ -1,11 +1,14 @@
 package com.otaliastudios.opengl.program
 
 
+import android.graphics.RectF
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import com.otaliastudios.opengl.core.Egloo
+import com.otaliastudios.opengl.draw.Gl2dDrawable
 import com.otaliastudios.opengl.draw.GlDrawable
 import com.otaliastudios.opengl.extensions.floatBufferOf
+import java.lang.RuntimeException
 
 /**
  * An [GlProgram] that uses a simple vertex shader and a texture fragment shader.
@@ -21,6 +24,17 @@ open class GlTextureProgram @JvmOverloads constructor(
     private val vertexMvpMatrixHandle = getUniformHandle("uMVPMatrix")
     private val textureCoordsHandle = getAttribHandle("aTextureCoord")
     private val textureTransformHandle = getUniformHandle("uTexMatrix")
+
+    private val drawableBounds = RectF()
+    private var textureCoordsBuffer = floatBufferOf(8)
+
+    private fun ensureTextureCoordsBuffer(size: Int) {
+        if (textureCoordsBuffer.capacity() < size) {
+            textureCoordsBuffer = floatBufferOf(size)
+        }
+        textureCoordsBuffer.clear()
+        textureCoordsBuffer.limit(size)
+    }
 
     @Suppress("MemberVisibilityCanBePrivate")
     val textureId: Int
@@ -65,18 +79,43 @@ open class GlTextureProgram @JvmOverloads constructor(
 
         // Enable the "aPosition" vertex attribute.
         // Connect vertexBuffer to "aPosition".
+        if (drawable !is Gl2dDrawable) {
+            throw RuntimeException("GlTextureProgram only supports 2D drawables.")
+        }
+        val vertexStride = 2 * Egloo.SIZE_OF_FLOAT
         GLES20.glEnableVertexAttribArray(vertexPositionHandle.value)
         Egloo.checkGlError("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(vertexPositionHandle.value, drawable.coordsPerVertex,
-                GLES20.GL_FLOAT, false, drawable.vertexStride, drawable.vertexArray)
+        GLES20.glVertexAttribPointer(vertexPositionHandle.value, 2,
+                GLES20.GL_FLOAT,
+                false,
+                vertexStride,
+                drawable.vertexArray)
         Egloo.checkGlError("glVertexAttribPointer")
 
-        // Enable the "aTextureCoord" vertex attribute.
-        // Connect texBuffer to "aTextureCoord".
+        // We must compute the texture coordinates given the drawable vertex array.
+        // To do this, we ask the drawable for its boundaries, then apply the texture
+        // onto this rect.
+        // TODO cache so that we only do this if drawable bounds have changed.
+        drawable.getBounds(drawableBounds)
+        val coordinates = drawable.vertexCount * 2
+        ensureTextureCoordsBuffer(coordinates)
+        for (i in 0 until coordinates) {
+            val isX = i % 2 == 0
+            val drawableValue = drawable.vertexArray.get(i)
+            val drawableMinValue = if (isX) drawableBounds.left else drawableBounds.bottom
+            val drawableMaxValue = if (isX) drawableBounds.right else drawableBounds.top
+            val drawableFraction = (drawableValue - drawableMinValue) / (drawableMaxValue - drawableMinValue)
+            val textureValue = 0F + drawableFraction * 1F // tex value goes from 0 to 1
+            textureCoordsBuffer.put(i, textureValue)
+        }
+
         GLES20.glEnableVertexAttribArray(textureCoordsHandle.value)
         Egloo.checkGlError("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(textureCoordsHandle.value, 2, GLES20.GL_FLOAT,
-                false, COORDINATES_STRIDE, FULL_COORDINATES)
+        GLES20.glVertexAttribPointer(textureCoordsHandle.value, 2,
+                GLES20.GL_FLOAT,
+                false,
+                vertexStride,
+                textureCoordsBuffer)
         Egloo.checkGlError("glVertexAttribPointer")
     }
 
@@ -92,16 +131,6 @@ open class GlTextureProgram @JvmOverloads constructor(
     companion object {
         @Suppress("unused")
         internal val TAG = GlTextureProgram::class.java.simpleName
-
-        // Texture coordinates in GL go from 0 to 1 on both axes.
-        private val FULL_COORDINATES = floatBufferOf(
-                0.0f, 0.0f, // bottom left
-                1.0f, 0.0f, // bottom right
-                0.0f, 1.0f, // top left
-                1.0f, 1.0f  // top right
-        )
-
-        private const val COORDINATES_STRIDE = 2 * Egloo.SIZE_OF_FLOAT
 
         private const val SIMPLE_VERTEX_SHADER =
                 "" +

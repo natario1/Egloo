@@ -1,13 +1,31 @@
 package com.otaliastudios.opengl.draw
 
 import android.graphics.RectF
-import android.opengl.GLES20
-import com.otaliastudios.opengl.core.Egloo
-import com.otaliastudios.opengl.extensions.floatBufferOf
-import java.lang.IllegalArgumentException
-import java.nio.FloatBuffer
+import kotlin.math.max
+import kotlin.math.min
 
 @Suppress("unused")
 abstract class Gl2dDrawable: GlDrawable() {
     final override val coordsPerVertex = 2
+
+    fun getBounds(rect: RectF) {
+        var top = Float.MIN_VALUE
+        var bottom = Float.MAX_VALUE
+        var left = Float.MAX_VALUE
+        var right = Float.MIN_VALUE
+        var count = 0
+        while (vertexArray.hasRemaining()) {
+            val value = vertexArray.get()
+            if (count % 2 == 0) { // x coordinate
+                left = min(left, value)
+                right = max(right, value)
+            } else { // y coordinate
+                top = max(top, value)
+                bottom = min(bottom, value)
+            }
+            count++
+        }
+        vertexArray.rewind()
+        rect.set(left, top, right, bottom)
+    }
 }

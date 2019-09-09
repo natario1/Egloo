@@ -1,3 +1,9 @@
+### v0.3.0
+
+- Support for non-rect shapes in textures ([#8][8])
+
+https://github.com/natario1/Egloo/compare/v0.2.4...v0.3.0
+
 ### v0.2.4
 
 - Added GlRoundRect ([#7][7])
@@ -24,3 +30,4 @@ https://github.com/natario1/Egloo/compare/v0.2.1...v0.2.2
 [3]: https://github.com/natario1/Egloo/pull/3
 [5]: https://github.com/natario1/Egloo/pull/5
 [7]: https://github.com/natario1/Egloo/pull/7
+[8]: https://github.com/natario1/Egloo/pull/8

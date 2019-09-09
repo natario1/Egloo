@@ -29,7 +29,7 @@ open class GlRect: Gl2dDrawable() {
         }
         vertexArray.clear()
         vertexArray.put(array)
-        vertexArray.rewind()
+        vertexArray.flip()
     }
 
     open fun setVertexArray(rect: RectF) {
@@ -46,7 +46,7 @@ open class GlRect: Gl2dDrawable() {
         // 4
         vertexArray.put(rect.right)
         vertexArray.put(rect.top)
-        vertexArray.rewind()
+        vertexArray.flip()
     }
 
     override fun draw() {
