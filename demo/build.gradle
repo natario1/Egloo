@@ -26,5 +26,6 @@ android {
 dependencies {
     implementation project(':library')
     implementation 'androidx.appcompat:appcompat:1.0.2'
-    implementation 'androidx.core:core-ktx:1.0.2'
+    implementation 'androidx.core:core-ktx:1.1.0'
+    // implementation 'com.google.android.exoplayer:exoplayer-core:2.9.3'
 }

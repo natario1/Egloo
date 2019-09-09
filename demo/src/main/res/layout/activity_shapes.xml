@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#444444"
-    tools:context=".MainActivity">
+    tools:context=".ShapesActivity">
 
     <SurfaceView
         android:id="@+id/surface_view"

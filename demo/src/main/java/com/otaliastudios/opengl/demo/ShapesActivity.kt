@@ -1,14 +1,17 @@
 package com.otaliastudios.opengl.demo
 
 import android.animation.ValueAnimator
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.opengl.GLES20
-import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
@@ -19,7 +22,7 @@ import com.otaliastudios.opengl.scene.GlScene
 import com.otaliastudios.opengl.surface.EglWindowSurface
 import kotlin.math.roundToInt
 
-class MainActivity : AppCompatActivity() {
+class ShapesActivity : AppCompatActivity() {
 
     private lateinit var surfaceView: SurfaceView
     private var eglCore: EglCore? = null
@@ -43,17 +46,14 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_shapes)
 
-        // Using a handler just because the holder callback runs inside a try-catch.
-        // We prefer to crash if there's something wrong.
-        val handler = Handler()
         surfaceView = findViewById(R.id.surface_view)
         surfaceView.setZOrderOnTop(true)
         surfaceView.holder.setFormat(PixelFormat.RGBA_8888)
         surfaceView.holder.addCallback(object : SurfaceHolder.Callback {
             override fun surfaceCreated(holder: SurfaceHolder?) {
-                handler.post { onSurfaceCreated() }
+                onSurfaceCreated()
             }
 
             override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {
@@ -62,12 +62,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun surfaceDestroyed(holder: SurfaceHolder?) {
-                handler.post { onSurfaceDestroyed() }
+                onSurfaceDestroyed()
             }
         })
     }
 
     private fun onSurfaceCreated() {
+        Log.e("SHAPES", "CREATED.")
         eglCore = EglCore()
         eglSurface = EglWindowSurface(eglCore!!, surfaceView.holder.surface!!)
         eglSurface!!.makeCurrent()
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onSurfaceDestroyed() {
+        Log.e("SHAPES", "DESTROYING.")
         drawAnimator.cancel()
         flatProgram?.release()
         eglSurface?.release()
@@ -86,6 +88,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun draw() {
+        Log.w("SHAPES", "drawing.")
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
 
         // Animate the background rect
@@ -125,5 +128,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun floatValue(start: Float, end: Float): Float {
         return start + drawAnimator.animatedFraction * (end - start)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.activity_shapes, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        startActivity(Intent(this, VideoActivity::class.java))
+        onSurfaceDestroyed()
+        finish()
+        return true
     }
 }
