@@ -10,7 +10,7 @@ with respect to a typical object-oriented context. Egloo tries to take some of t
 by creating a **thin**, flexible layer of abstraction around EGL and GLES calls.
 
 ```groovy
-implementation 'com.otaliastudios.opengl:egloo:0.2.4'
+implementation 'com.otaliastudios.opengl:egloo:0.3.0'
 ```
 
 &#10240;  <!-- Hack to add whitespace -->
