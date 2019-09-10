@@ -1,4 +1,10 @@
-### v0.3.0
+### v0.3.1
+
+- Fixes a bug in texture program ([#9][9])
+
+https://github.com/natario1/Egloo/compare/v0.3.0...v0.3.1
+
+## v0.3.0
 
 - Support for non-rect shapes in textures ([#8][8])
 
@@ -31,3 +37,4 @@ https://github.com/natario1/Egloo/compare/v0.2.1...v0.2.2
 [5]: https://github.com/natario1/Egloo/pull/5
 [7]: https://github.com/natario1/Egloo/pull/7
 [8]: https://github.com/natario1/Egloo/pull/8
+[9]: https://github.com/natario1/Egloo/pull/9
