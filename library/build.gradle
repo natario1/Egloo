@@ -5,7 +5,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'com.jfrog.bintray'
 
 ext {
-    libVersion = '0.3.0'
+    libVersion = '0.3.1'
     libGroup = 'com.otaliastudios.opengl'
     libName = 'Egloo'
     libDescription = 'Simple and lightweight OpenGL ES drawing and EGL management for Android, with object-oriented components based on Google\'s Grafika.'

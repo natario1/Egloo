@@ -9,10 +9,10 @@ abstract class Gl2dDrawable: GlDrawable() {
     final override val coordsPerVertex = 2
 
     fun getBounds(rect: RectF) {
-        var top = Float.MIN_VALUE
+        var top = -Float.MAX_VALUE // not MIN_VALUE!
         var bottom = Float.MAX_VALUE
         var left = Float.MAX_VALUE
-        var right = Float.MIN_VALUE
+        var right = -Float.MAX_VALUE
         var count = 0
         while (vertexArray.hasRemaining()) {
             val value = vertexArray.get()
