@@ -2,6 +2,10 @@
 <resources>
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
-    <color name="colorAcscent">#B71C1C</color>
+
+    <color name="roundRectStart">#009664</color>
+    <color name="roundRectEnd">#32FA96</color>
+
+    <color name="triangle">#FF0000</color>
+    <color name="circle">#B41E1E</color>
 </resources>
