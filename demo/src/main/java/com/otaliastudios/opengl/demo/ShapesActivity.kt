@@ -14,6 +14,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.SurfaceHolder
 import android.view.SurfaceView
+import androidx.annotation.ColorInt
+import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.otaliastudios.opengl.core.EglCore
 import com.otaliastudios.opengl.draw.*
@@ -99,27 +101,36 @@ class ShapesActivity : AppCompatActivity() {
         roundRect.setRect(rectF)
         roundRect.setCornersPx(intValue(50, 0))
         // Animate the color
-        flatProgram!!.setColor(Color.rgb(
-                intValue(0, 50),
-                intValue(150, 250),
-                intValue(100, 150)
-        ))
+        val roundRectStart = ContextCompat.getColor(this, R.color.roundRectStart)
+        val roundRectEnd = ContextCompat.getColor(this, R.color.roundRectEnd)
+        flatProgram!!.setColor(colorValue(roundRectStart, roundRectEnd))
         // Draw
         scene.draw(flatProgram!!, roundRect)
 
         // Draw the triangle.
-        flatProgram!!.setColor(Color.RED)
+        val triangleColor = ContextCompat.getColor(this, R.color.triangle)
+        flatProgram!!.setColor(triangleColor)
         triangle.rotation += 3
         triangle.radius = floatValue(0.15F, 0.3F)
         scene.draw(flatProgram!!, triangle)
 
         // Draw the circle.
-        flatProgram!!.setColor(Color.rgb(180, 30, 30))
+        val circleColor = ContextCompat.getColor(this, R.color.circle)
+        flatProgram!!.setColor(circleColor)
         circle.radius = floatValue(0.15F, 0F)
         scene.draw(flatProgram!!, circle)
 
         // Publish.
         eglSurface!!.swapBuffers()
+    }
+
+    @ColorInt
+    private fun colorValue(@ColorInt start: Int, @ColorInt end: Int): Int {
+        return Color.rgb(
+                intValue(Color.red(start), Color.red(end)),
+                intValue(Color.green(start), Color.green(end)),
+                intValue(Color.blue(start), Color.blue(end))
+        )
     }
 
     private fun intValue(start: Int, end: Int): Int {
