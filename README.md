@@ -1,3 +1,19 @@
+[![Build Status](https://travis-ci.org/natario1/Egloo.svg?branch=master)](https://travis-ci.org/natario1/Egloo)
+[![Release](https://img.shields.io/github/release/natario1/Egloo.svg)](https://github.com/natario1/Egloo/releases)
+[![Issues](https://img.shields.io/github/issues-raw/natario1/Egloo.svg)](https://github.com/natario1/Egloo/issues)
+
+&#10240;  <!-- Hack to add whitespace -->
+
+<p align="center">
+  <img src="static/banner.png" width="100%">
+</p>
+
+*Looking for a powerful camera library? Take a look at our [CameraView](https://github.com/natario1/CameraView).*
+
+*Transcoding videos with Egloo? Take a look at our [Transcoder](https://github.com/natario1/Transcoder).*
+
+*Need support, consulting, or have any other business-related question? Feel free to <a href="mailto:mat.iavarone@gmail.com">get in touch</a>.*
+
 # Egloo
 
 Egloo (formerly EglCore) is a simple and lightweight framework for OpenGL ES drawing and EGL management
