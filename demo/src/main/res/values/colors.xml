@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorPrimary">#9E113C</color>
+    <color name="colorPrimaryDark">#6D0B27</color>
 
-    <color name="roundRectStart">#009664</color>
-    <color name="roundRectEnd">#32FA96</color>
+    <color name="roundRectStart">#30569E</color>
+    <color name="roundRectEnd">#2D96BE</color>
 
-    <color name="triangle">#FF0000</color>
-    <color name="circle">#B41E1E</color>
+    <color name="triangle">#E66B29</color>
+    <color name="circle">#FAB43C</color>
 </resources>
