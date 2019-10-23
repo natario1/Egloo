@@ -14,6 +14,8 @@
 
 *Need support, consulting, or have any other business-related question? Feel free to <a href="mailto:mat.iavarone@gmail.com">get in touch</a>.*
 
+*Like the project, make profit from it, or simply want to thank back? Please consider [sponsoring me](https://github.com/sponsors/natario1)!*
+
 # Egloo
 
 Egloo (formerly EglCore) is a simple and lightweight framework for OpenGL ES drawing and EGL management
