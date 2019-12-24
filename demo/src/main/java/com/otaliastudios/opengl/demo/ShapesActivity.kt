@@ -99,7 +99,7 @@ class ShapesActivity : AppCompatActivity() {
         rectF.top = floatValue(0.4F, 1F)
         rectF.right = floatValue(0.4F, 1F)
         roundRect.setRect(rectF)
-        roundRect.setCornersPx(intValue(50, 0))
+        roundRect.setCornersPx(intValue(100, 0))
         // Animate the color
         val roundRectStart = ContextCompat.getColor(this, R.color.roundRectStart)
         val roundRectEnd = ContextCompat.getColor(this, R.color.roundRectEnd)
@@ -111,7 +111,7 @@ class ShapesActivity : AppCompatActivity() {
         val triangleColor = ContextCompat.getColor(this, R.color.triangle)
         flatProgram!!.setColor(triangleColor)
         triangle.rotation += 3
-        triangle.radius = floatValue(0.15F, 0.3F)
+        triangle.radius = floatValue(0.15F, 0.6F)
         scene.draw(flatProgram!!, triangle)
 
         // Draw the circle.

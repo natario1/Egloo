@@ -63,7 +63,7 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         val dataSourceFactory = DefaultDataSourceFactory(this,
                 Util.getUserAgent(this, "Egloo"))
         val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory)
-                .createMediaSource(Uri.parse("http://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"))
+                .createMediaSource(Uri.parse("https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"))
         player.prepare(videoSource)
         player.playWhenReady = true
 
@@ -112,7 +112,9 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
             glSurfaceView.requestRender()
         }
         surface = Surface(surfaceTexture!!)
-        player.setVideoSurface(surface)
+        glSurfaceView.post {
+            player.setVideoSurface(surface)
+        }
     }
 
     override fun onSurfaceChanged(gl: GL10, width: Int, height: Int) {
