@@ -33,7 +33,7 @@ pre {
 code {
     color: inherit;
     font-family: 'Roboto Mono', monospace;
-    color: #dd2200;
+    color: #9E113C;
 }
 
 a {
@@ -90,7 +90,7 @@ a {
 }
 
 #landing {
-    background: radial-gradient(ellipse, #f7a816, #f76c16) !important;
+    background: radial-gradient(ellipse, #3D0913, #000000) !important;
     background-attachment: fixed !important;
 }
 
@@ -153,7 +153,7 @@ a {
 }
 
 #navigation li.active a {
-    background: #f76c16;
+    background: #9E113C;
     color: #FFFFFF;
 }
 
