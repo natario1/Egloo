@@ -12,7 +12,7 @@ although it has reached a high level of stability.
 We are grateful to anyone who has contributed with fixes, features or feature requests. If you don't
 want to get involved but still want to support the project, please [consider donating](donate).
 
-## Bug reports
+### Bug reports
 
 Please make sure to fill the bug report issue template on GitHub.
 We highly recommend to try to reproduce the bug in the demo app, as this helps a lot in debugging
@@ -31,13 +31,13 @@ Recommended extras:
 - LogCat logs
 - Link to a GitHub repo where the bug is reproducible
 
-## Pull Requests
+### Pull Requests
 
 Please open an issue first.
 
 Unless your PR is a simple fix (typos, documentation, bugs with obvious solution), opening an issue
 will let us discuss the problem, take design decisions and have a reference to the issue description.
 
-## License
+### License
 
 Egloo is licensed under the [MIT](https://github.com/natario1/Egloo/blob/master/LICENSE) license.

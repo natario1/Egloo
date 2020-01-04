@@ -1,7 +1,6 @@
 ---
 layout: page
 title: "EGL Management"
-subtitle: "Create and manage the EGL context"
 description: "Create and manage the EGL context"
 category: docs
 date: 2018-12-20 20:02:08
@@ -37,7 +36,7 @@ where our GLES rendered data will be drawn. Egloo supports two types of surfaces
 
 After usage, all surfaces should be released with `surface.release()`.
 
-#### EglWindowSurface
+##### EglWindowSurface
 
 The `EglWindowSurface` uses a `android.view.Surface` or `SurfaceTexture` as output, two objects that
 can be considered system windows in Android. Anything drawn on this window will be passed to the
@@ -55,7 +54,7 @@ window.makeCurrent()
 window.swapBuffers()
 ```
 
-#### EglOffscreenSurface
+##### EglOffscreenSurface
 
 The `EglOffscreenSurface` requires a `width` and a `height` in the constructor and corresponds to
 an EGL pixel buffer surface which does not depend on any platform window.

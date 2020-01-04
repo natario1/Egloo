@@ -1,7 +1,6 @@
 ---
 layout: page
 title: "Drawables"
-subtitle: "Egloo drawables are the shape to be drawn"
 description: "Egloo drawables are the shape to be drawn"
 category: docs
 date: 2018-12-20 20:02:08

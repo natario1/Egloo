@@ -1,7 +1,6 @@
 ---
 layout: page
 title: "Getting Started"
-subtitle: "Getting started with Egloo"
 description: "Getting started with Egloo"
 category: about
 date: 2018-12-20 17:48:58
