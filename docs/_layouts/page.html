@@ -4,7 +4,8 @@ layout: main
 
 <div class="page-header border-bottom has-divider pb-3">
     <h1 class="d-inline-block mt-1 mb-0 mr-2">{{ page.title }}</h1>
-    {% if page.description %}<span>{{ page.description }}</span>{% endif %}
+    {% if page.description %}<span class="mr-2">{{ page.description }}</span>{% endif %}
+    <span><a href="https://github.com/{{ site.author.github }}/{{ site.github_repo }}/edit/{{ site.github_branch }}/docs/{{ page.path }}">[edit this page]</a></span>
 </div>
 <div class="page mt-4">
     {{ content }}
