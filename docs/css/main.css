@@ -234,6 +234,13 @@ td {
     color: var(--color-text-muted);
 }
 
+.page-footer a {
+    color: black;
+    font-family: var(--font-display), cursive;
+    font-weight: 700;
+    font-size: 1.2em;
+}
+
 /* code */
 
 pre {
