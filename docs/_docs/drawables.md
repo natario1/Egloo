@@ -2,8 +2,6 @@
 layout: page
 title: "Drawables"
 description: "Egloo drawables are the shape to be drawn"
-category: docs
-date: 2018-12-20 20:02:08
 order: 2
 disqus: 1
 ---

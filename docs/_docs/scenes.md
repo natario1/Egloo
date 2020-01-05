@@ -2,8 +2,6 @@
 layout: page
 title: "Scenes"
 description: "How to control the view and projection matrix"
-category: docs
-date: 2018-12-20 20:02:08
 order: 4
 disqus: 1
 ---

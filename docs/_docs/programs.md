@@ -2,8 +2,6 @@
 layout: page
 title: "Programs"
 description: "Egloo programs draw inside the drawable shape"
-category: docs
-date: 2018-12-20 20:02:08
 order: 3
 disqus: 1
 ---

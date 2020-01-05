@@ -2,8 +2,6 @@
 layout: page
 title: "EGL Management"
 description: "Create and manage the EGL context"
-category: docs
-date: 2018-12-20 20:02:08
 order: 1
 disqus: 1
 ---
