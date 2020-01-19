@@ -1,6 +1,5 @@
 package com.otaliastudios.opengl.program
 
-
 import android.graphics.RectF
 import android.opengl.GLES11Ext
 import android.opengl.GLES20
@@ -10,22 +9,26 @@ import com.otaliastudios.opengl.draw.GlDrawable
 import com.otaliastudios.opengl.extensions.floatBufferOf
 import java.lang.RuntimeException
 
+
 /**
- * Base implementation for a [GlProgram] that draws textures.
- * See [GlSimpleTextureProgram] for the simplest implementation.
+ * An [GlBaseTextureProgram] that uses a simple vertex shader and a texture fragment shader.
  */
 @Suppress("unused")
 open class GlTextureProgram @JvmOverloads constructor(
-        vertexShader: String,
-        fragmentShader: String,
-        private val textureUnit: Int = GLES20.GL_TEXTURE0,
+        vertexShader: String = SIMPLE_VERTEX_SHADER,
+        fragmentShader: String = SIMPLE_FRAGMENT_SHADER,
+        textureUnit: Int = GLES20.GL_TEXTURE0,
+        textureTarget: Int = GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
         vertexPositionName: String = "aPosition",
         vertexMvpMatrixName: String = "uMVPMatrix",
         textureCoordsName: String = "aTextureCoord",
         textureTransformName: String = "uTexMatrix"
-) : GlProgram(vertexShader, fragmentShader) {
-
-    private val textureTarget = GLES11Ext.GL_TEXTURE_EXTERNAL_OES
+): GlBaseTextureProgram(
+        vertexShader,
+        fragmentShader,
+        textureUnit,
+        textureTarget
+) {
 
     private val vertexPositionHandle = getAttribHandle(vertexPositionName)
     private val vertexMvpMatrixHandle = getUniformHandle(vertexMvpMatrixName)
@@ -35,6 +38,9 @@ open class GlTextureProgram @JvmOverloads constructor(
     private val drawableBounds = RectF()
     private var textureCoordsBuffer = floatBufferOf(8)
 
+    @Suppress("MemberVisibilityCanBePrivate")
+    var textureTransform: FloatArray = Egloo.IDENTITY_MATRIX.clone()
+
     private fun ensureTextureCoordsBuffer(size: Int) {
         if (textureCoordsBuffer.capacity() < size) {
             textureCoordsBuffer = floatBufferOf(size)
@@ -43,36 +49,11 @@ open class GlTextureProgram @JvmOverloads constructor(
         textureCoordsBuffer.limit(size)
     }
 
-    @Suppress("MemberVisibilityCanBePrivate")
-    val textureId: Int
-    init {
-        val textures = IntArray(1)
-        GLES20.glGenTextures(1, textures, 0)
-        Egloo.checkGlError("glGenTextures")
-        textureId = textures[0]
-
-        GLES20.glActiveTexture(textureUnit)
-        GLES20.glBindTexture(textureTarget, textureId)
-        Egloo.checkGlError("glBindTexture $textureId")
-
-        GLES20.glTexParameterf(textureTarget, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
-        GLES20.glTexParameterf(textureTarget, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
-        GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-        GLES20.glTexParameteri(textureTarget, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
-        Egloo.checkGlError("glTexParameter")
-
-        GLES20.glBindTexture(textureTarget, 0)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        Egloo.checkGlError("init end")
-    }
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    var textureTransform: FloatArray = Egloo.IDENTITY_MATRIX.clone()
-
     override fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
-        GLES20.glActiveTexture(textureUnit)
-        GLES20.glBindTexture(textureTarget, textureId)
+        if (drawable !is Gl2dDrawable) {
+            throw RuntimeException("GlTextureProgram only supports 2D drawables.")
+        }
 
         // Copy the modelViewProjectionMatrix over.
         GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle.value, 1, false,
@@ -86,9 +67,6 @@ open class GlTextureProgram @JvmOverloads constructor(
 
         // Enable the "aPosition" vertex attribute.
         // Connect vertexBuffer to "aPosition".
-        if (drawable !is Gl2dDrawable) {
-            throw RuntimeException("GlTextureProgram only supports 2D drawables.")
-        }
         val vertexStride = 2 * Egloo.SIZE_OF_FLOAT
         GLES20.glEnableVertexAttribArray(vertexPositionHandle.value)
         Egloo.checkGlError("glEnableVertexAttribArray")
@@ -103,6 +81,7 @@ open class GlTextureProgram @JvmOverloads constructor(
         // To do this, we ask the drawable for its boundaries, then apply the texture
         // onto this rect.
         // TODO cache so that we only do this if drawable bounds have changed.
+        //  Need a Drawable mechanism
         drawable.getBounds(drawableBounds)
         val coordinates = drawable.vertexCount * 2
         ensureTextureCoordsBuffer(coordinates)
@@ -127,12 +106,9 @@ open class GlTextureProgram @JvmOverloads constructor(
     }
 
     override fun onPostDraw(drawable: GlDrawable) {
-        super.onPostDraw(drawable)
         GLES20.glDisableVertexAttribArray(vertexPositionHandle.value)
         GLES20.glDisableVertexAttribArray(textureCoordsHandle.value)
-        GLES20.glBindTexture(textureTarget, 0)
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0)
-        Egloo.checkGlError("onPostDraw end")
+        super.onPostDraw(drawable)
     }
 
     companion object {
@@ -161,5 +137,4 @@ open class GlTextureProgram @JvmOverloads constructor(
                         "    gl_FragColor = texture2D(sTexture, vTextureCoord);\n" +
                         "}\n"
     }
-
 }
