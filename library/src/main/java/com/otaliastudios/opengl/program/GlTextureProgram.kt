@@ -11,19 +11,26 @@ import com.otaliastudios.opengl.extensions.floatBufferOf
 import java.lang.RuntimeException
 
 /**
- * An [GlProgram] that uses a simple vertex shader and a texture fragment shader.
+ * Base implementation for a [GlProgram] that draws textures.
+ * See [GlSimpleTextureProgram] for the simplest implementation.
  */
 @Suppress("unused")
 open class GlTextureProgram @JvmOverloads constructor(
-        private val textureUnit: Int = GLES20.GL_TEXTURE0
-) : GlProgram(SIMPLE_VERTEX_SHADER, SIMPLE_FRAGMENT_SHADER) {
+        vertexShader: String,
+        fragmentShader: String,
+        private val textureUnit: Int = GLES20.GL_TEXTURE0,
+        vertexPositionName: String = "aPosition",
+        vertexMvpMatrixName: String = "uMVPMatrix",
+        textureCoordsName: String = "aTextureCoord",
+        textureTransformName: String = "uTexMatrix"
+) : GlProgram(vertexShader, fragmentShader) {
 
     private val textureTarget = GLES11Ext.GL_TEXTURE_EXTERNAL_OES
 
-    private val vertexPositionHandle = getAttribHandle("aPosition")
-    private val vertexMvpMatrixHandle = getUniformHandle("uMVPMatrix")
-    private val textureCoordsHandle = getAttribHandle("aTextureCoord")
-    private val textureTransformHandle = getUniformHandle("uTexMatrix")
+    private val vertexPositionHandle = getAttribHandle(vertexPositionName)
+    private val vertexMvpMatrixHandle = getUniformHandle(vertexMvpMatrixName)
+    private val textureCoordsHandle = getAttribHandle(textureCoordsName)
+    private val textureTransformHandle = getUniformHandle(textureTransformName)
 
     private val drawableBounds = RectF()
     private var textureCoordsBuffer = floatBufferOf(8)
@@ -132,7 +139,7 @@ open class GlTextureProgram @JvmOverloads constructor(
         @Suppress("unused")
         internal val TAG = GlTextureProgram::class.java.simpleName
 
-        private const val SIMPLE_VERTEX_SHADER =
+        const val SIMPLE_VERTEX_SHADER =
                 "" +
                         "uniform mat4 uMVPMatrix;\n" +
                         "uniform mat4 uTexMatrix;\n" +
@@ -144,7 +151,7 @@ open class GlTextureProgram @JvmOverloads constructor(
                         "    vTextureCoord = (uTexMatrix * aTextureCoord).xy;\n" +
                         "}\n"
 
-        private const val SIMPLE_FRAGMENT_SHADER =
+        const val SIMPLE_FRAGMENT_SHADER =
                 "" +
                         "#extension GL_OES_EGL_image_external : require\n" +
                         "precision mediump float;\n" +
