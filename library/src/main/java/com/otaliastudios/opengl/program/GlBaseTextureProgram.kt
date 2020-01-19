@@ -14,7 +14,7 @@ import com.otaliastudios.opengl.texture.GlTexture
 open class GlBaseTextureProgram constructor(
         vertexShader: String,
         fragmentShader: String,
-        private val texture: GlTexture
+        private var texture: GlTexture
 ) : GlProgram(vertexShader, fragmentShader) {
 
     val textureHandle get() = texture.handle
