@@ -1,9 +1,7 @@
 package com.otaliastudios.opengl.demo
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.SurfaceTexture
@@ -12,28 +10,21 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
 import android.widget.Toast
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoListener
 import com.otaliastudios.opengl.core.EglConfigChooser
 import com.otaliastudios.opengl.core.EglContextFactory
-import com.otaliastudios.opengl.core.EglCore
 import com.otaliastudios.opengl.draw.*
-import com.otaliastudios.opengl.program.GlFlatProgram
 import com.otaliastudios.opengl.program.GlTextureProgram
 import com.otaliastudios.opengl.scene.GlScene
-import com.otaliastudios.opengl.surface.EglWindowSurface
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.roundToInt
 
 class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
@@ -107,7 +98,7 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         glTextureProgram = GlTextureProgram()
 
         // Configure the player
-        surfaceTexture = SurfaceTexture(glTextureProgram!!.textureId)
+        surfaceTexture = SurfaceTexture(glTextureProgram!!.textureHandle)
         surfaceTexture!!.setOnFrameAvailableListener {
             glSurfaceView.requestRender()
         }

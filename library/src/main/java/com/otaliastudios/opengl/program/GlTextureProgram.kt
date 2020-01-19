@@ -7,6 +7,7 @@ import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.draw.Gl2dDrawable
 import com.otaliastudios.opengl.draw.GlDrawable
 import com.otaliastudios.opengl.extensions.floatBufferOf
+import com.otaliastudios.opengl.texture.GlTexture
 import java.lang.RuntimeException
 
 
@@ -17,8 +18,7 @@ import java.lang.RuntimeException
 open class GlTextureProgram @JvmOverloads constructor(
         vertexShader: String = SIMPLE_VERTEX_SHADER,
         fragmentShader: String = SIMPLE_FRAGMENT_SHADER,
-        textureUnit: Int = GLES20.GL_TEXTURE0,
-        textureTarget: Int = GLES11Ext.GL_TEXTURE_EXTERNAL_OES,
+        texture: GlTexture = GlTexture(GLES20.GL_TEXTURE0, GLES11Ext.GL_TEXTURE_EXTERNAL_OES),
         vertexPositionName: String = "aPosition",
         vertexMvpMatrixName: String = "uMVPMatrix",
         textureCoordsName: String = "aTextureCoord",
@@ -26,8 +26,7 @@ open class GlTextureProgram @JvmOverloads constructor(
 ): GlBaseTextureProgram(
         vertexShader,
         fragmentShader,
-        textureUnit,
-        textureTarget
+        texture
 ) {
 
     private val vertexPositionHandle = getAttribHandle(vertexPositionName)
