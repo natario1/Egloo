@@ -19,46 +19,23 @@ import com.otaliastudios.opengl.draw.GlDrawable
  *
  * The vertex shader should then use the two to compute the gl_Position.
  */
-abstract class GlProgram(
-        @Suppress("MemberVisibilityCanBePrivate") val vertexShader: String,
-        @Suppress("MemberVisibilityCanBePrivate") val fragmentShader: String
-) {
+abstract class GlProgram protected constructor(
+        val handle: Int,
+        private val ownsHandle: Boolean) {
 
-    protected var handle = createProgram()
-        private set
+    constructor(vertexShader: String, fragmentShader: String)
+            : this(create(vertexShader, fragmentShader), true)
 
-    // Creates a program with given vertex shader and pixel shader.
-    private fun createProgram(): Int {
-        val pixelShader = loadShader(GLES20.GL_FRAGMENT_SHADER, fragmentShader)
-        if (pixelShader == 0) throw RuntimeException("Could not load fragment shader")
-        val vertexShader = loadShader(GLES20.GL_VERTEX_SHADER, vertexShader)
-        if (vertexShader == 0) throw RuntimeException("Could not load vertex shader")
+    constructor(handle: Int)
+            : this(handle, false)
 
-        val program = GLES20.glCreateProgram()
-        Egloo.checkGlError("glCreateProgram")
-        if (program == 0) {
-            throw RuntimeException("Could not create program")
-        }
-        GLES20.glAttachShader(program, vertexShader)
-        Egloo.checkGlError("glAttachShader")
-        GLES20.glAttachShader(program, pixelShader)
-        Egloo.checkGlError("glAttachShader")
-        GLES20.glLinkProgram(program)
-        val linkStatus = IntArray(1)
-        GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0)
-        if (linkStatus[0] != GLES20.GL_TRUE) {
-            val message = "Could not link program: " + GLES20.glGetProgramInfoLog(program)
-            GLES20.glDeleteProgram(program)
-            throw RuntimeException(message)
-        }
-        return program
-    }
+    private var isReleased = false
 
     @Suppress("unused")
     open fun release() {
-        if (handle != -1) {
+        if (!isReleased && ownsHandle) {
             GLES20.glDeleteProgram(handle)
-            handle = -1
+            isReleased = true
         }
     }
 
@@ -77,24 +54,24 @@ abstract class GlProgram(
         Egloo.checkGlError("draw end")
     }
 
-    protected open fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {}
+    open fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {}
 
-    protected open fun onDraw(drawable: GlDrawable) {
+    open fun onDraw(drawable: GlDrawable) {
         drawable.draw()
     }
 
-    protected open fun onPostDraw(drawable: GlDrawable) {}
+    open fun onPostDraw(drawable: GlDrawable) {}
 
-    protected fun getAttribHandle(name: String) = GlHandle.getAttrib(handle, name)
+    protected fun getAttribHandle(name: String) = GlProgramLocation.getAttrib(handle, name)
 
-    protected fun getUniformHandle(name: String) = GlHandle.getUniform(handle, name)
+    protected fun getUniformHandle(name: String) = GlProgramLocation.getUniform(handle, name)
 
     companion object {
         @Suppress("unused")
         internal val TAG = GlProgram::class.java.simpleName
 
         // Compiles the given shader, returns a handle.
-        private fun loadShader(shaderType: Int, source: String): Int {
+        private fun createShader(shaderType: Int, source: String): Int {
             val shader = GLES20.glCreateShader(shaderType)
             Egloo.checkGlError("glCreateShader type=$shaderType")
             GLES20.glShaderSource(shader, source)
@@ -107,6 +84,33 @@ abstract class GlProgram(
                 throw RuntimeException(message)
             }
             return shader
+        }
+
+        @JvmStatic
+        fun create(vertexShaderSource: String, fragmentShaderSource: String): Int {
+            val pixelShader = createShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaderSource)
+            if (pixelShader == 0) throw RuntimeException("Could not load fragment shader")
+            val vertexShader = createShader(GLES20.GL_VERTEX_SHADER, vertexShaderSource)
+            if (vertexShader == 0) throw RuntimeException("Could not load vertex shader")
+
+            val program = GLES20.glCreateProgram()
+            Egloo.checkGlError("glCreateProgram")
+            if (program == 0) {
+                throw RuntimeException("Could not create program")
+            }
+            GLES20.glAttachShader(program, vertexShader)
+            Egloo.checkGlError("glAttachShader")
+            GLES20.glAttachShader(program, pixelShader)
+            Egloo.checkGlError("glAttachShader")
+            GLES20.glLinkProgram(program)
+            val linkStatus = IntArray(1)
+            GLES20.glGetProgramiv(program, GLES20.GL_LINK_STATUS, linkStatus, 0)
+            if (linkStatus[0] != GLES20.GL_TRUE) {
+                val message = "Could not link program: " + GLES20.glGetProgramInfoLog(program)
+                GLES20.glDeleteProgram(program)
+                throw RuntimeException(message)
+            }
+            return program
         }
     }
 }

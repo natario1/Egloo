@@ -44,23 +44,51 @@ program.draw(drawable2)
 
 ### Texture program
 
-The `GlTextureProgram` program can be used to render texture frames. It will automatically generate
-a `textureId` for you, which is meant to be used to create `SurfaceTexture`s. This means that it 
-uses the `GLES11Ext.GL_TEXTURE_EXTERNAL_OES` texture target.
+The `GlTextureProgram` program can be used to render textures. To use it, you will need to create 
+a `GlTexture` first and call `program.texture = texture`: this will make sure that texture is 
+correctly bound before rendering. See [textures](textures) to learn about this object.
+ 
+The texture program has built-in support for: 
+- Adapting the texture to the `GlDrawable` it is being drawn into. This means that the drawable and the texture should have the same aspect ratio to avoid distortion. 
+- Apply a matrix transformation to the texture by modifying `GlTextureProgram.textureTransform`
 
 See the sample below:
 
 ```kotlin
+val texture = GlTexture()
 val program = GlTextureProgram()
-val programTexture = SurfaceTexture(program.textureId)
+program.texture = texture
+val surfaceTexture = SurfaceTexture(texture.id)
 
 // Pass this surfaceTexture to Camera, for example
 val camera: android.hardware.Camera = openCamera()
-camera.setPreviewTexture(programTexture)
+camera.setPreviewTexture(surfaceTexture)
 
 // Now the program texture receives the camera frames
 // And we can render them using the program
 val rect = GlRect() // Draw the full frame
-programTexture.getTransformMatrix(program.textureTransform)
+surfaceTexture.getTransformMatrix(program.textureTransform)
 program.draw(rect)
 ```
+
+If, for some reason, you do not want to call `program.texture = texture` (which gives the program
+the ownership of the texture), you can still call `texture.bind()` and `texture.unbind()` manually:
+
+```kotlin
+// Option 1
+texture.bind()
+program.draw(drawable)
+texture.unbind()
+
+// Option 2
+texture.use {
+    program.draw(drawable)
+}
+
+// Option 3
+program.texture = texture
+program.draw(drawable)
+```
+
+These options are equivalent. Note, however, that when passing the texture to `GlTextureProgram`,
+the texture will automatically be released when you call `program.release()`.

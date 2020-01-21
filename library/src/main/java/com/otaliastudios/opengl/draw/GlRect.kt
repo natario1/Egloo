@@ -62,7 +62,8 @@ open class GlRect: Gl2dDrawable() {
     }
 
     override fun draw() {
+        Egloo.checkGlError("glDrawArrays start")
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexCount)
-        Egloo.checkGlError("glDrawArrays")
+        Egloo.checkGlError("glDrawArrays end")
     }
 }

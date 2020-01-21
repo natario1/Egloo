@@ -3,7 +3,7 @@ package com.otaliastudios.opengl.draw
 
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.program.GlProgram
-import com.otaliastudios.opengl.viewport.GlViewportAware
+import com.otaliastudios.opengl.core.GlViewportAware
 import java.nio.FloatBuffer
 
 abstract class GlDrawable : GlViewportAware() {

@@ -6,6 +6,7 @@ import android.graphics.PixelFormat
 import android.graphics.RectF
 import android.graphics.SurfaceTexture
 import android.net.Uri
+import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +24,7 @@ import com.otaliastudios.opengl.core.EglContextFactory
 import com.otaliastudios.opengl.draw.*
 import com.otaliastudios.opengl.program.GlTextureProgram
 import com.otaliastudios.opengl.scene.GlScene
+import com.otaliastudios.opengl.texture.GlTexture
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
 
@@ -95,10 +97,12 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
     override fun onSurfaceCreated(gl: GL10, config: EGLConfig) {
         // Configure GL
+        val glTexture = GlTexture()
         glTextureProgram = GlTextureProgram()
+        glTextureProgram!!.texture = glTexture
 
         // Configure the player
-        surfaceTexture = SurfaceTexture(glTextureProgram!!.textureHandle)
+        surfaceTexture = SurfaceTexture(glTexture.id)
         surfaceTexture!!.setOnFrameAvailableListener {
             glSurfaceView.requestRender()
         }

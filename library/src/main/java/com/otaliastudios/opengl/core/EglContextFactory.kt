@@ -23,7 +23,6 @@ object EglContextFactory {
     @JvmField
     val GLES3: GLSurfaceView.EGLContextFactory = Factory(3)
 
-
     private class Factory(private val version: Int) : GLSurfaceView.EGLContextFactory {
         override fun createContext(egl: EGL10, display: EGLDisplay, eglConfig: EGLConfig): EGLContext {
             val attributes = intArrayOf(EGL14.EGL_CONTEXT_CLIENT_VERSION, version, EGL14.EGL_NONE)

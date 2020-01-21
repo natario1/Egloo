@@ -40,12 +40,12 @@ dependencies {
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
+    archiveClassifier.set('sources')
     from android.sourceSets.main.java.srcDirs
 }
 
 task dokkaJar(type: Jar, dependsOn: dokka) {
-    classifier = 'javadoc'
+    archiveClassifier.set('javadoc')
     from dokka.outputDirectory
 }
 
@@ -85,41 +85,34 @@ install.repositories.mavenInstaller.pom.project {
 
 def bintrayUser
 def bintrayKey
-def hasBintray = false
 if (System.getenv('TRAVIS') == 'true') {
-    if (System.getenv('TRAVIS_SECURE_ENV_VARS') == 'true') {
-        bintrayUser = System.getenv("BINTRAY_USER")
-        bintrayKey = System.getenv("BINTRAY_KEY")
-        hasBintray = true
-    }
+    bintrayUser = System.getenv("BINTRAY_USER")
+    bintrayKey = System.getenv("BINTRAY_KEY")
 } else {
     Properties props = new Properties()
     props.load(project.rootProject.file('local.properties').newDataInputStream())
     bintrayUser = props.getProperty('bintray.user')
     bintrayKey = props.get('bintray.key')
-    hasBintray = true
 }
 
-if (hasBintray) {
-    bintray {
-        // https://github.com/bintray/gradle-bintray-plugin
-        user = bintrayUser
-        key = bintrayKey
-        configurations = ['archives']
-        publish = true
-        override = true
-        pkg {
-            repo = 'android'
-            name = libName
-            licenses = [libLicenseName]
-            vcsUrl = githubGit
-            desc = libDescription
-            version {
-                name = libVersion
-                desc = libName + ' v' + libVersion
-                released = new Date()
-                vcsTag = 'v' + libVersion
-            }
+bintray {
+    // https://github.com/bintray/gradle-bintray-plugin
+    user = bintrayUser
+    key = bintrayKey
+    configurations = ['archives']
+    publish = true
+    override = true
+    pkg {
+        repo = 'android'
+        name = libName
+        licenses = [libLicenseName]
+        vcsUrl = githubGit
+        desc = libDescription
+        version {
+            name = libVersion
+            desc = libName + ' v' + libVersion
+            released = new Date()
+            vcsTag = 'v' + libVersion
         }
     }
 }

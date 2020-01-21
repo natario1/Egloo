@@ -1,7 +1,6 @@
 package com.otaliastudios.opengl.program
 
 import android.graphics.RectF
-import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.draw.Gl2dDrawable
@@ -12,33 +11,61 @@ import java.lang.RuntimeException
 
 
 /**
- * An [GlBaseTextureProgram] that uses a simple vertex shader and a texture fragment shader.
+ * Base implementation for a [GlProgram] that draws textures.
  */
 @Suppress("unused")
-open class GlTextureProgram @JvmOverloads constructor(
-        vertexShader: String = SIMPLE_VERTEX_SHADER,
-        fragmentShader: String = SIMPLE_FRAGMENT_SHADER,
-        texture: GlTexture = GlTexture(GLES20.GL_TEXTURE0, GLES11Ext.GL_TEXTURE_EXTERNAL_OES),
-        vertexPositionName: String = "aPosition",
-        vertexMvpMatrixName: String = "uMVPMatrix",
-        textureCoordsName: String = "aTextureCoord",
-        textureTransformName: String = "uTexMatrix"
-): GlBaseTextureProgram(
-        vertexShader,
-        fragmentShader,
-        texture
-) {
+open class GlTextureProgram protected constructor(
+        handle: Int,
+        ownsHandle: Boolean,
+        /* An attribute vec4 within the vertex shader that will contain the vertex position. */
+        vertexPositionName: String,
+        /* A uniform mat4 within the vertex shader that will contain the MVP matrix. */
+        vertexMvpMatrixName: String,
+        textureCoordsName: String?, // enforce not null?
+        textureTransformName: String? // enforce not null?
+): GlProgram(handle, ownsHandle) {
+
+    @JvmOverloads
+    constructor(
+            vertexShader: String = SIMPLE_VERTEX_SHADER,
+            fragmentShader: String = SIMPLE_FRAGMENT_SHADER,
+            vertexPositionName: String = "aPosition",
+            vertexMvpMatrixName: String = "uMVPMatrix",
+            textureCoordsName: String? = "aTextureCoord",
+            textureTransformName: String? = "uTexMatrix"
+    ) : this(
+            create(vertexShader, fragmentShader),
+            true,
+            vertexPositionName,
+            vertexMvpMatrixName,
+            textureCoordsName,
+            textureTransformName
+    )
+
+    @JvmOverloads
+    constructor(
+            handle: Int,
+            vertexPositionName: String = "aPosition",
+            vertexMvpMatrixName: String = "uMVPMatrix",
+            textureCoordsName: String? = "aTextureCoord",
+            textureTransformName: String? = "uTexMatrix"
+    ) : this(
+            handle,
+            false,
+            vertexPositionName,
+            vertexMvpMatrixName,
+            textureCoordsName,
+            textureTransformName
+    )
+
+    var textureTransform: FloatArray = Egloo.IDENTITY_MATRIX.clone()
+    private val textureTransformHandle = textureTransformName?.let { getUniformHandle(it) }
+
+    private var textureCoordsBuffer = floatBufferOf(8)
+    private val textureCoordsHandle = textureCoordsName?.let { getAttribHandle(it) }
 
     private val vertexPositionHandle = getAttribHandle(vertexPositionName)
     private val vertexMvpMatrixHandle = getUniformHandle(vertexMvpMatrixName)
-    private val textureCoordsHandle = getAttribHandle(textureCoordsName)
-    private val textureTransformHandle = getUniformHandle(textureTransformName)
-
-    private val drawableBounds = RectF()
-    private var textureCoordsBuffer = floatBufferOf(8)
-
-    @Suppress("MemberVisibilityCanBePrivate")
-    var textureTransform: FloatArray = Egloo.IDENTITY_MATRIX.clone()
 
     private fun ensureTextureCoordsBuffer(size: Int) {
         if (textureCoordsBuffer.capacity() < size) {
@@ -48,66 +75,93 @@ open class GlTextureProgram @JvmOverloads constructor(
         textureCoordsBuffer.limit(size)
     }
 
+    private val drawableBounds = RectF()
+
+    /**
+     * If not null, [GlTextureProgram] will care about the texture lifecycle: binding,
+     * unbinding and destroying.
+     */
+    var texture: GlTexture? = null
+
     override fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
         if (drawable !is Gl2dDrawable) {
             throw RuntimeException("GlTextureProgram only supports 2D drawables.")
         }
 
-        // Copy the modelViewProjectionMatrix over.
-        GLES20.glUniformMatrix4fv(vertexMvpMatrixHandle.value, 1, false,
-                modelViewProjectionMatrix, 0)
-        Egloo.checkGlError("glUniformMatrix4fv")
+        texture?.bind()
 
-        // Copy the texture transformation matrix over.
-        GLES20.glUniformMatrix4fv(textureTransformHandle.value, 1, false,
-                textureTransform, 0)
-        Egloo.checkGlError("glUniformMatrix4fv")
+        // Pass the MVP matrix.
+        vertexMvpMatrixHandle.let {
+            GLES20.glUniformMatrix4fv(it.value, 1, false, modelViewProjectionMatrix, 0)
+            Egloo.checkGlError("glUniformMatrix4fv")
+        }
 
-        // Enable the "aPosition" vertex attribute.
-        // Connect vertexBuffer to "aPosition".
-        val vertexStride = 2 * Egloo.SIZE_OF_FLOAT
-        GLES20.glEnableVertexAttribArray(vertexPositionHandle.value)
-        Egloo.checkGlError("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(vertexPositionHandle.value, 2,
-                GLES20.GL_FLOAT,
-                false,
-                vertexStride,
-                drawable.vertexArray)
-        Egloo.checkGlError("glVertexAttribPointer")
+        // Pass the texture transformation matrix.
+        textureTransformHandle?.let {
+            GLES20.glUniformMatrix4fv(it.value, 1, false, textureTransform, 0)
+            Egloo.checkGlError("glUniformMatrix4fv")
+        }
+
+        // Pass the vertices position.
+        vertexPositionHandle.let {
+            GLES20.glEnableVertexAttribArray(it.value)
+            Egloo.checkGlError("glEnableVertexAttribArray")
+            GLES20.glVertexAttribPointer(it.value, 2,
+                    GLES20.GL_FLOAT,
+                    false,
+                    drawable.vertexStride,
+                    drawable.vertexArray)
+            Egloo.checkGlError("glVertexAttribPointer")
+        }
 
         // We must compute the texture coordinates given the drawable vertex array.
         // To do this, we ask the drawable for its boundaries, then apply the texture
         // onto this rect.
         // TODO cache so that we only do this if drawable bounds have changed.
         //  Need a Drawable mechanism
-        drawable.getBounds(drawableBounds)
-        val coordinates = drawable.vertexCount * 2
-        ensureTextureCoordsBuffer(coordinates)
-        for (i in 0 until coordinates) {
-            val isX = i % 2 == 0
-            val drawableValue = drawable.vertexArray.get(i)
-            val drawableMinValue = if (isX) drawableBounds.left else drawableBounds.bottom
-            val drawableMaxValue = if (isX) drawableBounds.right else drawableBounds.top
-            val drawableFraction = (drawableValue - drawableMinValue) / (drawableMaxValue - drawableMinValue)
-            val textureValue = 0F + drawableFraction * 1F // tex value goes from 0 to 1
-            textureCoordsBuffer.put(i, textureValue)
-        }
+        textureCoordsHandle?.let {
+            drawable.getBounds(drawableBounds)
+            val coordinates = drawable.vertexCount * 2
+            ensureTextureCoordsBuffer(coordinates)
+            for (i in 0 until coordinates) {
+                val isX = i % 2 == 0
+                val drawableValue = drawable.vertexArray.get(i)
+                val drawableMinValue = if (isX) drawableBounds.left else drawableBounds.bottom
+                val drawableMaxValue = if (isX) drawableBounds.right else drawableBounds.top
+                val drawableFraction = (drawableValue - drawableMinValue) / (drawableMaxValue - drawableMinValue)
+                val textureValue = 0F + drawableFraction * 1F // tex value goes from 0 to 1
+                textureCoordsBuffer.put(i, textureValue)
+            }
 
-        GLES20.glEnableVertexAttribArray(textureCoordsHandle.value)
-        Egloo.checkGlError("glEnableVertexAttribArray")
-        GLES20.glVertexAttribPointer(textureCoordsHandle.value, 2,
-                GLES20.GL_FLOAT,
-                false,
-                vertexStride,
-                textureCoordsBuffer)
-        Egloo.checkGlError("glVertexAttribPointer")
+            GLES20.glEnableVertexAttribArray(it.value)
+            Egloo.checkGlError("glEnableVertexAttribArray")
+            GLES20.glVertexAttribPointer(it.value, 2,
+                    GLES20.GL_FLOAT,
+                    false,
+                    drawable.vertexStride,
+                    textureCoordsBuffer)
+            Egloo.checkGlError("glVertexAttribPointer")
+        }
     }
 
+
     override fun onPostDraw(drawable: GlDrawable) {
-        GLES20.glDisableVertexAttribArray(vertexPositionHandle.value)
-        GLES20.glDisableVertexAttribArray(textureCoordsHandle.value)
         super.onPostDraw(drawable)
+        vertexPositionHandle.let {
+            GLES20.glDisableVertexAttribArray(it.value)
+        }
+        textureCoordsHandle?.let {
+            GLES20.glDisableVertexAttribArray(it.value)
+        }
+        texture?.unbind()
+        Egloo.checkGlError("onPostDraw end")
+    }
+
+    override fun release() {
+        super.release()
+        texture?.release()
+        texture = null
     }
 
     companion object {
