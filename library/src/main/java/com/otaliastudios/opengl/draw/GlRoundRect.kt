@@ -136,6 +136,7 @@ open class GlRoundRect : Gl2dDrawable() {
         array.put(array.get(2))
         array.put(array.get(3))
         array.flip()
+        notifyVertexArrayChange()
     }
 
     private fun addCornerArc(array: FloatBuffer,

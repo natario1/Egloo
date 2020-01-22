@@ -5,7 +5,6 @@ import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.extensions.floatBufferOf
 import com.otaliastudios.opengl.extensions.scale
 import com.otaliastudios.opengl.extensions.translate
-import java.nio.FloatBuffer
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -74,6 +73,7 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
         array.put(array.get(2)) // Close the fan
         array.put(array.get(3)) // Close the fan
         array.flip()
+        notifyVertexArrayChange()
     }
 
     override fun onViewportSizeChanged() {

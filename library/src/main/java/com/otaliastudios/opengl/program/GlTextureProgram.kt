@@ -67,15 +67,9 @@ open class GlTextureProgram protected constructor(
     private val vertexPositionHandle = getAttribHandle(vertexPositionName)
     private val vertexMvpMatrixHandle = getUniformHandle(vertexMvpMatrixName)
 
-    private fun ensureTextureCoordsBuffer(size: Int) {
-        if (textureCoordsBuffer.capacity() < size) {
-            textureCoordsBuffer = floatBufferOf(size)
-        }
-        textureCoordsBuffer.clear()
-        textureCoordsBuffer.limit(size)
-    }
-
-    private val drawableBounds = RectF()
+    private val lastDrawableBounds = RectF()
+    private var lastDrawableVersion = -1
+    private var lastDrawable: Gl2dDrawable? = null
 
     /**
      * If not null, [GlTextureProgram] will care about the texture lifecycle: binding,
@@ -118,20 +112,30 @@ open class GlTextureProgram protected constructor(
         // We must compute the texture coordinates given the drawable vertex array.
         // To do this, we ask the drawable for its boundaries, then apply the texture
         // onto this rect.
-        // TODO cache so that we only do this if drawable bounds have changed.
-        //  Need a Drawable mechanism
         textureCoordsHandle?.let {
-            drawable.getBounds(drawableBounds)
-            val coordinates = drawable.vertexCount * 2
-            ensureTextureCoordsBuffer(coordinates)
-            for (i in 0 until coordinates) {
-                val isX = i % 2 == 0
-                val drawableValue = drawable.vertexArray.get(i)
-                val drawableMinValue = if (isX) drawableBounds.left else drawableBounds.bottom
-                val drawableMaxValue = if (isX) drawableBounds.right else drawableBounds.top
-                val drawableFraction = (drawableValue - drawableMinValue) / (drawableMaxValue - drawableMinValue)
-                val textureValue = 0F + drawableFraction * 1F // tex value goes from 0 to 1
-                textureCoordsBuffer.put(i, textureValue)
+            // Compute only if drawable changed. If the version has not changed, the
+            // textureCoordsBuffer should be in a good state already - just need to rewind.
+            if (drawable != lastDrawable || drawable.vertexArrayVersion != lastDrawableVersion) {
+                lastDrawable = drawable
+                lastDrawableVersion = drawable.vertexArrayVersion
+                drawable.getBounds(lastDrawableBounds)
+                val coordinates = drawable.vertexCount * 2
+                if (textureCoordsBuffer.capacity() < coordinates) {
+                    textureCoordsBuffer = floatBufferOf(coordinates)
+                }
+                textureCoordsBuffer.clear()
+                textureCoordsBuffer.limit(coordinates)
+                for (i in 0 until coordinates) {
+                    val isX = i % 2 == 0
+                    val drawableValue = drawable.vertexArray.get(i)
+                    val drawableMinValue = if (isX) lastDrawableBounds.left else lastDrawableBounds.bottom
+                    val drawableMaxValue = if (isX) lastDrawableBounds.right else lastDrawableBounds.top
+                    val drawableFraction = (drawableValue - drawableMinValue) / (drawableMaxValue - drawableMinValue)
+                    val textureValue = 0F + drawableFraction * 1F // tex value goes from 0 to 1
+                    textureCoordsBuffer.put(i, textureValue)
+                }
+            } else {
+                textureCoordsBuffer.rewind()
             }
 
             GLES20.glEnableVertexAttribArray(it.value)

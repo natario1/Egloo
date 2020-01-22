@@ -31,6 +31,7 @@ open class GlRect: Gl2dDrawable() {
         vertexArray.clear()
         vertexArray.put(array)
         vertexArray.flip()
+        notifyVertexArrayChange()
     }
 
     @Deprecated("Use setRect", ReplaceWith("setRect(rect)"))
@@ -59,6 +60,7 @@ open class GlRect: Gl2dDrawable() {
         vertexArray.put(right)
         vertexArray.put(top)
         vertexArray.flip()
+        notifyVertexArrayChange()
     }
 
     override fun draw() {
