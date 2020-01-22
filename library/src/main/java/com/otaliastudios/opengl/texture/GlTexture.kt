@@ -19,7 +19,7 @@ class GlTexture private constructor(
             : this(unit, target, id, null, null, null)
 
     @JvmOverloads
-    constructor(unit: Int = GLES20.GL_TEXTURE0, target: Int, width: Int, height: Int, format: Int = GLES20.GL_RGBA)
+    constructor(unit: Int, target: Int, width: Int, height: Int, format: Int = GLES20.GL_RGBA)
             : this(unit, target, null, width, height, format)
 
     val id = id ?: run {
@@ -30,17 +30,19 @@ class GlTexture private constructor(
     }
 
     init {
-        use {
-            if (width != null && height != null && format != null) {
-                GLES20.glTexImage2D(target, 0,
-                        format, width, height, 0,
-                        format, GLES20.GL_UNSIGNED_BYTE, null)
+        if (id == null) {
+            use {
+                if (width != null && height != null && format != null) {
+                    GLES20.glTexImage2D(target, 0,
+                            format, width, height, 0,
+                            format, GLES20.GL_UNSIGNED_BYTE, null)
+                }
+                GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
+                GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
+                GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
+                GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
+                Egloo.checkGlError("glTexParameter")
             }
-            GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
-            GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())
-            GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_WRAP_S, GLES20.GL_CLAMP_TO_EDGE)
-            GLES20.glTexParameteri(target, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE)
-            Egloo.checkGlError("glTexParameter")
         }
     }
 
