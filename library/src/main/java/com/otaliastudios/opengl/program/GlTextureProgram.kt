@@ -127,12 +127,11 @@ open class GlTextureProgram protected constructor(
                 textureCoordsBuffer.limit(coordinates)
                 for (i in 0 until coordinates) {
                     val isX = i % 2 == 0
-                    val drawableValue = drawable.vertexArray.get(i)
-                    val drawableMinValue = if (isX) lastDrawableBounds.left else lastDrawableBounds.bottom
-                    val drawableMaxValue = if (isX) lastDrawableBounds.right else lastDrawableBounds.top
-                    val drawableFraction = (drawableValue - drawableMinValue) / (drawableMaxValue - drawableMinValue)
-                    val textureValue = 0F + drawableFraction * 1F // tex value goes from 0 to 1
-                    textureCoordsBuffer.put(i, textureValue)
+                    val value = drawable.vertexArray.get(i)
+                    val min = if (isX) lastDrawableBounds.left else lastDrawableBounds.bottom
+                    val max = if (isX) lastDrawableBounds.right else lastDrawableBounds.top
+                    val texValue = computeTextureCoordinate(i / 2, drawable, value, min, max, isX)
+                    textureCoordsBuffer.put(i, texValue)
                 }
             } else {
                 textureCoordsBuffer.rewind()
@@ -149,6 +148,17 @@ open class GlTextureProgram protected constructor(
         }
     }
 
+    // Returns the texture value for a given drawable vertex coordinate,
+    // considering that texture values go from 0 to 1.
+    protected open fun computeTextureCoordinate(vertex: Int,
+                                                drawable: Gl2dDrawable,
+                                                value: Float,
+                                                min: Float,
+                                                max: Float,
+                                                horizontal: Boolean): Float {
+        val fraction = (value - min) / (max - min)
+        return 0F + fraction * 1F // in tex coords
+    }
 
     override fun onPostDraw(drawable: GlDrawable) {
         super.onPostDraw(drawable)
