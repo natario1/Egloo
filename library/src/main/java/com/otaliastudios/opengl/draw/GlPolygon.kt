@@ -1,5 +1,6 @@
 package com.otaliastudios.opengl.draw
 
+import android.graphics.PointF
 import android.opengl.GLES20
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.extensions.floatBufferOf
@@ -42,14 +43,21 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
         set(value) {
             field = value
             updateArray()
-            onViewportSizeChanged()
+            onViewportSizeOrCenterChanged()
         }
 
     var centerY = 0F
         set(value) {
             field = value
             updateArray()
-            onViewportSizeChanged()
+            onViewportSizeOrCenterChanged()
+        }
+
+    var center: PointF
+        get() = PointF(centerX, centerY)
+        set(value) {
+            centerX = value.x
+            centerY = value.y
         }
 
     override var vertexArray = floatBufferOf((sides + 2) * coordsPerVertex)
@@ -78,6 +86,10 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
 
     override fun onViewportSizeChanged() {
         super.onViewportSizeChanged()
+        onViewportSizeOrCenterChanged()
+    }
+
+    private fun onViewportSizeOrCenterChanged() {
         // Undo the previous modifications.
         modelMatrix.scale(x = 1F / viewportScaleX, y = 1F / viewportScaleY)
         modelMatrix.translate(x = -viewportTranslationX, y = -viewportTranslationY)
