@@ -1,39 +1,36 @@
 package com.otaliastudios.opengl.demo
 
-import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.graphics.PixelFormat
+import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.SurfaceTexture
 import android.net.Uri
+import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.view.*
 import android.widget.Toast
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.google.android.exoplayer2.ExoPlayerFactory
 import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ExtractorMediaSource
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.video.VideoListener
 import com.otaliastudios.opengl.core.EglConfigChooser
 import com.otaliastudios.opengl.core.EglContextFactory
-import com.otaliastudios.opengl.core.EglCore
 import com.otaliastudios.opengl.draw.*
-import com.otaliastudios.opengl.program.GlFlatProgram
+import com.otaliastudios.opengl.extensions.makeIdentity
+import com.otaliastudios.opengl.extensions.scaleX
+import com.otaliastudios.opengl.extensions.scaleY
 import com.otaliastudios.opengl.program.GlTextureProgram
 import com.otaliastudios.opengl.scene.GlScene
-import com.otaliastudios.opengl.surface.EglWindowSurface
+import com.otaliastudios.opengl.texture.GlTexture
 import javax.microedition.khronos.egl.EGLConfig
 import javax.microedition.khronos.opengles.GL10
-import kotlin.math.roundToInt
 
 class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
@@ -45,7 +42,26 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
     private val scene = GlScene()
     private val glRect = GlRect()
     private val glRoundRect = GlRoundRect().apply { setCornersPx(200) }
-    private var glDrawable: GlDrawable = glRect
+    private val glMesh = Gl2dMesh().also {
+        it.setPoints(listOf(
+                PointF(0F, 0F),
+                PointF(0F, 1F),
+                PointF(1F, 0F),
+                PointF(0F, -1F),
+                PointF(-1F, 0F),
+                PointF(0.9F, 0.7F),
+                PointF(0.7F, 0.9F),
+                PointF(-0.9F, -0.7F),
+                PointF(-0.7F, -0.9F),
+                PointF(0.9F, -0.7F),
+                PointF(0.7F, -0.9F),
+                PointF(-0.9F, 0.7F),
+                PointF(-0.7F, 0.9F)
+        ))
+    }
+
+    private val glDrawables = listOf(glRect, glRoundRect, glMesh)
+    private var glDrawable = 0
     private lateinit var player: SimpleExoPlayer
 
     private var videoWidth = -1
@@ -96,7 +112,10 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
         // On touch, change the current drawable.
         glSurfaceView.setOnTouchListener { v, event ->
-            glDrawable = if (glDrawable == glRect) glRoundRect else glRect
+            glDrawable++
+            if (glDrawable > glDrawables.lastIndex) {
+                glDrawable = 0
+            }
             false
         }
         Toast.makeText(this, "Touch the screen to change shape.", Toast.LENGTH_LONG).show()
@@ -104,10 +123,12 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
 
     override fun onSurfaceCreated(gl: GL10, config: EGLConfig) {
         // Configure GL
+        val glTexture = GlTexture()
         glTextureProgram = GlTextureProgram()
+        glTextureProgram!!.texture = glTexture
 
         // Configure the player
-        surfaceTexture = SurfaceTexture(glTextureProgram!!.textureId)
+        surfaceTexture = SurfaceTexture(glTexture.id)
         surfaceTexture!!.setOnFrameAvailableListener {
             glSurfaceView.requestRender()
         }
@@ -131,7 +152,7 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         texture.updateTexImage()
         texture.getTransformMatrix(program.textureTransform)
-        scene.draw(program, glDrawable)
+        scene.draw(program, glDrawables[glDrawable])
     }
 
     private fun onSurfaceDestroyed() {
@@ -149,24 +170,27 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         if (surfaceWidth == -1 || surfaceHeight == -1) return
         val videoRatio = videoWidth.toFloat() / videoHeight
         val surfaceRatio = surfaceWidth.toFloat() / surfaceHeight
-        val rect: RectF
+        val viewport: RectF
         if (videoRatio > surfaceRatio) {
             // Video is wider. We should collapse height.
             val surfaceRealHeight = surfaceWidth / videoRatio
             val surfaceRealHeightEgloo = surfaceRealHeight / surfaceHeight * 2
-            rect = RectF(-1F, surfaceRealHeightEgloo / 2F,
+            viewport = RectF(-1F, surfaceRealHeightEgloo / 2F,
                     1F, -surfaceRealHeightEgloo / 2F)
         } else if (videoRatio < surfaceRatio) {
             // Video is taller. We should collapse width
             val surfaceRealWidth = surfaceHeight * videoRatio
             val surfaceRealWidthEgloo = surfaceRealWidth / surfaceWidth * 2
-            rect = RectF(-surfaceRealWidthEgloo / 2F, 1F,
+            viewport = RectF(-surfaceRealWidthEgloo / 2F, 1F,
                     surfaceRealWidthEgloo / 2F, -1F)
         } else {
-            rect = RectF(-1F, 1F, 1F, -1F)
+            viewport = RectF(-1F, 1F, 1F, -1F)
         }
-        glRect.setVertexArray(rect)
-        glRoundRect.setRect(rect)
+        glRect.setRect(viewport)
+        glRoundRect.setRect(viewport)
+        glMesh.modelMatrix.makeIdentity()
+        glMesh.modelMatrix.scaleX(viewport.width() / 2F)
+        glMesh.modelMatrix.scaleY(-viewport.height() / 2F)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -1,4 +1,4 @@
-package com.otaliastudios.opengl.viewport
+package com.otaliastudios.opengl.core
 
 import android.opengl.GLES20
 

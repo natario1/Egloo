@@ -6,7 +6,7 @@ import com.otaliastudios.opengl.core.Egloo
 /**
  * A simple helper class for holding handles to program variables.
  */
-class GlHandle private constructor(
+class GlProgramLocation private constructor(
         program: Int,
         type: Type,
         @Suppress("CanBeParameter") val name: String
@@ -24,7 +24,7 @@ class GlHandle private constructor(
     }
 
     companion object {
-        fun getAttrib(program: Int, name: String) = GlHandle(program, Type.ATTRIB, name)
-        fun getUniform(program: Int, name: String) = GlHandle(program, Type.UNIFORM, name)
+        fun getAttrib(program: Int, name: String) = GlProgramLocation(program, Type.ATTRIB, name)
+        fun getUniform(program: Int, name: String) = GlProgramLocation(program, Type.UNIFORM, name)
     }
 }

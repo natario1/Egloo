@@ -23,6 +23,7 @@ open class GlRect: Gl2dDrawable() {
     override var vertexArray: FloatBuffer = floatBufferOf(*FULL_RECTANGLE_COORDS.clone())
 
     @Suppress("unused")
+    @Deprecated("Use setRect", ReplaceWith("setRect(rect)"))
     open fun setVertexArray(array: FloatArray) {
         if (array.size != 4 * coordsPerVertex) {
             throw IllegalArgumentException("Vertex array should have 8 values.")
@@ -30,27 +31,41 @@ open class GlRect: Gl2dDrawable() {
         vertexArray.clear()
         vertexArray.put(array)
         vertexArray.flip()
+        notifyVertexArrayChange()
     }
 
+    @Deprecated("Use setRect", ReplaceWith("setRect(rect)"))
     open fun setVertexArray(rect: RectF) {
+        setRect(rect)
+    }
+
+    @Suppress("unused")
+    fun setRect(rect: RectF) {
+        setRect(rect.left, rect.top, rect.right, rect.bottom)
+    }
+
+    @Suppress("MemberVisibilityCanBePrivate")
+    fun setRect(left: Float, top: Float, right: Float, bottom: Float) {
         vertexArray.clear()
         // 1
-        vertexArray.put(rect.left)
-        vertexArray.put(rect.bottom)
+        vertexArray.put(left)
+        vertexArray.put(bottom)
         // 2
-        vertexArray.put(rect.right)
-        vertexArray.put(rect.bottom)
+        vertexArray.put(right)
+        vertexArray.put(bottom)
         // 3
-        vertexArray.put(rect.left)
-        vertexArray.put(rect.top)
+        vertexArray.put(left)
+        vertexArray.put(top)
         // 4
-        vertexArray.put(rect.right)
-        vertexArray.put(rect.top)
+        vertexArray.put(right)
+        vertexArray.put(top)
         vertexArray.flip()
+        notifyVertexArrayChange()
     }
 
     override fun draw() {
+        Egloo.checkGlError("glDrawArrays start")
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, vertexCount)
-        Egloo.checkGlError("glDrawArrays")
+        Egloo.checkGlError("glDrawArrays end")
     }
 }

@@ -17,7 +17,7 @@ object Egloo {
     /**
      * Identify matrix for general use.
      */
-    @JvmStatic
+    @JvmField
     val IDENTITY_MATRIX = FloatArray(16).apply {
         makeIdentity()
     }

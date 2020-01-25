@@ -1,11 +1,11 @@
 package com.otaliastudios.opengl.draw
 
+import android.graphics.PointF
 import android.opengl.GLES20
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.extensions.floatBufferOf
 import com.otaliastudios.opengl.extensions.scale
 import com.otaliastudios.opengl.extensions.translate
-import java.nio.FloatBuffer
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
@@ -43,14 +43,21 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
         set(value) {
             field = value
             updateArray()
-            onViewportSizeChanged()
+            onViewportSizeOrCenterChanged()
         }
 
     var centerY = 0F
         set(value) {
             field = value
             updateArray()
-            onViewportSizeChanged()
+            onViewportSizeOrCenterChanged()
+        }
+
+    var center: PointF
+        get() = PointF(centerX, centerY)
+        set(value) {
+            centerX = value.x
+            centerY = value.y
         }
 
     override var vertexArray = floatBufferOf((sides + 2) * coordsPerVertex)
@@ -74,10 +81,15 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
         array.put(array.get(2)) // Close the fan
         array.put(array.get(3)) // Close the fan
         array.flip()
+        notifyVertexArrayChange()
     }
 
     override fun onViewportSizeChanged() {
         super.onViewportSizeChanged()
+        onViewportSizeOrCenterChanged()
+    }
+
+    private fun onViewportSizeOrCenterChanged() {
         // Undo the previous modifications.
         modelMatrix.scale(x = 1F / viewportScaleX, y = 1F / viewportScaleY)
         modelMatrix.translate(x = -viewportTranslationX, y = -viewportTranslationY)

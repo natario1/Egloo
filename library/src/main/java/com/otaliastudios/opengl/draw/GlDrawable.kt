@@ -3,7 +3,7 @@ package com.otaliastudios.opengl.draw
 
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.program.GlProgram
-import com.otaliastudios.opengl.viewport.GlViewportAware
+import com.otaliastudios.opengl.core.GlViewportAware
 import java.nio.FloatBuffer
 
 abstract class GlDrawable : GlViewportAware() {
@@ -16,12 +16,12 @@ abstract class GlDrawable : GlViewportAware() {
 
     /**
      * Returns the array of vertices.
-     * To avoid allocations, this returns internal state.  The caller must not modify it.
+     * To avoid allocations, this returns internal state. The caller must not modify it.
      */
     abstract var vertexArray: FloatBuffer
 
     /**
-     * Returns the number of position coordinates per vertex.  This will be 2 or 3.
+     * Returns the number of position coordinates per vertex. This will be 2 or 3.
      */
     abstract val coordsPerVertex: Int
 
@@ -43,4 +43,11 @@ abstract class GlDrawable : GlViewportAware() {
      * Instead, this drawable should be passed to some [GlProgram].
      */
     abstract fun draw()
+
+    var vertexArrayVersion: Int = 0
+        private set
+
+    protected fun notifyVertexArrayChange() {
+        vertexArrayVersion++
+    }
 }

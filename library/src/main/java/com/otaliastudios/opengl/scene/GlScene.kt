@@ -1,12 +1,11 @@
 package com.otaliastudios.opengl.scene
 
 
-import android.opengl.GLES20
 import android.opengl.Matrix
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.draw.GlDrawable
 import com.otaliastudios.opengl.program.GlProgram
-import com.otaliastudios.opengl.viewport.GlViewportAware
+import com.otaliastudios.opengl.core.GlViewportAware
 
 /**
  * Scenes can be to draw [GlDrawable]s through [GlProgram]s.
