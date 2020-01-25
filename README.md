@@ -33,7 +33,7 @@ You can take a look at the demo app or see Egloo in action in more popular proje
 - for transcoding videos in the [Transcoder](https://github.com/natario1/Transcoder) library
 
 ```groovy
-implementation 'com.otaliastudios.opengl:egloo:0.3.1'
+implementation 'com.otaliastudios.opengl:egloo:0.4.0'
 ```
 
 ## Features
