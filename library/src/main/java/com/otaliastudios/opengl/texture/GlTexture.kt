@@ -6,7 +6,7 @@ import com.otaliastudios.opengl.core.GlBindable
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.core.use
 
-class GlTexture private constructor(
+open class GlTexture private constructor(
         val unit: Int,
         val target: Int,
         id: Int?,

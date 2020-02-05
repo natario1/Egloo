@@ -5,7 +5,7 @@ import com.otaliastudios.opengl.core.GlBindable
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.core.use
 
-class GlFramebuffer(id: Int? = null) : GlBindable {
+open class GlFramebuffer(id: Int? = null) : GlBindable {
 
     val id = id ?: run {
         val array = IntArray(1)
