@@ -19,6 +19,7 @@ abstract class GlDrawable : GlViewportAware() {
      * To avoid allocations, this returns internal state. The caller must not modify it.
      */
     abstract var vertexArray: FloatBuffer
+        protected set
 
     /**
      * Returns the number of position coordinates per vertex. This will be 2 or 3.

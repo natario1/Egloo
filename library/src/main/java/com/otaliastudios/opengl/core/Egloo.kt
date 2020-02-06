@@ -13,6 +13,8 @@ import com.otaliastudios.opengl.extensions.makeIdentity
 object Egloo {
 
     const val SIZE_OF_FLOAT = 4
+    const val SIZE_OF_SHORT = 2
+    const val SIZE_OF_INT = 4
 
     /**
      * Identify matrix for general use.

@@ -6,6 +6,7 @@ import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.draw.Gl2dDrawable
 import com.otaliastudios.opengl.draw.Gl3dDrawable
 import com.otaliastudios.opengl.draw.GlDrawable
+import com.otaliastudios.opengl.draw.GlTexturable
 import com.otaliastudios.opengl.extensions.floatBufferOf
 import com.otaliastudios.opengl.geometry.Rect3F
 import com.otaliastudios.opengl.texture.GlTexture
@@ -114,7 +115,11 @@ open class GlTextureProgram protected constructor(
         textureCoordsHandle?.let {
             // Compute only if drawable changed. If the version has not changed, the
             // textureCoordsBuffer should be in a good state already - just need to rewind.
-            if (drawable != lastDrawable || drawable.vertexArrayVersion != lastDrawableVersion) {
+            val buffer = if (drawable is GlTexturable) {
+                drawable.textureCoordsArray
+            } else if (drawable == lastDrawable && drawable.vertexArrayVersion == lastDrawableVersion) {
+                textureCoordsBuffer
+            } else {
                 lastDrawable = drawable
                 lastDrawableVersion = drawable.vertexArrayVersion
                 // NOTE: For 3D drawables we also allocate 3D texture coords which assumes that
@@ -166,16 +171,27 @@ open class GlTextureProgram protected constructor(
                             max = max)
                     textureCoordsBuffer.put(texValue)
                 }
+                textureCoordsBuffer
             }
-            textureCoordsBuffer.rewind()
 
+            val coords = when (drawable) {
+                is GlTexturable -> drawable.textureCoordsPerVertex
+                else -> drawable.coordsPerVertex
+            }
+
+            val stride = when (drawable) {
+                is GlTexturable -> drawable.textureCoordsStride
+                else -> drawable.vertexStride
+            }
+
+            buffer.rewind()
             GLES20.glEnableVertexAttribArray(it.value)
             Egloo.checkGlError("glEnableVertexAttribArray")
-            GLES20.glVertexAttribPointer(it.value, drawable.coordsPerVertex,
+            GLES20.glVertexAttribPointer(it.value, coords,
                     GLES20.GL_FLOAT,
                     false,
-                    drawable.vertexStride,
-                    textureCoordsBuffer)
+                    stride,
+                    buffer)
             Egloo.checkGlError("glVertexAttribPointer")
         }
     }

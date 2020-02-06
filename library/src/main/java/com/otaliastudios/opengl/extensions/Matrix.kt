@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.otaliastudios.opengl.extensions
 
 import android.opengl.Matrix
@@ -22,20 +24,17 @@ fun FloatArray.clear(): FloatArray {
 fun FloatArray.translate(x: Float = 0F, y: Float = 0F, z: Float = 0F): FloatArray {
     checkSize()
     Matrix.translateM(this, 0, x, y, z)
-    return this;
+    return this
 }
 
-@Suppress("unused")
 fun FloatArray.translateX(translation: Float): FloatArray {
     return translate(x = translation)
 }
 
-@Suppress("unused")
 fun FloatArray.translateY(translation: Float): FloatArray {
     return translate(y = translation)
 }
 
-@Suppress("unused")
 fun FloatArray.translateZ(translation: Float): FloatArray {
     return translate(z = translation)
 }
@@ -54,8 +53,26 @@ fun FloatArray.scaleY(scale: Float): FloatArray {
     return scale(y = scale)
 }
 
-@Suppress("unused")
 fun FloatArray.scaleZ(scale: Float): FloatArray {
     return scale(z = scale)
+}
 
+fun FloatArray.rotate(x: Float = 0F, y: Float = 0F, z: Float = 0F): FloatArray {
+    checkSize()
+    if (x != 0F) Matrix.rotateM(this, 0, x, 1F, 0F, 0F)
+    if (y != 0F) Matrix.rotateM(this, 0, y, 0F, 1F, 0F)
+    if (z != 0F) Matrix.rotateM(this, 0, z, 0F, 0F, 1F)
+    return this
+}
+
+fun FloatArray.rotateX(rotation: Float): FloatArray {
+    return rotate(x = rotation)
+}
+
+fun FloatArray.rotateY(rotation: Float): FloatArray {
+    return rotate(y = rotation)
+}
+
+fun FloatArray.rotateZ(rotation: Float): FloatArray {
+    return rotate(z = rotation)
 }

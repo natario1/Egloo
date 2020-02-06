@@ -1,10 +1,53 @@
 package com.otaliastudios.opengl.extensions
 
-import android.opengl.Matrix
 import com.otaliastudios.opengl.core.Egloo
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.nio.FloatBuffer
+import java.nio.*
+
+fun IntArray.toBuffer(): IntBuffer {
+    val buffer = ByteBuffer
+            .allocateDirect(size * Egloo.SIZE_OF_INT)
+            .order(ByteOrder.nativeOrder())
+            .asIntBuffer()
+            .put(this)
+    buffer.flip()
+    return buffer
+}
+
+fun intBufferOf(vararg elements: Int): IntBuffer {
+    return intArrayOf(*elements).toBuffer()
+}
+
+fun intBufferOf(size: Int): IntBuffer {
+    return ByteBuffer
+            .allocateDirect(size * Egloo.SIZE_OF_INT)
+            .order(ByteOrder.nativeOrder())
+            .asIntBuffer().also {
+                it.limit(it.capacity())
+            }
+}
+
+fun ShortArray.toBuffer(): ShortBuffer {
+    val buffer = ByteBuffer
+            .allocateDirect(size * Egloo.SIZE_OF_SHORT)
+            .order(ByteOrder.nativeOrder())
+            .asShortBuffer()
+            .put(this)
+    buffer.flip()
+    return buffer
+}
+
+fun shortBufferOf(vararg elements: Short): ShortBuffer {
+    return shortArrayOf(*elements).toBuffer()
+}
+
+fun shortBufferOf(size: Int): ShortBuffer {
+    return ByteBuffer
+            .allocateDirect(size * Egloo.SIZE_OF_SHORT)
+            .order(ByteOrder.nativeOrder())
+            .asShortBuffer().also {
+                it.limit(it.capacity())
+            }
+}
 
 fun FloatArray.toBuffer(): FloatBuffer {
     val buffer = ByteBuffer
