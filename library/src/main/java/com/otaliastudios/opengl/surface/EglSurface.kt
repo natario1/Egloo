@@ -109,7 +109,7 @@ abstract class EglSurface protected constructor(
      */
     @Suppress("unused")
     fun makeNothingCurrent() {
-        eglCore.makeNoSurfaceCurrent()
+        eglCore.makeCurrent()
     }
 
     /**

@@ -12,15 +12,20 @@ class GlTexture private constructor(
         id: Int?,
         width: Int?,
         height: Int?,
-        format: Int?) : GlBindable {
+        format: Int?,
+        internalFormat: Int?,
+        type: Int?) : GlBindable {
 
     @JvmOverloads
     constructor(unit: Int = GLES20.GL_TEXTURE0, target: Int = GLES11Ext.GL_TEXTURE_EXTERNAL_OES, id: Int? = null)
-            : this(unit, target, id, null, null, null)
+            : this(unit, target, id, null, null, null, null, null)
 
     @JvmOverloads
-    constructor(unit: Int, target: Int, width: Int, height: Int, format: Int = GLES20.GL_RGBA)
-            : this(unit, target, null, width, height, format)
+    constructor(unit: Int, target: Int, width: Int, height: Int,
+                format: Int = GLES20.GL_RGBA,
+                internalFormat: Int = format,
+                type: Int = GLES20.GL_UNSIGNED_BYTE)
+            : this(unit, target, null, width, height, format, internalFormat, type)
 
     val id = id ?: run {
         val textures = IntArray(1)
@@ -32,10 +37,13 @@ class GlTexture private constructor(
     init {
         if (id == null) {
             use {
-                if (width != null && height != null && format != null) {
+                if (width != null && height != null
+                        && format != null
+                        && internalFormat != null
+                        && type != null) {
                     GLES20.glTexImage2D(target, 0,
-                            format, width, height, 0,
-                            format, GLES20.GL_UNSIGNED_BYTE, null)
+                            internalFormat, width, height, 0,
+                            format, type, null)
                 }
                 GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_MIN_FILTER, GLES20.GL_NEAREST.toFloat())
                 GLES20.glTexParameterf(target, GLES20.GL_TEXTURE_MAG_FILTER, GLES20.GL_LINEAR.toFloat())

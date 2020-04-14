@@ -161,9 +161,9 @@ class EglCore @JvmOverloads constructor(sharedContext: EGLContext = EGL14.EGL_NO
     }
 
     /**
-     * Makes no surface current.
+     * Makes this context current, with no read / write surfaces.
      */
-    internal fun makeNoSurfaceCurrent() {
+    fun makeCurrent() {
         if (!EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, eglContext)) {
             throw RuntimeException("eglMakeCurrent failed")
         }
@@ -199,14 +199,6 @@ class EglCore @JvmOverloads constructor(sharedContext: EGLContext = EGL14.EGL_NO
         val value = IntArray(1)
         EGL14.eglQuerySurface(eglDisplay, eglSurface, what, value, 0)
         return value[0]
-    }
-
-    /**
-     * Queries a string value.
-     */
-    @Suppress("unused")
-    fun queryString(what: Int): String {
-        return EGL14.eglQueryString(eglDisplay, what)
     }
 
     companion object {
