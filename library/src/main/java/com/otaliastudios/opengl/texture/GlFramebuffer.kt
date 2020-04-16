@@ -1,3 +1,5 @@
+@file:Suppress("unused")
+
 package com.otaliastudios.opengl.texture
 
 import android.opengl.GLES20
