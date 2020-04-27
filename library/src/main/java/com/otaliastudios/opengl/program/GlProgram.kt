@@ -21,7 +21,7 @@ import com.otaliastudios.opengl.draw.GlDrawable
  *
  * The vertex shader should then use the two to compute the gl_Position.
  */
-abstract class GlProgram protected constructor(
+open class GlProgram protected constructor(
         val handle: Int,
         private val ownsHandle: Boolean,
         private vararg val shaders: GlShader) : GlBindable {
