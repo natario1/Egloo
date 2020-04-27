@@ -10,3 +10,9 @@ fun GlBindable.use(block: () -> Unit) {
     block()
     unbind()
 }
+
+fun use(vararg bindables: GlBindable, block: () -> Unit) {
+    bindables.forEach { it.bind() }
+    block()
+    bindables.forEach { it.unbind() }
+}
