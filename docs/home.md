@@ -5,7 +5,7 @@ title: "Egloo"
 
 # Egloo
 
-Egloo (formerly EglCore) is a simple and lightweight framework for OpenGL ES drawing and EGL management
+Egloo is a simple and lightweight multiplatform framework for OpenGL ES drawing and EGL management
 in Android that uses object-oriented components - hence the name Egl**oo**. It can serve as a basis for 
 complex drawing operations, but is mostly designed for helping in making common tasks simpler,
 even for people that do not have any OpenGL experience.

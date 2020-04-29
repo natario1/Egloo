@@ -1,10 +1,41 @@
 import com.otaliastudios.tools.publisher.PublisherExtension.License
 import com.otaliastudios.tools.publisher.PublisherExtension.Release
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
+    id("kotlin-multiplatform")
     id("com.android.library")
-    id("kotlin-android")
     id("maven-publisher-bintray")
+}
+
+kotlin {
+    android("androidJvm")
+    val nativeConfig: KotlinNativeTarget.() -> Unit = {
+        val mainSourceSet = compilations["main"].defaultSourceSet.kotlin
+        val testSourceSet = compilations["test"].defaultSourceSet.kotlin
+        mainSourceSet.srcDir("src/androidNativeMain/kotlin")
+        testSourceSet.srcDir("src/androidNativeTest/kotlin")
+        if (name == "androidNativeArm32" || name == "androidNativeX86") {
+            mainSourceSet.srcDir("src/androidNative32BitMain/kotlin")
+        } else if (name == "androidNativeArm64" || name == "androidNativeX64") {
+            mainSourceSet.srcDir("src/androidNative64BitMain/kotlin")
+        }
+        binaries {
+            sharedLib("egloo", listOf(RELEASE))
+        }
+    }
+    androidNativeX64(configure = nativeConfig)
+    androidNativeX86(configure = nativeConfig)
+    androidNativeArm32(configure = nativeConfig)
+    androidNativeArm64(configure = nativeConfig)
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                api("org.jetbrains.kotlin:kotlin-stdlib-common")
+            }
+        }
+    }
 }
 
 android {
@@ -19,6 +50,9 @@ android {
     buildTypes {
         get("release").consumerProguardFile("proguard-rules.pro")
     }
+
+    sourceSets["main"].java.srcDirs("src/androidJvmMain/kotlin")
+    sourceSets["main"].manifest.srcFile("src/androidJvmMain/AndroidManifest.xml")
 }
 
 dependencies {

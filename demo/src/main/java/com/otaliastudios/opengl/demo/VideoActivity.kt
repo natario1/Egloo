@@ -7,7 +7,6 @@ import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.SurfaceTexture
 import android.net.Uri
-import android.opengl.GLES11Ext
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
