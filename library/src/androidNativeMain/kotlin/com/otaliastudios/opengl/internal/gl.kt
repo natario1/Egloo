@@ -5,6 +5,8 @@ package com.otaliastudios.opengl.internal
 import com.otaliastudios.opengl.types.Buffer
 import com.otaliastudios.opengl.types.FloatBuffer
 import kotlinx.cinterop.*
+import platform.android.ANDROID_LOG_ERROR
+import platform.android.__android_log_write
 import platform.gles2.GLsizeiptr
 
 internal expect inline fun Int.toGLsizeiptr(): GLsizeiptr
@@ -102,8 +104,11 @@ internal actual inline fun glGetShaderInfoLog(shader: UInt): String {
         chars.toKString() // breaks if not 0 terminated, but it should be!
     }
 }
-internal actual inline fun glGetShaderiv(shader: UInt, parameter: UInt, result: IntArray)
-        = platform.gles2.glGetShaderiv(shader, parameter, result.toCValues())
+internal actual inline fun glGetShaderiv(shader: UInt, parameter: UInt, result: IntArray) = memScoped {
+    val pointer = allocArray<IntVar>(result.size)
+    platform.gles2.glGetShaderiv(shader, parameter, pointer)
+    result.indices.forEach { result[it] = pointer[it] }
+}
 
 internal actual inline fun glCreateProgram()
         = platform.gles2.glCreateProgram()
@@ -125,8 +130,11 @@ internal actual inline fun glGetProgramInfoLog(program: UInt): String {
         chars.toKString() // breaks if not 0 terminated, but it should be!
     }
 }
-internal actual inline fun glGetProgramiv(program: UInt, parameter: UInt, result: IntArray)
-        = platform.gles2.glGetProgramiv(program, parameter, result.toCValues())
+internal actual inline fun glGetProgramiv(program: UInt, parameter: UInt, result: IntArray) = memScoped {
+    val pointer = allocArray<IntVar>(result.size)
+    platform.gles2.glGetProgramiv(program, parameter, pointer)
+    result.indices.forEach { result[it] = pointer[it] }
+}
 
 internal actual inline fun glEnableVertexAttribArray(array: UInt)
         = platform.gles2.glEnableVertexAttribArray(array)

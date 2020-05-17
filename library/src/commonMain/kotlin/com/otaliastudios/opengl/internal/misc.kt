@@ -13,5 +13,6 @@ internal expect fun gluErrorString(value: Int): String
 internal expect fun matrixMakeIdentity(matrix: FloatArray)
 internal expect fun matrixTranslate(matrix: FloatArray, x: Float, y: Float, z: Float)
 internal expect fun matrixScale(matrix: FloatArray, x: Float, y: Float, z: Float)
+internal expect fun matrixRotate(matrix: FloatArray, angle: Float, x: Float, y: Float, z: Float)
 internal expect fun matrixClone(matrix: FloatArray): FloatArray
 internal expect fun matrixMultiply(result: FloatArray, left: FloatArray, right: FloatArray)

@@ -22,7 +22,7 @@ class GlShader(val type: Int, val id: Int) {
             val compiled = IntArray(1)
             glGetShaderiv(shader, GL_COMPILE_STATUS, compiled)
             if (compiled[0] == 0) {
-                val message = "Could not compile shader $type: ${glGetShaderInfoLog(shader)} source: $source"
+                val message = "Could not compile shader $type: '${glGetShaderInfoLog(shader)}' source: $source"
                 glDeleteShader(shader)
                 throw RuntimeException(message)
             }

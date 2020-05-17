@@ -1,6 +1,7 @@
 package com.otaliastudios.opengl.extensions
 
 import com.otaliastudios.opengl.internal.matrixMakeIdentity
+import com.otaliastudios.opengl.internal.matrixRotate
 import com.otaliastudios.opengl.internal.matrixScale
 import com.otaliastudios.opengl.internal.matrixTranslate
 
@@ -56,5 +57,24 @@ fun FloatArray.scaleY(scale: Float): FloatArray {
 @Suppress("unused")
 fun FloatArray.scaleZ(scale: Float): FloatArray {
     return scale(z = scale)
+}
 
+fun FloatArray.rotate(angle: Float, x: Float, y: Float, z: Float): FloatArray {
+    checkSize()
+    matrixRotate(this, angle, x, y, z)
+    return this
+}
+
+fun FloatArray.rotateX(angle: Float): FloatArray {
+    return rotate(angle = angle, x = 1F, y = 0F, z = 0F)
+}
+
+
+fun FloatArray.rotateY(angle: Float): FloatArray {
+    return rotate(angle = angle, x = 0F, y = 1F, z = 0F)
+}
+
+
+fun FloatArray.rotateZ(angle: Float): FloatArray {
+    return rotate(angle = angle, x = 0F, y = 0F, z = 1F)
 }

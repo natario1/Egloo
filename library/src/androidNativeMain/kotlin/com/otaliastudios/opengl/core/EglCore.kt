@@ -15,17 +15,12 @@ actual class EglCore constructor(
         flags: Int = 0
 ) : EglNativeCore(EglContext(sharedContext), flags) {
 
-    /**
-     * Makes this context current, with no read / write surfaces.
-     */
     public override fun makeCurrent() {
         super.makeCurrent()
     }
 
-    // Kotlin has no finalize, but simply declaring it works,
-    // as stated in official documentation.
-    protected fun finalize() {
-        release()
+    public override fun release() {
+        super.release()
     }
 
     companion object {
