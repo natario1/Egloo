@@ -10,8 +10,8 @@ After you know what to draw through drawables, Egloo needs a `GlProgram` impleme
 **how to draw** them. In Android terms, you can think of this as the `Paint` object that's used to
 draw on canvas.
 
-In GLES terms, a `GlProgram` is exactly an OpenGL program. It accepts a vertex shader and a fragment
-shader in the constructor and manages the program itself.
+In GLES terms, a `GlProgram` is exactly an OpenGL program. It accepts input shaders in the constructor
+and manages the program itself.
 
 A `GlProgram` can be used to draw one or more drawables using the draw method:
 

@@ -12,7 +12,7 @@ google_analytics_id: 'UA-155077779-3'
 google_site_verification: '4x49i17ABIrSvUl52SeL0-t0341aTnWWaC62-FYCRT4'
 github: [metadata] # TODO What's this?
 github_repo: Egloo
-github_version: 0.4.0
+github_version: 0.5.0
 github_branch: master
 baseurl: '/Egloo' # Keep as an empty string if served up at the root
 collections:
