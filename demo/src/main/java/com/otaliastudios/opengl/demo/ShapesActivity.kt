@@ -8,7 +8,6 @@ import android.graphics.RectF
 import android.opengl.GLES20
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem

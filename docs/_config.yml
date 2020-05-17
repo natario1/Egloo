@@ -6,7 +6,7 @@
 # Used by us
 title: Egloo
 color: '#f8f8f8'
-description: A simple and lightweight Kotlin framework for OpenGL ES drawing and EGL management in Android based on object-oriented components, inspired by Google's Grafika. # used by ourselves and by seo tag.
+description: A simple and lightweight Kotlin multiplatform framework for OpenGL ES drawing and EGL management in Android based on object-oriented components, inspired by Google's Grafika. # used by ourselves and by seo tag.
 disqus_shortname: 'egloo-android'
 google_analytics_id: 'UA-155077779-3'
 google_site_verification: '4x49i17ABIrSvUl52SeL0-t0341aTnWWaC62-FYCRT4'

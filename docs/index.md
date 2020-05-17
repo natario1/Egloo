@@ -3,5 +3,5 @@ layout: landing
 title: "Egloo"
 ---
 
-A simple and lightweight Kotlin framework for OpenGL ES drawing and EGL management in Android 
-based on object-oriented components, inspired by Google's Grafika.
+A simple and lightweight multiplatform framework for OpenGL ES and EGL management
+based on object-oriented components, written in Kotlin and inspired by Google's Grafika.
