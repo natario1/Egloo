@@ -18,8 +18,8 @@
 
 # Egloo
 
-Egloo (formerly EglCore) is a simple and lightweight framework for OpenGL ES drawing and EGL management
-in Android that uses object-oriented components - hence the name Egl**oo**. It can serve as a basis for 
+Egloo is a simple and lightweight multiplatform framework for OpenGL ES drawing and EGL management
+ that uses object-oriented components - hence the name Egl**oo**. It can serve as a basis for
 complex drawing operations, but is mostly designed for helping in making common tasks simpler,
 even for people that do not have any OpenGL experience.
 
@@ -33,8 +33,12 @@ You can take a look at the demo app or see Egloo in action in more popular proje
 - for transcoding videos in the [Transcoder](https://github.com/natario1/Transcoder) library
 
 ```groovy
-implementation 'com.otaliastudios.opengl:egloo:0.4.0'
+implementation 'com.otaliastudios.opengl:egloo:0.5.0'
 ```
+
+Starting from 0.5.0, Egloo can run on native targets. We provide an implementation for Android native libraries,
+but other targets like iOS can probably be added easily. These artifacts are not currently published
+but can be built using `./gradlew :library:publishLocal` .
 
 ## Features
 
