@@ -29,8 +29,9 @@ by creating a **thin**, flexible layer of abstraction around EGL and GLES calls.
 
 You can take a look at the demo app or see Egloo in action in more popular projects:
 
-- in a zoomable Surface in the [ZoomLayout](https://github.com/natario1/ZoomLayout) library
-- for transcoding videos in the [Transcoder](https://github.com/natario1/Transcoder) library
+- for camera preview and real-time filters: see [CameraView](https://github.com/natario1/CameraView)
+- in a zoomable Surface: see [ZoomLayout](https://github.com/natario1/ZoomLayout)
+- for transcoding videos: see [Transcoder](https://github.com/natario1/Transcoder)
 
 ```groovy
 implementation 'com.otaliastudios.opengl:egloo:0.5.0'
