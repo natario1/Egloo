@@ -27,4 +27,8 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-core:2.10.4")
     implementation("com.google.android.exoplayer:exoplayer-ui:2.10.4")
     implementation(project(":library"))
+
+    // For testing, instead of the project dependency:
+    // implementation("com.otaliastudios.opengl:egloo:0.5.1-rc1")
+    // implementation("com.otaliastudios.opengl:egloo-android:0.5.1-rc1")
 }
