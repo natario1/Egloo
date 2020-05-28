@@ -19,27 +19,37 @@
 # Egloo
 
 Egloo is a simple and lightweight multiplatform framework for OpenGL ES drawing and EGL management
- that uses object-oriented components - hence the name Egl**oo**. It can serve as a basis for
+that uses object-oriented components - hence the name Egl**oo**. It can serve as a basis for
 complex drawing operations, but is mostly designed for helping in making common tasks simpler,
 even for people that do not have any OpenGL experience.
 
-Approaching OpenGL from Android can be hard because of the deep differences in the OpenGL API design
+Approaching OpenGL from high-level languages can be hard because of the deep differences in the OpenGL API design
 with respect to a typical object-oriented context. Egloo tries to take some of these difficulties away
 by creating a **thin**, flexible layer of abstraction around EGL and GLES calls.
 
-You can take a look at the demo app or see Egloo in action in more popular projects:
+You can take a look at the demo app or see Egloo in action in some popular Android projects:
 
 - for camera preview and real-time filters: see [CameraView](https://github.com/natario1/CameraView)
 - in a zoomable Surface: see [ZoomLayout](https://github.com/natario1/ZoomLayout)
 - for transcoding videos: see [Transcoder](https://github.com/natario1/Transcoder)
 
-```groovy
-implementation 'com.otaliastudios.opengl:egloo:0.5.0'
-```
-
 Starting from 0.5.0, Egloo can run on native targets. We provide an implementation for Android native libraries,
-but other targets like iOS can probably be added easily. These artifacts are not currently published
-but can be built using `./gradlew :library:publishLocal` .
+but other targets like iOS can probably be added easily.
+
+```kotlin
+// Regular Android projects
+implementation("com.otaliastudios.opengl:egloo-android:0.5.1")
+
+// Kotlin Multiplatform projects: add egloo-multiplatform to your common source set.
+implementation("com.otaliastudios.opengl:egloo-multiplatform:0.5.1")
+
+// Kotlin Multiplatform projects: or use the granular dependencies:
+implementation("com.otaliastudios.opengl:egloo-android:0.5.1") // Android AAR
+implementation("com.otaliastudios.opengl:egloo-androidnativex86:0.5.1") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativex64:0.5.1") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativearm32:0.5.1") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativearm64:0.5.1") // Android Native KLib
+```
 
 ## Features
 
@@ -48,6 +58,7 @@ but can be built using `./gradlew :library:publishLocal` .
 - Drawables abstraction [[docs]](https://natario1.github.io/docs/drawables)
 - Programs abstraction [[docs]](https://natario1.github.io/docs/programs)
 - Scenes to hold view and projection matrix [[docs]](https://natario1.github.io/docs/scenes)
+
 
 &#10240;  <!-- Hack to add whitespace -->
 
