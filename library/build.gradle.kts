@@ -1,21 +1,20 @@
-import com.otaliastudios.tools.publisher.PublisherExtension.License
-import com.otaliastudios.tools.publisher.PublisherExtension.Release
+import com.otaliastudios.tools.publisher.common.License
+import com.otaliastudios.tools.publisher.common.Release
+import com.otaliastudios.tools.publisher.bintray.BintrayPublication
+import com.otaliastudios.tools.publisher.local.LocalPublication
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     id("kotlin-multiplatform")
     id("com.android.library")
-    id("maven-publisher-bintray")
-
+    id("com.otaliastudios.tools.publisher")
     id("maven-publish")
 }
 
 kotlin {
     android("androidJvm") {
-        // This enables the KMP android publication. Changing its artifactId here instead of
-        // below, because it only works here for some reason. Must be a bug in KMP.
+        // This enables the KMP android publication.
         publishLibraryVariants("release")
-        mavenPublication { artifactId = "egloo-android" }
     }
     val nativeConfig: KotlinNativeTarget.() -> Unit = {
         val mainSourceSet = compilations["main"].defaultSourceSet.kotlin
@@ -57,7 +56,7 @@ android {
     defaultConfig {
         setMinSdkVersion(property("minSdkVersion") as Int)
         setTargetSdkVersion(property("targetSdkVersion") as Int)
-        versionName = "0.5.0"
+        versionName = "0.5.1-rc1"
     }
     buildTypes["release"].consumerProguardFile("proguard-rules.pro")
     sourceSets["main"].java.srcDirs("src/androidJvmMain/kotlin")
@@ -65,46 +64,62 @@ android {
 }
 
 publisher {
-    auth.user = "BINTRAY_USER"
-    auth.key = "BINTRAY_KEY"
-    auth.repo = "BINTRAY_REPO"
     project.group = "com.otaliastudios.opengl"
-    project.artifact = "egloo"
     project.description = "Simple and lightweight OpenGL ES drawing and EGL management for Android, with object-oriented components based on Google's Grafika."
     project.url = "https://github.com/natario1/Egloo"
     project.vcsUrl = "https://github.com/natario1/Egloo.git"
     project.addLicense(License(name = "MIT", url = "http://www.opensource.org/licenses/mit-license.php"))
-    release.setSources(Release.SOURCES_AUTO)
-    release.setDocs(Release.DOCS_AUTO)
-}
 
-val LOCAL_REPO = "local"
-val LOCAL_REPO_URL = "../prebuilt"
-publishing {
-    repositories {
-        maven {
-            name = LOCAL_REPO
-            setUrl(LOCAL_REPO_URL)
-        }
+    val configureBintray: (BintrayPublication) -> Unit = {
+        it.auth.user = "BINTRAY_USER"
+        it.auth.key = "BINTRAY_KEY"
+        it.auth.repo = "BINTRAY_REPO"
     }
-    // Fix the artifact id for all publications, or the project name will be used.
-    // https://kotlinlang.org/docs/reference/building-mpp-with-gradle.html#publishing-a-multiplatform-library
-    // Base name could be "egloo" instead of "egloo-multiplatform", but it can cause maven conflicts because
-    // "egloo" is live in Bintary and it's an AAR.
-    publications.withType<MavenPublication>().all {
-        if (name != publisher.publication) {
-            artifactId = when (name) {
-                "kotlinMultiplatform" -> "egloo-multiplatform"
-                else -> artifactId.replace(project.name, "egloo")
+    val configureDirectory: (LocalPublication) -> Unit = {
+        it.directory = "../prebuilt"
+    }
+
+    // Legacy android release (:egloo)
+    bintray("legacy") {
+        configureBintray(this)
+        component = "release"
+        project.artifact = "egloo"
+        release.setSources(Release.SOURCES_AUTO)
+        release.setDocs(Release.DOCS_AUTO)
+    }
+    directory("legacy") {
+        configureDirectory(this)
+        component = "release"
+        project.artifact = "egloo"
+        release.setSources(Release.SOURCES_AUTO)
+        release.setDocs(Release.DOCS_AUTO)
+    }
+
+    // Kotlin creates MavenPublication objects with a specific name.
+    // Make sure to override the weird artifact name that KMP provides for these.
+    // Make also sure to not override the packaging, as some are klib, some pom, som aar...
+    val multiplatformPublications = mapOf(
+            "androidJvmRelease" to "egloo-android",
+            "androidNativeArm32" to "egloo-androidnativearm32",
+            "androidNativeArm64" to "egloo-androidnativearm64",
+            "androidNativeX86" to "egloo-androidnativex86",
+            "androidNativeX64" to "egloo-androidnativex64",
+            "kotlinMultiplatform" to "egloo-multiplatform",
+            "metadata" to "egloo-metadata"
+    )
+    multiplatformPublications.forEach { mavenPublication, artifactId ->
+        bintray(mavenPublication) {
+            configureBintray(this)
+            publication = mavenPublication
+            project.artifact = artifactId
+            if (artifactId == "egloo-android") {
+                release.setDocs(Release.DOCS_AUTO)
             }
         }
-    }
-}
-
-tasks.register("publishLocal") {
-    publishing.publications.all {
-        if (name != publisher.publication) {
-            dependsOn("publish${name.capitalize()}PublicationTo${LOCAL_REPO.capitalize()}Repository")
+        directory(mavenPublication) {
+            configureDirectory(this)
+            publication = mavenPublication
+            project.artifact = artifactId
         }
     }
 }
