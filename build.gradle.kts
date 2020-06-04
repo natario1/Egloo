@@ -23,7 +23,7 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-        maven("https://dl.bintray.com/natario/android")
+        maven("https://dl.bintray.com/natario/multiplatform")
     }
 }
 

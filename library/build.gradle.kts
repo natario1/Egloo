@@ -56,7 +56,7 @@ android {
     defaultConfig {
         setMinSdkVersion(property("minSdkVersion") as Int)
         setTargetSdkVersion(property("targetSdkVersion") as Int)
-        versionName = "0.5.1-rc1"
+        versionName = "0.5.1-rc2"
     }
     buildTypes["release"].consumerProguardFile("proguard-rules.pro")
     sourceSets["main"].java.srcDirs("src/androidJvmMain/kotlin")
@@ -68,28 +68,24 @@ publisher {
     project.description = "Simple and lightweight OpenGL ES drawing and EGL management for Android, with object-oriented components based on Google's Grafika."
     project.url = "https://github.com/natario1/Egloo"
     project.vcsUrl = "https://github.com/natario1/Egloo.git"
-    project.addLicense(License(name = "MIT", url = "http://www.opensource.org/licenses/mit-license.php"))
-
-    val configureBintray: (BintrayPublication) -> Unit = {
-        it.auth.user = "BINTRAY_USER"
-        it.auth.key = "BINTRAY_KEY"
-        it.auth.repo = "BINTRAY_REPO"
-    }
-    val configureDirectory: (LocalPublication) -> Unit = {
-        it.directory = "../prebuilt"
-    }
+    project.addLicense(License.MIT)
+    val dir = "../prebuilt"
 
     // Legacy android release (:egloo)
     bintray("legacy") {
-        configureBintray(this)
+        auth.user = "BINTRAY_USER"
+        auth.key = "BINTRAY_KEY"
+        auth.repo = "BINTRAY_REPO_LEGACY"
         component = "release"
+        project.name = "Egloo"
         project.artifact = "egloo"
         release.setSources(Release.SOURCES_AUTO)
         release.setDocs(Release.DOCS_AUTO)
     }
     directory("legacy") {
-        configureDirectory(this)
+        directory = dir
         component = "release"
+        project.name = "Egloo"
         project.artifact = "egloo"
         release.setSources(Release.SOURCES_AUTO)
         release.setDocs(Release.DOCS_AUTO)
@@ -109,16 +105,20 @@ publisher {
     )
     multiplatformPublications.forEach { mavenPublication, artifactId ->
         bintray(mavenPublication) {
-            configureBintray(this)
+            auth.user = "BINTRAY_USER"
+            auth.key = "BINTRAY_KEY"
+            auth.repo = "BINTRAY_REPO"
             publication = mavenPublication
+            project.name = artifactId
             project.artifact = artifactId
             if (artifactId == "egloo-android") {
                 release.setDocs(Release.DOCS_AUTO)
             }
         }
         directory(mavenPublication) {
-            configureDirectory(this)
+            directory = dir
             publication = mavenPublication
+            project.name = artifactId
             project.artifact = artifactId
         }
     }
