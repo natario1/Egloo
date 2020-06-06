@@ -11,6 +11,7 @@ jobs:
       BINTRAY_USER: ${{ secrets.BINTRAY_USER }}
       BINTRAY_KEY: ${{ secrets.BINTRAY_KEY }}
       BINTRAY_REPO: ${{ secrets.BINTRAY_REPO }}
+      BINTRAY_REPO_LEGACY: ${{ secrets.BINTRAY_REPO_LEGACY }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
