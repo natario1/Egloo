@@ -5,10 +5,9 @@ description: "Integrate in your project"
 order: 1
 ---
 
-The library works on API 18+, which is the only requirement and should be met by many projects nowadays.
-
-It is publicly hosted on [JCenter](https://bintray.com/natario/android/Egloo), where you
-can download the AAR package. To fetch with Gradle, make sure you add the JCenter repository in your root projects `build.gradle` file:
+Egloo is publicly hosted on [JCenter](https://bintray.com/natario/android/Egloo), where you
+can download the AAR package and other artifacts. To fetch with Gradle, make sure you add the
+JCenter repository in your root projects `build.gradle` file:
 
 ```groovy
 allprojects {
@@ -18,10 +17,26 @@ allprojects {
 }
 ```
 
-Then simply download the latest version:
+Then simply download the latest version. For regular Android projects users:
 
-```groovy
-implementation 'com.otaliastudios.opengl:egloo:{{ site.github_version }}'
+```kotlin
+implementation("com.otaliastudios.opengl:egloo-android:{{ site.github_version }}")
 ```
 
-No other configuration steps are needed.
+For Kotlin Multiplatform projects:
+
+```kotlin
+// Add a single dependency into your common Kotlin Multiplatform sourceset.
+// This will include the correct artifact for each target that you want to support.
+implementation("com.otaliastudios.opengl:egloo-multiplatform:{{ site.github_version }}")
+
+// Or use granular dependencies:
+implementation("com.otaliastudios.opengl:egloo-android:{{ site.github_version }}") // Android AAR
+implementation("com.otaliastudios.opengl:egloo-androidnativex86:{{ site.github_version }}") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativex64:{{ site.github_version }}") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativearm32:{{ site.github_version }}") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativearm64:{{ site.github_version }}") // Android Native KLib
+
+```
+
+> The Android version works on API 18+, which is the only requirement and should be met by many projects nowadays.

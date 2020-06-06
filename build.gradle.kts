@@ -14,7 +14,7 @@ buildscript {
         val kotlinVersion = property("kotlinVersion") as String
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("com.android.tools.build:gradle:3.6.3")
-        classpath("com.otaliastudios.tools:publisher:0.2.0")
+        classpath("com.otaliastudios.tools:publisher:0.3.3-rc2")
     }
 }
 
@@ -23,6 +23,7 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
+        maven("https://dl.bintray.com/natario/multiplatform")
     }
 }
 
