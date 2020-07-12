@@ -9,6 +9,12 @@ New versions are released through GitHub, so the reference page is the [GitHub R
 Starting from v0.3.1, you can [support development](https://github.com/sponsors/natario1) through the GitHub Sponsors program. 
 Companies can share a tiny part of their revenue and get private support hours in return. Thanks!
 
+### v0.5.2
+
+- Fix: fixed a bug with the Android/JVM implementation ([#23][23])
+
+<https://github.com/natario1/Egloo/compare/v0.5.1...v0.5.2>
+
 ### v0.5.1
 
 Native targets are now published to JCenter and can be added as dependencies from Kotlin Multiplatform
@@ -63,3 +69,4 @@ First versioned release.
 [18]: https://github.com/natario1/Egloo/pull/18
 [20]: https://github.com/natario1/Egloo/pull/20
 [22]: https://github.com/natario1/Egloo/pull/22
+[23]: https://github.com/natario1/Egloo/pull/23
