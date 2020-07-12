@@ -39,8 +39,12 @@ internal actual val GL_LINK_STATUS = GLES20.GL_LINK_STATUS.toUInt()
 internal actual val GL_VERTEX_SHADER = GLES20.GL_VERTEX_SHADER.toUInt()
 internal actual val GL_FRAGMENT_SHADER = GLES20.GL_FRAGMENT_SHADER.toUInt()
 
-internal actual inline fun glGenTextures(count: Int, array: UIntArray) = GLES20.glGenTextures(count, array.toIntArray(), 0)
-internal actual inline fun glDeleteTextures(count: Int, array: UIntArray) = GLES20.glDeleteTextures(count, array.toIntArray(), 0)
+internal actual inline fun glGenTextures(count: Int, array: UIntArray) = withSignedArray(array, count = count) {
+    GLES20.glGenTextures(count, it, 0)
+}
+internal actual inline fun glDeleteTextures(count: Int, array: UIntArray) = withSignedArray(array, count = count) {
+    GLES20.glDeleteTextures(count, it, 0)
+}
 internal actual inline fun glActiveTexture(unit: UInt) = GLES20.glActiveTexture(unit.toInt())
 internal actual inline fun glBindTexture(target: UInt, texture: UInt) = GLES20.glBindTexture(target.toInt(), texture.toInt())
 internal actual inline fun glTexParameteri(target: UInt, parameter: UInt, value: Int) = GLES20.glTexParameteri(target.toInt(), parameter.toInt(), value)
@@ -48,16 +52,24 @@ internal actual inline fun glTexParameterf(target: UInt, parameter: UInt, value:
 internal actual inline fun glTexImage2D(target: UInt, level: Int, internalFormat: Int, width: Int, height: Int, border: Int, format: UInt, type: UInt, pixels: Buffer?)
         = GLES20.glTexImage2D(target.toInt(), level, internalFormat, width, height, border, format.toInt(), type.toInt(), pixels)
 
-internal actual inline fun glGenFramebuffers(count: Int, array: UIntArray) = GLES20.glGenFramebuffers(count, array.toIntArray(), 0)
-internal actual inline fun glDeleteFramebuffers(count: Int, array: UIntArray) = GLES20.glDeleteFramebuffers(count, array.toIntArray(), 0)
+internal actual inline fun glGenFramebuffers(count: Int, array: UIntArray) = withSignedArray(array, count = count) {
+    GLES20.glGenFramebuffers(count, it, 0)
+}
+internal actual inline fun glDeleteFramebuffers(count: Int, array: UIntArray) = withSignedArray(array, count = count) {
+    GLES20.glDeleteFramebuffers(count, it, 0)
+}
 internal actual inline fun glBindFramebuffer(target: UInt, framebuffer: UInt) = GLES20.glBindFramebuffer(target.toInt(), framebuffer.toInt())
 internal actual inline fun glCheckFramebufferStatus(target: UInt) = GLES20.glCheckFramebufferStatus(target.toInt()).toUInt()
 internal actual inline fun glFramebufferTexture2D(target: UInt, attachment: UInt, textureTarget: UInt, texture: UInt, level: Int)
         = GLES20.glFramebufferTexture2D(target.toInt(), attachment.toInt(), textureTarget.toInt(), texture.toInt(), level)
 
-internal actual inline fun glGenBuffers(count: Int, array: UIntArray) = GLES20.glGenBuffers(count, array.toIntArray(), 0)
+internal actual inline fun glGenBuffers(count: Int, array: UIntArray) = withSignedArray(array, count = count) {
+    GLES20.glGenBuffers(count, it, 0)
+}
+internal actual inline fun glDeleteBuffers(count: Int, array: UIntArray) = withSignedArray(array, count = count) {
+    GLES20.glDeleteBuffers(count, it, 0)
+}
 internal actual inline fun glBindBuffer(target: UInt, id: UInt) = GLES20.glBindBuffer(target.toInt(), id.toInt())
-internal actual inline fun glDeleteBuffers(count: Int, array: UIntArray) = GLES20.glDeleteBuffers(count, array.toIntArray(), 0)
 internal actual inline fun glBufferData(target: UInt, size: Int, usage: UInt) = GLES20.glBufferData(target.toInt(), size, null, usage.toInt())
 internal actual inline fun glBindBufferBase(target: UInt, index: UInt, id: UInt) = GLES30.glBindBufferBase(target.toInt(), index.toInt(), id.toInt())
 
@@ -98,3 +110,12 @@ internal actual inline fun glGetError() = GLES20.glGetError().toUInt()
 
 internal actual inline fun glDrawArrays(mode: UInt, first: Int, count: Int) = GLES20.glDrawArrays(mode.toInt(), first, count)
 internal actual inline fun glDrawElements(mode: UInt, count: Int, type: UInt, indices: Buffer) = GLES20.glDrawElements(mode.toInt(), count, type.toInt(), indices)
+
+private inline fun <T> withSignedArray(source: UIntArray, pos: Int = 0, count: Int = source.size, block: (IntArray) -> T): T {
+    val signed = IntArray(source.size) { source[it].toInt() }
+    val result = block(signed)
+    for (i in pos until pos + count) {
+        source[i] = signed[i].toUInt()
+    }
+    return result
+}
