@@ -2,11 +2,12 @@ package com.otaliastudios.opengl.buffer
 
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.core.use
+import com.otaliastudios.opengl.internal.AndroidJvmRequiresApi
 import com.otaliastudios.opengl.internal.GL_SHADER_STORAGE_BUFFER
 import com.otaliastudios.opengl.internal.glBindBufferBase
 import com.otaliastudios.opengl.internal.glBufferData
 
-// TODO android must have requiresApi annotation (21)
+@AndroidJvmRequiresApi(21, 21)
 @Suppress("unused")
 class GlShaderStorageBuffer(val size: Int, val usage: Int)
     : GlBuffer(target = GL_SHADER_STORAGE_BUFFER.toInt()) {

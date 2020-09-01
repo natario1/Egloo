@@ -61,6 +61,7 @@ kotlin {
             // https://kotlinlang.org/docs/reference/opt-in-requirements.html
             languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
             languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalMultiplatform") // optional expectation
         }
     }
 }
