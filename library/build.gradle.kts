@@ -36,16 +36,9 @@ kotlin {
     androidNativeArm64(configure = nativeConfig)
 
     sourceSets {
-        getByName("commonMain") {
-            dependencies {
-                api("org.jetbrains.kotlin:kotlin-stdlib-common")
-            }
-        }
         getByName("androidJvmMain") {
             dependencies {
-                val kotlinVersion = property("kotlinVersion") as String
                 api("androidx.annotation:annotation:1.1.0")
-                api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
             }
         }
         configureEach {
@@ -56,6 +49,8 @@ kotlin {
         }
     }
 }
+
+// Android JVM configuration
 
 android {
     setCompileSdkVersion(property("androidCompileSdkVersion") as Int)
@@ -68,6 +63,8 @@ android {
     sourceSets["main"].java.srcDirs("src/androidJvmMain/kotlin")
     sourceSets["main"].manifest.srcFile("src/androidJvmMain/AndroidManifest.xml")
 }
+
+// Publishing
 
 publisher {
     project.group = "com.otaliastudios.opengl"
@@ -109,7 +106,7 @@ publisher {
             "kotlinMultiplatform" to "egloo-multiplatform",
             "metadata" to "egloo-metadata"
     )
-    multiplatformPublications.forEach { mavenPublication, artifactId ->
+    multiplatformPublications.forEach { (mavenPublication, artifactId) ->
         bintray(mavenPublication) {
             auth.user = "BINTRAY_USER"
             auth.key = "BINTRAY_KEY"
