@@ -9,9 +9,9 @@ import com.otaliastudios.opengl.internal.glDrawArrays
 import kotlin.math.*
 
 @Suppress("unused")
-open class GlRoundRect : Gl2dDrawable() {
+public open class GlRoundRect : Gl2dDrawable() {
 
-    companion object {
+    private companion object {
         private const val POINTS_PER_CORNER = 20
     }
 
@@ -24,19 +24,19 @@ open class GlRoundRect : Gl2dDrawable() {
     private var left = -1F
     private var right = 1F
 
-    override var vertexArray = floatBuffer((4 * POINTS_PER_CORNER + 2) * coordsPerVertex)
+    override var vertexArray: FloatBuffer = floatBuffer((4 * POINTS_PER_CORNER + 2) * coordsPerVertex)
 
     init {
         recompute()
     }
 
     @Suppress("unused")
-    fun setCornersPx(corners: Int) {
+    public fun setCornersPx(corners: Int) {
         setCornersPx(corners, corners, corners, corners)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun setCornersPx(topLeft: Int, topRight: Int, bottomLeft: Int, bottomRight: Int) {
+    public fun setCornersPx(topLeft: Int, topRight: Int, bottomLeft: Int, bottomRight: Int) {
         topLeftCorner = topLeft.toFloat()
         topRightCorner = topRight.toFloat()
         bottomLeftCorner = bottomLeft.toFloat()
@@ -45,12 +45,12 @@ open class GlRoundRect : Gl2dDrawable() {
     }
 
     @Suppress("unused")
-    fun setRect(rect: RectF) {
+    public fun setRect(rect: RectF) {
         setRect(rect.left, rect.top, rect.right, rect.bottom)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun setRect(left: Float, top: Float, right: Float, bottom: Float) {
+    public fun setRect(left: Float, top: Float, right: Float, bottom: Float) {
         this.left = left
         this.top = top
         this.right = right

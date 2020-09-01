@@ -10,16 +10,18 @@ import com.otaliastudios.opengl.internal.EglSurface
 import java.io.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+import kotlin.jvm.Throws
 
 /**
  * Common base class for EGL surfaces.
  * There can be multiple base surfaces associated with a single [EglCore] object.
  */
-actual abstract class EglSurface internal actual constructor(
+public actual abstract class EglSurface internal actual constructor(
         eglCore: EglCore,
         eglSurface: EglSurface
 ) : EglNativeSurface(eglCore, eglSurface) {
 
+    @Suppress("unused")
     protected constructor(eglCore: EglCore, eglSurface: EGLSurface)
             : this(eglCore, EglSurface(eglSurface))
 
@@ -28,7 +30,7 @@ actual abstract class EglSurface internal actual constructor(
      * Expects that this object's EGL surface is current.
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    fun toOutputStream(stream: OutputStream, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
+    public fun toOutputStream(stream: OutputStream, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
         if (!isCurrent()) throw RuntimeException("Expected EGL context/surface is not current")
         // glReadPixels fills in a "direct" ByteBuffer with what is essentially big-endian RGBA
         // data (i.e. a byte of red, followed by a byte of green...).  While the Bitmap
@@ -57,7 +59,7 @@ actual abstract class EglSurface internal actual constructor(
      */
     @Suppress("unused")
     @Throws(IOException::class)
-    fun toFile(file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
+    public fun toFile(file: File, format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG) {
         var stream: BufferedOutputStream? = null
         try {
             stream = BufferedOutputStream(FileOutputStream(file.toString()))
@@ -72,7 +74,7 @@ actual abstract class EglSurface internal actual constructor(
      * Expects that this object's EGL surface is current.
      */
     @Suppress("unused")
-    fun toByteArray(format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): ByteArray {
+    public fun toByteArray(format: Bitmap.CompressFormat = Bitmap.CompressFormat.PNG): ByteArray {
         val stream = ByteArrayOutputStream()
         stream.use {
             toOutputStream(it, format)
@@ -80,8 +82,8 @@ actual abstract class EglSurface internal actual constructor(
         }
     }
 
-    companion object {
+    public companion object {
         @Suppress("HasPlatformType", "unused")
-        protected val TAG = EglSurface::class.java.simpleName
+        protected val TAG: String = EglSurface::class.java.simpleName
     }
 }

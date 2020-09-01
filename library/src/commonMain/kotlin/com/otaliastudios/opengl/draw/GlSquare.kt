@@ -3,7 +3,7 @@ package com.otaliastudios.opengl.draw
 import kotlin.math.sqrt
 
 @Suppress("unused")
-open class GlSquare : GlPolygon(4) {
+public open class GlSquare : GlPolygon(4) {
     init {
         // We expect a square to be horizontal, which is not what GlPolygon does.
         // We compensate here and compensate for the radius.

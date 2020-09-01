@@ -9,21 +9,21 @@ import com.otaliastudios.opengl.internal.glDisableVertexAttribArray
 import com.otaliastudios.opengl.internal.glEnableVertexAttribArray
 import com.otaliastudios.opengl.internal.glVertexAttribPointer
 
-expect class GlFlatProgram : GlNativeFlatProgram
+public expect class GlFlatProgram : GlNativeFlatProgram
 
 /**
  * An [GlProgram] that uses basic flat-shading rendering,
  * based on FlatShadedProgram from grafika.
  */
 @Suppress("unused")
-open class GlNativeFlatProgram internal constructor(): GlProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
+public open class GlNativeFlatProgram internal constructor(): GlProgram(VERTEX_SHADER, FRAGMENT_SHADER) {
 
     private val vertexPositionHandle = getAttribHandle("aPosition")
     private val vertexMvpMatrixHandle = getUniformHandle("uMVPMatrix")
     private val fragmentColorHandle = getUniformHandle("uColor")
 
     @Suppress("MemberVisibilityCanBePrivate")
-    var color: FloatArray = floatArrayOf(1F, 1F, 1F, 1F)
+    public var color: FloatArray = floatArrayOf(1F, 1F, 1F, 1F)
 
     override fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
@@ -52,7 +52,7 @@ open class GlNativeFlatProgram internal constructor(): GlProgram(VERTEX_SHADER, 
         glDisableVertexAttribArray(vertexPositionHandle.uvalue)
     }
 
-    companion object {
+    private companion object {
         private const val VERTEX_SHADER =
                 "" +
                         "uniform mat4 uMVPMatrix;\n" +

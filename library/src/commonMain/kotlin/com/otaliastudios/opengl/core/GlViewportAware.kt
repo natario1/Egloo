@@ -3,17 +3,17 @@ package com.otaliastudios.opengl.core
 import com.otaliastudios.opengl.internal.GL_VIEWPORT
 import com.otaliastudios.opengl.internal.glGetIntegerv
 
-abstract class GlViewportAware {
+public abstract class GlViewportAware {
 
     private val viewportArray = IntArray(4)
 
-    var viewportWidth: Int = -1
+    public var viewportWidth: Int = -1
         protected set
 
-    var viewportHeight: Int = -1
+    public var viewportHeight: Int = -1
         protected set
 
-    fun setViewportSize(width: Int, height: Int) {
+    public fun setViewportSize(width: Int, height: Int) {
         if (width != viewportWidth || height != viewportHeight) {
             viewportWidth = width
             viewportHeight = height

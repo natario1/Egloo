@@ -1,16 +1,16 @@
 package com.otaliastudios.opengl.types
 
-expect abstract class Buffer {
-    fun remaining(): Int
-    fun hasRemaining(): Boolean
-    fun capacity(): Int
-    fun position(): Int
-    fun position(position: Int): Buffer
-    fun limit(): Int
-    fun limit(limit: Int): Buffer
-    fun clear(): Buffer
-    fun rewind(): Buffer
-    fun flip(): Buffer
+public expect abstract class Buffer {
+    public fun remaining(): Int
+    public fun hasRemaining(): Boolean
+    public fun capacity(): Int
+    public fun position(): Int
+    public fun position(position: Int): Buffer
+    public fun limit(): Int
+    public fun limit(limit: Int): Buffer
+    public fun clear(): Buffer
+    public fun rewind(): Buffer
+    public fun flip(): Buffer
 }
 
 // TODO should this be public and be applied to more structures?
@@ -18,40 +18,40 @@ internal interface Disposable {
     fun dispose()
 }
 
-fun Buffer.dispose() {
+public fun Buffer.dispose() {
     if (this is Disposable) this.dispose()
 }
 
-expect abstract class FloatBuffer : Buffer {
-    abstract fun get(): Float
-    abstract fun get(index: Int): Float
-    abstract fun put(value: Float): FloatBuffer
-    fun put(values: FloatArray): FloatBuffer
+public expect abstract class FloatBuffer : Buffer {
+    public abstract fun get(): Float
+    public abstract fun get(index: Int): Float
+    public abstract fun put(value: Float): FloatBuffer
+    public fun put(values: FloatArray): FloatBuffer
 }
 
-expect abstract class ByteBuffer : Buffer {
-    abstract fun get(): Byte
-    abstract fun get(index: Int): Byte
-    abstract fun put(value: Byte): ByteBuffer
-    fun put(values: ByteArray): ByteBuffer
+public expect abstract class ByteBuffer : Buffer {
+    public abstract fun get(): Byte
+    public abstract fun get(index: Int): Byte
+    public abstract fun put(value: Byte): ByteBuffer
+    public fun put(values: ByteArray): ByteBuffer
 }
 
-expect abstract class ShortBuffer : Buffer {
-    abstract fun get(): Short
-    abstract fun get(index: Int): Short
-    abstract fun put(value: Short): ShortBuffer
-    fun put(values: ShortArray): ShortBuffer
+public expect abstract class ShortBuffer : Buffer {
+    public abstract fun get(): Short
+    public abstract fun get(index: Int): Short
+    public abstract fun put(value: Short): ShortBuffer
+    public fun put(values: ShortArray): ShortBuffer
 }
 
-expect abstract class IntBuffer : Buffer {
-    abstract fun get(): Int
-    abstract fun get(index: Int): Int
-    abstract fun put(value: Int): IntBuffer
-    fun put(values: IntArray): IntBuffer
+public expect abstract class IntBuffer : Buffer {
+    public abstract fun get(): Int
+    public abstract fun get(index: Int): Int
+    public abstract fun put(value: Int): IntBuffer
+    public fun put(values: IntArray): IntBuffer
 }
 
 // Would have liked this to be upper case, but compiler complains
-expect fun floatBuffer(size: Int): FloatBuffer
-expect fun byteBuffer(size: Int): ByteBuffer
-expect fun shortBuffer(size: Int): ShortBuffer
-expect fun intBuffer(size: Int): IntBuffer
+public expect fun floatBuffer(size: Int): FloatBuffer
+public expect fun byteBuffer(size: Int): ByteBuffer
+public expect fun shortBuffer(size: Int): ShortBuffer
+public expect fun intBuffer(size: Int): IntBuffer

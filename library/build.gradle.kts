@@ -41,6 +41,7 @@ fun KotlinMultiplatformExtension.androidNative(name: String = "androidNative", c
 }
 
 kotlin {
+    explicitApi()
     android("androidJvm") {
         // This enables the KMP android publication.
         publishLibraryVariants("release")

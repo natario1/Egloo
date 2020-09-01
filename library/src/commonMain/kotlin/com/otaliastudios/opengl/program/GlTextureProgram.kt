@@ -19,7 +19,7 @@ import kotlin.jvm.JvmOverloads
  * Base implementation for a [GlProgram] that draws textures.
  */
 @Suppress("unused")
-open class GlTextureProgram protected constructor(
+public open class GlTextureProgram protected constructor(
         handle: Int,
         ownsHandle: Boolean,
         /* An attribute vec4 within the vertex shader that will contain the vertex position. */
@@ -31,7 +31,7 @@ open class GlTextureProgram protected constructor(
 ): GlProgram(handle, ownsHandle) {
 
     @JvmOverloads
-    constructor(
+    public constructor(
             vertexShader: String = SIMPLE_VERTEX_SHADER,
             fragmentShader: String = SIMPLE_FRAGMENT_SHADER,
             vertexPositionName: String = "aPosition",
@@ -48,7 +48,7 @@ open class GlTextureProgram protected constructor(
     )
 
     @JvmOverloads
-    constructor(
+    public constructor(
             handle: Int,
             vertexPositionName: String = "aPosition",
             vertexMvpMatrixName: String = "uMVPMatrix",
@@ -63,7 +63,7 @@ open class GlTextureProgram protected constructor(
             textureTransformName
     )
 
-    var textureTransform: FloatArray = matrixClone(Egloo.IDENTITY_MATRIX)
+    public var textureTransform: FloatArray = matrixClone(Egloo.IDENTITY_MATRIX)
     private val textureTransformHandle = textureTransformName?.let { getUniformHandle(it) }
 
     private var textureCoordsBuffer = floatBuffer(8)
@@ -80,7 +80,7 @@ open class GlTextureProgram protected constructor(
      * If not null, [GlTextureProgram] will care about the texture lifecycle: binding,
      * unbinding and destroying.
      */
-    var texture: GlTexture? = null
+    public var texture: GlTexture? = null
 
     override fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {
         super.onPreDraw(drawable, modelViewProjectionMatrix)
@@ -184,9 +184,9 @@ open class GlTextureProgram protected constructor(
         texture = null
     }
 
-    companion object {
+    public companion object {
 
-        const val SIMPLE_VERTEX_SHADER =
+        public const val SIMPLE_VERTEX_SHADER: String =
                 "" +
                         "uniform mat4 uMVPMatrix;\n" +
                         "uniform mat4 uTexMatrix;\n" +
@@ -198,7 +198,7 @@ open class GlTextureProgram protected constructor(
                         "    vTextureCoord = (uTexMatrix * aTextureCoord).xy;\n" +
                         "}\n"
 
-        const val SIMPLE_FRAGMENT_SHADER =
+        public const val SIMPLE_FRAGMENT_SHADER: String =
                 "" +
                         "#extension GL_OES_EGL_image_external : require\n" +
                         "precision mediump float;\n" +

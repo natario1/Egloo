@@ -1,4 +1,4 @@
 package com.otaliastudios.opengl.internal
 
 @OptionalExpectation
-expect annotation class AndroidJvmRequiresApi(val value: Int, val api: Int)
+public expect annotation class AndroidJvmRequiresApi(public val value: Int, public val api: Int)

@@ -12,16 +12,16 @@ import javax.microedition.khronos.egl.EGLDisplay
  * Helper for [GLSurfaceView.setEGLContextFactory].
  */
 @Suppress("unused")
-object EglContextFactory {
+public object EglContextFactory {
     private val TAG = EglContextFactory::class.java.simpleName
 
     @Suppress("unused")
     @JvmField
-    val GLES2: GLSurfaceView.EGLContextFactory = Factory(2)
+    public val GLES2: GLSurfaceView.EGLContextFactory = Factory(2)
 
     @Suppress("unused")
     @JvmField
-    val GLES3: GLSurfaceView.EGLContextFactory = Factory(3)
+    public val GLES3: GLSurfaceView.EGLContextFactory = Factory(3)
 
     private class Factory(private val version: Int) : GLSurfaceView.EGLContextFactory {
         override fun createContext(egl: EGL10, display: EGLDisplay, eglConfig: EGLConfig): EGLContext {

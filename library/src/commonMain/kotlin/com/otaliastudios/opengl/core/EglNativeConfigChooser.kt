@@ -16,9 +16,9 @@ import com.otaliastudios.opengl.internal.EglDisplay
 import com.otaliastudios.opengl.internal.eglChooseConfig
 import com.otaliastudios.opengl.internal.logw
 
-open class EglNativeConfigChooser {
+public open class EglNativeConfigChooser {
 
-    companion object {
+    public companion object {
         private const val EGL_RECORDABLE_ANDROID = 0x3142 // Android-specific extension.
     }
 

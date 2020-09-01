@@ -11,7 +11,7 @@ import com.otaliastudios.opengl.internal.EglContext
  * @param sharedContext The context to share, or null if sharing is not desired.
  * @param flags Configuration bit flags, e.g. FLAG_RECORDABLE.
  */
-actual class EglCore @JvmOverloads constructor(
+public actual class EglCore @JvmOverloads constructor(
         sharedContext: EGLContext? = EGL14.EGL_NO_CONTEXT,
         flags: Int = 0
 ) : EglNativeCore(EglContext(sharedContext), flags) {
@@ -38,19 +38,20 @@ actual class EglCore @JvmOverloads constructor(
         release()
     }
 
-    companion object {
+    @Suppress("unused")
+    public companion object {
 
         /**
          * Constructor flag: surface must be recordable. This discourages EGL from using a
          * pixel format that cannot be converted efficiently to something usable by the video
          * encoder.
          */
-        const val FLAG_RECORDABLE = EglNativeCore.FLAG_RECORDABLE
+        public const val FLAG_RECORDABLE: Int = EglNativeCore.FLAG_RECORDABLE
 
         /**
          * Constructor flag: ask for GLES3, fall back to GLES2 if not available. Without this
          * flag, GLES2 is used.
          */
-        const val FLAG_TRY_GLES3 = EglNativeCore.FLAG_TRY_GLES3
+        public const val FLAG_TRY_GLES3: Int = EglNativeCore.FLAG_TRY_GLES3
     }
 }

@@ -1,3 +1,3 @@
 package com.otaliastudios.opengl.program
 
-actual class GlFlatProgram : GlNativeFlatProgram()
+public actual class GlFlatProgram : GlNativeFlatProgram()

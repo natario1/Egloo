@@ -3,15 +3,15 @@ package com.otaliastudios.opengl.program
 import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.internal.*
 
-class GlShader(val type: Int, val id: Int) {
+public class GlShader(public val type: Int, public val id: Int) {
 
-    constructor(type: Int, source: String) : this(type, compile(type, source))
+    public constructor(type: Int, source: String) : this(type, compile(type, source))
 
-    fun release() {
+    public fun release() {
         glDeleteShader(id.toUInt())
     }
 
-    companion object {
+    private companion object {
         private fun compile(type: Int, source: String): Int {
             val shader = glCreateShader(type.toUInt())
             Egloo.checkGlError("glCreateShader type=$type")

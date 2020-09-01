@@ -3,83 +3,83 @@ package com.otaliastudios.opengl.types
 import com.otaliastudios.opengl.core.Egloo
 import kotlinx.cinterop.*
 
-actual abstract class Buffer {
+public actual abstract class Buffer {
 
     protected abstract val capacity: Int
     protected var position: Int = 0
     protected abstract var limit: Int
 
-    actual fun remaining() = limit - position
-    actual fun hasRemaining() = remaining() > 0
-    actual fun capacity() = capacity
-    actual fun position() = position
-    actual fun limit() = limit
+    public actual fun remaining(): Int = limit - position
+    public actual fun hasRemaining(): Boolean = remaining() > 0
+    public actual fun capacity(): Int = capacity
+    public actual fun position(): Int = position
+    public actual fun limit(): Int = limit
 
-    actual fun position(position: Int): Buffer {
+    public actual fun position(position: Int): Buffer {
         this.position = position
         return this
     }
 
-    actual fun limit(limit: Int): Buffer {
+    public actual fun limit(limit: Int): Buffer {
         this.limit = limit
         return this
     }
 
-    actual fun clear(): Buffer {
+    public actual fun clear(): Buffer {
         position = 0
         limit = capacity
         return this
     }
 
-    actual fun rewind(): Buffer {
+    public actual fun rewind(): Buffer {
         position = 0
         return this
     }
 
-    actual fun flip(): Buffer {
+    public actual fun flip(): Buffer {
         limit = position
         position = 0
         return this
     }
 
-    abstract fun pointer(): CPointer<*>
+    public abstract fun pointer(): CPointer<*>
 }
 
-actual abstract class FloatBuffer : Buffer() {
-    actual abstract fun get(): Float
-    actual abstract fun get(index: Int): Float
-    actual abstract fun put(value: Float): FloatBuffer
-    actual fun put(values: FloatArray): FloatBuffer {
+public actual abstract class FloatBuffer : Buffer() {
+    public actual abstract fun get(): Float
+    public actual abstract fun get(index: Int): Float
+    public actual abstract fun put(value: Float): FloatBuffer
+    public actual fun put(values: FloatArray): FloatBuffer {
         values.forEach { put(it) }
         return this
     }
 }
 
-actual abstract class ByteBuffer : Buffer() {
-    actual abstract fun get(): Byte
-    actual abstract fun get(index: Int): Byte
-    actual abstract fun put(value: Byte): ByteBuffer
-    actual fun put(values: ByteArray): ByteBuffer {
+public actual abstract class ByteBuffer : Buffer() {
+    public actual abstract fun get(): Byte
+    public actual abstract fun get(index: Int): Byte
+    public actual abstract fun put(value: Byte): ByteBuffer
+    public actual fun put(values: ByteArray): ByteBuffer {
         values.forEach { put(it) }
         return this
     }
 }
 
-actual abstract class ShortBuffer : Buffer() {
-    actual abstract fun get(): Short
-    actual abstract fun get(index: Int): Short
-    actual abstract fun put(value: Short): ShortBuffer
-    actual fun put(values: ShortArray): ShortBuffer {
+public actual abstract class ShortBuffer : Buffer() {
+    public actual abstract fun get(): Short
+    public actual abstract fun get(index: Int): Short
+    public actual abstract fun put(value: Short): ShortBuffer
+    public actual fun put(values: ShortArray): ShortBuffer {
         values.forEach { put(it) }
         return this
     }
 }
 
-actual abstract class IntBuffer : Buffer() {
-    actual abstract fun get(): Int
-    actual abstract fun get(index: Int): Int
-    actual abstract fun put(value: Int): IntBuffer
-    actual fun put(values: IntArray): IntBuffer {
+public actual abstract class IntBuffer : Buffer() {
+    public actual abstract fun get(): Int
+    public actual abstract fun get(index: Int): Int
+    public actual abstract fun put(value: Int): IntBuffer
+    public actual fun put(values: IntArray): IntBuffer {
         values.forEach { put(it) }
         return this
     }
@@ -107,7 +107,7 @@ private class BufferImpl(capacity: Int, size: Int) : Disposable {
     }
 }
 
-actual fun floatBuffer(size: Int) = object: FloatBuffer() {
+public actual fun floatBuffer(size: Int): FloatBuffer = object: FloatBuffer() {
     override val capacity = size
     override var limit = size
     private val impl = BufferImpl(size, Egloo.SIZE_OF_FLOAT)
@@ -120,7 +120,7 @@ actual fun floatBuffer(size: Int) = object: FloatBuffer() {
     }
 }
 
-actual fun shortBuffer(size: Int) = object: ShortBuffer() {
+public actual fun shortBuffer(size: Int): ShortBuffer = object: ShortBuffer() {
     override val capacity = size
     override var limit = size
     private val impl = BufferImpl(size, Egloo.SIZE_OF_SHORT)
@@ -133,7 +133,7 @@ actual fun shortBuffer(size: Int) = object: ShortBuffer() {
     }
 }
 
-actual fun intBuffer(size: Int) = object: IntBuffer() {
+public actual fun intBuffer(size: Int): IntBuffer = object: IntBuffer() {
     override val capacity = size
     override var limit = size
     private val impl = BufferImpl(size, Egloo.SIZE_OF_INT)
@@ -146,7 +146,7 @@ actual fun intBuffer(size: Int) = object: IntBuffer() {
     }
 }
 
-actual fun byteBuffer(size: Int) = object: ByteBuffer() {
+public actual fun byteBuffer(size: Int): ByteBuffer = object: ByteBuffer() {
     override val capacity = size
     override var limit = size
     private val impl = BufferImpl(size, Egloo.SIZE_OF_BYTE)

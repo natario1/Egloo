@@ -7,15 +7,15 @@ import com.otaliastudios.opengl.internal.glGetUniformLocation
 /**
  * A simple helper class for holding handles to program variables.
  */
-class GlProgramLocation private constructor(
+public class GlProgramLocation private constructor(
         program: Int,
         type: Type,
-        @Suppress("CanBeParameter") val name: String
+        @Suppress("CanBeParameter") public val name: String
 ) {
 
     private enum class Type { ATTRIB, UNIFORM }
 
-    val value: Int
+    public val value: Int
     init {
         value = when (type) {
             Type.ATTRIB -> glGetAttribLocation(program.toUInt(), name)
@@ -26,8 +26,8 @@ class GlProgramLocation private constructor(
 
     internal val uvalue = value.toUInt()
 
-    companion object {
-        fun getAttrib(program: Int, name: String) = GlProgramLocation(program, Type.ATTRIB, name)
-        fun getUniform(program: Int, name: String) = GlProgramLocation(program, Type.UNIFORM, name)
+    public companion object {
+        public fun getAttrib(program: Int, name: String): GlProgramLocation = GlProgramLocation(program, Type.ATTRIB, name)
+        public fun getUniform(program: Int, name: String): GlProgramLocation = GlProgramLocation(program, Type.UNIFORM, name)
     }
 }

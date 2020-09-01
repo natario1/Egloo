@@ -8,9 +8,9 @@ import com.otaliastudios.opengl.internal.glBindBuffer
 import com.otaliastudios.opengl.internal.glDeleteBuffers
 import com.otaliastudios.opengl.internal.glGenBuffers
 
-open class GlBuffer(val target: Int, id: Int? = null) : GlBindable {
+public open class GlBuffer(public val target: Int, id: Int? = null) : GlBindable {
 
-    val id = id ?: run {
+    public val id: Int = id ?: run {
         val array = UIntArray(1)
         glGenBuffers(1, array)
         Egloo.checkGlError("glGenBuffers")
@@ -25,7 +25,7 @@ open class GlBuffer(val target: Int, id: Int? = null) : GlBindable {
         glBindBuffer(target.toUInt(), 0U)
     }
 
-    fun release() {
+    public fun release() {
         glDeleteBuffers(1, uintArrayOf(id.toUInt()))
     }
 }

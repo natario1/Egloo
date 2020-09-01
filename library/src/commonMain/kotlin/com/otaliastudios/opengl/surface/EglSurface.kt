@@ -6,9 +6,9 @@ import com.otaliastudios.opengl.internal.EGL_NO_SURFACE
 import com.otaliastudios.opengl.internal.EGL_WIDTH
 import com.otaliastudios.opengl.internal.EglSurface
 
-expect abstract class EglSurface internal constructor(eglCore: EglCore, eglSurface: EglSurface) : EglNativeSurface
+public expect abstract class EglSurface internal constructor(eglCore: EglCore, eglSurface: EglSurface) : EglNativeSurface
 
-open class EglNativeSurface internal constructor(
+public open class EglNativeSurface internal constructor(
         internal var eglCore: EglCore,
         internal var eglSurface: EglSurface) {
 
@@ -41,7 +41,7 @@ open class EglNativeSurface internal constructor(
      * callback).  The size should match after the next buffer swap.
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    fun getWidth(): Int {
+    public fun getWidth(): Int {
         return if (width < 0) {
             eglCore.querySurface(eglSurface, EGL_WIDTH)
         } else {
@@ -53,7 +53,7 @@ open class EglNativeSurface internal constructor(
      * Returns the surface's height, in pixels.
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    fun getHeight(): Int {
+    public fun getHeight(): Int {
         return if (height < 0) {
             eglCore.querySurface(eglSurface, EGL_HEIGHT)
         } else {
@@ -64,7 +64,7 @@ open class EglNativeSurface internal constructor(
     /**
      * Release the EGL surface.
      */
-    open fun release() {
+    public open fun release() {
         eglCore.releaseSurface(eglSurface)
         eglSurface = EGL_NO_SURFACE
         height = -1
@@ -76,7 +76,7 @@ open class EglNativeSurface internal constructor(
      * attached [EglCore].
      */
     @Suppress("MemberVisibilityCanBePrivate")
-    fun isCurrent(): Boolean {
+    public fun isCurrent(): Boolean {
         return eglCore.isSurfaceCurrent(eglSurface)
     }
 
@@ -84,7 +84,7 @@ open class EglNativeSurface internal constructor(
      * Makes our EGL context and surface current.
      */
     @Suppress("unused")
-    fun makeCurrent() {
+    public fun makeCurrent() {
         eglCore.makeSurfaceCurrent(eglSurface)
     }
 
@@ -92,7 +92,7 @@ open class EglNativeSurface internal constructor(
      * Makes no surface current for the attached [eglCore].
      */
     @Suppress("unused")
-    fun makeNothingCurrent() {
+    public fun makeNothingCurrent() {
         eglCore.makeCurrent()
     }
 
@@ -101,7 +101,7 @@ open class EglNativeSurface internal constructor(
      * [nsecs] is the timestamp in nanoseconds.
      */
     @Suppress("unused")
-    fun setPresentationTime(nsecs: Long) {
+    public fun setPresentationTime(nsecs: Long) {
         eglCore.setSurfacePresentationTime(eglSurface, nsecs)
     }
 }

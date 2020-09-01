@@ -6,9 +6,9 @@ import com.otaliastudios.opengl.internal.EGL_NO_SURFACE
 import com.otaliastudios.opengl.internal.EGL_WIDTH
 import com.otaliastudios.opengl.internal.EglSurface
 
-expect open class EglWindowSurface : EglNativeWindowSurface
+public expect open class EglWindowSurface : EglNativeWindowSurface
 
-abstract class EglNativeWindowSurface internal constructor(
+public abstract class EglNativeWindowSurface internal constructor(
         eglCore: EglCore,
         eglSurface: EglSurface
 ) : com.otaliastudios.opengl.surface.EglSurface(eglCore, eglSurface) {
@@ -18,7 +18,7 @@ abstract class EglNativeWindowSurface internal constructor(
      * Returns false on failure.
      */
     @Suppress("unused")
-    fun swapBuffers(): Boolean {
+    public fun swapBuffers(): Boolean {
         // This makes no sense for offscreen surfaces
         return eglCore.swapSurfaceBuffers(eglSurface)
     }

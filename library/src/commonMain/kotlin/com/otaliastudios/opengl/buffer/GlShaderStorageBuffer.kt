@@ -9,7 +9,7 @@ import com.otaliastudios.opengl.internal.glBufferData
 
 @AndroidJvmRequiresApi(21, 21)
 @Suppress("unused")
-class GlShaderStorageBuffer(val size: Int, val usage: Int)
+public class GlShaderStorageBuffer(public val size: Int, public val usage: Int)
     : GlBuffer(target = GL_SHADER_STORAGE_BUFFER.toInt()) {
 
     init {
@@ -19,7 +19,7 @@ class GlShaderStorageBuffer(val size: Int, val usage: Int)
         }
     }
 
-    fun bind(index: Int) {
+    public fun bind(index: Int) {
         // Note: a third option, glBindBufferRange, will only bind a subrange of the SSBO.
         // https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glBindBuffer.xhtml
         // https://www.khronos.org/registry/OpenGL-Refpages/es3.0/html/glBindBufferBase.xhtml
@@ -29,7 +29,7 @@ class GlShaderStorageBuffer(val size: Int, val usage: Int)
     }
 
     // Can create an interface like GlBindable for indexed targets like GL_SHADER_STORAGE_BUFFER
-    fun use(index: Int, block: () -> Unit) {
+    public fun use(index: Int, block: () -> Unit) {
         bind(index)
         block()
         unbind()

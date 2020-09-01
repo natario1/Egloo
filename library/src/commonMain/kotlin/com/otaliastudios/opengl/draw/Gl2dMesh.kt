@@ -4,24 +4,21 @@ import com.otaliastudios.opengl.core.Egloo
 import com.otaliastudios.opengl.geometry.IndexedSegmentF
 import com.otaliastudios.opengl.geometry.PointF
 import com.otaliastudios.opengl.internal.*
-import com.otaliastudios.opengl.types.ByteBuffer
-import com.otaliastudios.opengl.types.byteBuffer
-import com.otaliastudios.opengl.types.floatBuffer
 import com.otaliastudios.opengl.internal.GL_TRIANGLES
-import com.otaliastudios.opengl.types.dispose
+import com.otaliastudios.opengl.types.*
 import kotlin.IllegalArgumentException
 
 
-open class Gl2dMesh: Gl2dDrawable() {
+public open class Gl2dMesh: Gl2dDrawable() {
 
-    override var vertexArray = floatBuffer(6)
+    override var vertexArray: FloatBuffer = floatBuffer(6)
     private var vertexIndices: ByteBuffer? = null
 
-    fun setPoints(points: List<PointF>) {
+    public fun setPoints(points: List<PointF>) {
         setPoints(points.map { it.x }, points.map { it.y })
     }
 
-    fun setPoints(x: List<Float>, y: List<Float>) {
+    public fun setPoints(x: List<Float>, y: List<Float>) {
         if (x.size != y.size) throw IllegalArgumentException("x.size != y.size")
         val points = x.size
         val coords = points * 2

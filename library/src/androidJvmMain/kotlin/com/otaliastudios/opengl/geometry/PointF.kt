@@ -1,3 +1,3 @@
 package com.otaliastudios.opengl.geometry
 
-actual typealias PointF = android.graphics.PointF
+public actual typealias PointF = android.graphics.PointF

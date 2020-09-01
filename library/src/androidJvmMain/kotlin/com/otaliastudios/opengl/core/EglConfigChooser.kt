@@ -12,20 +12,21 @@ import javax.microedition.khronos.egl.EGLDisplay
  * Helper for [GLSurfaceView.setEGLConfigChooser], plus
  * some handy methods for configs.
  */
-object EglConfigChooser : EglNativeConfigChooser() {
+public object EglConfigChooser : EglNativeConfigChooser() {
     @Suppress("unused")
     @JvmField
-    val GLES2: GLSurfaceView.EGLConfigChooser = Chooser(2)
+    public val GLES2: GLSurfaceView.EGLConfigChooser = Chooser(2)
 
     @Suppress("unused")
     @JvmField
-    val GLES3: GLSurfaceView.EGLConfigChooser = Chooser(3)
+    public val GLES3: GLSurfaceView.EGLConfigChooser = Chooser(3)
 
     /**
      * Finds a suitable EGLConfig by querying [EGL14].
      */
+    @Suppress("unused")
     @JvmStatic
-    fun getConfig(display: android.opengl.EGLDisplay, version: Int, recordable: Boolean): android.opengl.EGLConfig? {
+    public fun getConfig(display: android.opengl.EGLDisplay, version: Int, recordable: Boolean): android.opengl.EGLConfig? {
         return super.getConfig(EglDisplay(display), version, recordable)?.native
     }
 
