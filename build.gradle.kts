@@ -1,8 +1,8 @@
 buildscript {
-    extra["minSdkVersion"] = 18
-    extra["compileSdkVersion"] = 29
-    extra["targetSdkVersion"] = 29
-    extra["kotlinVersion"] = "1.3.71"
+    extra["androidMinSdkVersion"] = 18
+    extra["androidCompileSdkVersion"] = 29
+    extra["androidTargetSdkVersion"] = 29
+    extra["kotlinVersion"] = "1.4.0"
 
     repositories {
         google()

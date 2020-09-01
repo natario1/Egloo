@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    setCompileSdkVersion(rootProject.extra["compileSdkVersion"] as Int)
+    setCompileSdkVersion(property("androidCompileSdkVersion") as Int)
 
     defaultConfig {
         applicationId = "com.otaliastudios.zoom.demo"
-        setMinSdkVersion(rootProject.extra["minSdkVersion"] as Int)
-        setTargetSdkVersion(rootProject.extra["targetSdkVersion"] as Int)
+        setMinSdkVersion(property("androidMinSdkVersion") as Int)
+        setTargetSdkVersion(property("androidTargetSdkVersion") as Int)
         versionCode = 1
         versionName = "1.0"
     }

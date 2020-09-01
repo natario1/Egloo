@@ -52,10 +52,10 @@ kotlin {
 }
 
 android {
-    setCompileSdkVersion(property("compileSdkVersion") as Int)
+    setCompileSdkVersion(property("androidCompileSdkVersion") as Int)
     defaultConfig {
-        setMinSdkVersion(property("minSdkVersion") as Int)
-        setTargetSdkVersion(property("targetSdkVersion") as Int)
+        setMinSdkVersion(property("androidMinSdkVersion") as Int)
+        setTargetSdkVersion(property("androidTargetSdkVersion") as Int)
         versionName = "0.5.2"
     }
     buildTypes["release"].consumerProguardFile("proguard-rules.pro")
