@@ -10,11 +10,11 @@ class GlTexture private constructor(
         val unit: Int,
         val target: Int,
         id: Int?,
-        width: Int?,
-        height: Int?,
-        format: Int?,
+        val width: Int?,
+        val height: Int?,
+        val format: Int?,
         internalFormat: Int?,
-        type: Int?) : GlBindable {
+        val type: Int?) : GlBindable {
 
     @JvmOverloads
     constructor(unit: Int = GL_TEXTURE0.toInt(), target: Int = GL_TEXTURE_EXTERNAL_OES.toInt(), id: Int? = null)
