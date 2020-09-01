@@ -1,8 +1,7 @@
 buildscript {
-    extra["minSdkVersion"] = 18
-    extra["compileSdkVersion"] = 29
-    extra["targetSdkVersion"] = 29
-    extra["kotlinVersion"] = "1.3.71"
+    extra["androidMinSdkVersion"] = 18
+    extra["androidCompileSdkVersion"] = 29
+    extra["androidTargetSdkVersion"] = 29
 
     repositories {
         google()
@@ -11,9 +10,8 @@ buildscript {
     }
 
     dependencies {
-        val kotlinVersion = property("kotlinVersion") as String
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
-        classpath("com.android.tools.build:gradle:4.0.0")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0")
+        classpath("com.android.tools.build:gradle:4.0.1")
         classpath("com.otaliastudios.tools:publisher:0.3.3")
     }
 }

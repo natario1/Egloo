@@ -5,10 +5,10 @@ import kotlin.math.max
 import kotlin.math.min
 
 @Suppress("unused")
-abstract class Gl2dDrawable: GlDrawable() {
-    final override val coordsPerVertex = 2
+public abstract class Gl2dDrawable: GlDrawable() {
+    public final override val coordsPerVertex: Int = 2
 
-    fun getBounds(rect: RectF) {
+    public fun getBounds(rect: RectF) {
         var top = -Float.MAX_VALUE // not MIN_VALUE!
         var bottom = Float.MAX_VALUE
         var left = Float.MAX_VALUE

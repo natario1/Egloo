@@ -5,11 +5,12 @@ import com.otaliastudios.opengl.geometry.RectF
 import com.otaliastudios.opengl.types.floatBuffer
 import com.otaliastudios.opengl.internal.GL_TRIANGLE_STRIP
 import com.otaliastudios.opengl.internal.glDrawArrays
+import com.otaliastudios.opengl.types.FloatBuffer
 
 @Suppress("unused")
-open class GlRect: Gl2dDrawable() {
+public open class GlRect: Gl2dDrawable() {
 
-    companion object {
+    private companion object {
         // A full square, extending from -1 to +1 in both dimensions.
         // When the MVP matrix is identity, this will exactly cover the viewport.
         private val FULL_RECTANGLE_COORDS = floatArrayOf(
@@ -19,14 +20,14 @@ open class GlRect: Gl2dDrawable() {
                 1.0f, 1.0f)   // top right
     }
 
-    override var vertexArray = floatBuffer(FULL_RECTANGLE_COORDS.size).also {
+    override var vertexArray: FloatBuffer = floatBuffer(FULL_RECTANGLE_COORDS.size).also {
         it.put(FULL_RECTANGLE_COORDS)
         it.clear()
     }
 
     @Suppress("unused")
     @Deprecated("Use setRect", ReplaceWith("setRect(rect)"))
-    open fun setVertexArray(array: FloatArray) {
+    public open fun setVertexArray(array: FloatArray) {
         if (array.size != 4 * coordsPerVertex) {
             throw IllegalArgumentException("Vertex array should have 8 values.")
         }
@@ -37,17 +38,17 @@ open class GlRect: Gl2dDrawable() {
     }
 
     @Deprecated("Use setRect", ReplaceWith("setRect(rect)"))
-    open fun setVertexArray(rect: RectF) {
+    public open fun setVertexArray(rect: RectF) {
         setRect(rect)
     }
 
     @Suppress("unused")
-    fun setRect(rect: RectF) {
+    public fun setRect(rect: RectF) {
         setRect(rect.left, rect.top, rect.right, rect.bottom)
     }
 
     @Suppress("MemberVisibilityCanBePrivate")
-    fun setRect(left: Float, top: Float, right: Float, bottom: Float) {
+    public fun setRect(left: Float, top: Float, right: Float, bottom: Float) {
         vertexArray.clear()
         // 1
         vertexArray.put(left)

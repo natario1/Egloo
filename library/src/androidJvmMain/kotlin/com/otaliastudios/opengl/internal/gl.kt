@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "EXPERIMENTAL_API_USAGE")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package com.otaliastudios.opengl.internal
 

@@ -1,9 +1,10 @@
 package com.otaliastudios.opengl.geometry
 
-class IndexedSegmentF(val i: Int, val j: Int, ix: Float, iy: Float, jx: Float, jy: Float)
+public class IndexedSegmentF(public val i: Int, public val j: Int, ix: Float, iy: Float, jx: Float, jy: Float)
     : SegmentF(ix, iy, jx, jy) {
 
-    constructor(i: IndexedPointF, j: IndexedPointF) : this(i.index, j.index, i.x, i.y, j.x, j.y)
+    @Suppress("unused")
+    public constructor(i: IndexedPointF, j: IndexedPointF) : this(i.index, j.index, i.x, i.y, j.x, j.y)
 
     override fun intersects(other: SegmentF): Boolean {
         if (other is IndexedSegmentF) {
@@ -13,7 +14,7 @@ class IndexedSegmentF(val i: Int, val j: Int, ix: Float, iy: Float, jx: Float, j
         return super.intersects(other)
     }
 
-    fun hasIndex(index: Int): Boolean {
+    public fun hasIndex(index: Int): Boolean {
         return index == i || index == j
     }
 }

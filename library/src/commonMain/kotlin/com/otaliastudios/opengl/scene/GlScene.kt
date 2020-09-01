@@ -17,13 +17,13 @@ import com.otaliastudios.opengl.internal.matrixMultiply
  * and pass the resulting model-view-projection matrix to the program.
  */
 @Suppress("unused")
-open class GlScene : GlViewportAware() {
+public open class GlScene : GlViewportAware() {
 
     @Suppress("MemberVisibilityCanBePrivate")
-    val projectionMatrix = matrixClone(Egloo.IDENTITY_MATRIX)
+    public val projectionMatrix: FloatArray = matrixClone(Egloo.IDENTITY_MATRIX)
 
     @Suppress("MemberVisibilityCanBePrivate")
-    val viewMatrix = matrixClone(Egloo.IDENTITY_MATRIX)
+    public val viewMatrix: FloatArray = matrixClone(Egloo.IDENTITY_MATRIX)
 
     private val modelViewMatrix = FloatArray(16)
     private val modelViewProjectionMatrix = FloatArray(16)
@@ -33,7 +33,7 @@ open class GlScene : GlViewportAware() {
         matrixMultiply(modelViewProjectionMatrix, projectionMatrix, modelViewMatrix)
     }
 
-    fun draw(program: GlProgram, drawable: GlDrawable) {
+    public fun draw(program: GlProgram, drawable: GlDrawable) {
         ensureViewportSize()
         drawable.setViewportSize(viewportWidth, viewportHeight)
 

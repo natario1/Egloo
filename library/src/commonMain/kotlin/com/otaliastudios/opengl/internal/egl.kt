@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.otaliastudios.opengl.internal
 
 internal expect class EglSurface

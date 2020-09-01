@@ -11,7 +11,7 @@ import com.otaliastudios.opengl.core.EglCore
  * It's good practice to explicitly release() the surface, preferably from a finally block.
  */
 @Suppress("unused")
-actual open class EglWindowSurface : EglNativeWindowSurface {
+public actual open class EglWindowSurface : EglNativeWindowSurface {
     private var surface: Surface? = null
     private var releaseSurface = false
 
@@ -23,7 +23,7 @@ actual open class EglWindowSurface : EglNativeWindowSurface {
      */
     @Suppress("unused")
     @JvmOverloads
-    constructor(eglCore: EglCore, surface: Surface, releaseSurface: Boolean = false)
+    public constructor(eglCore: EglCore, surface: Surface, releaseSurface: Boolean = false)
             : super(eglCore, eglCore.createWindowSurface(surface)) {
         this.surface = surface
         this.releaseSurface = releaseSurface
@@ -33,7 +33,7 @@ actual open class EglWindowSurface : EglNativeWindowSurface {
      * Associates an EGL surface with the SurfaceTexture.
      */
     @Suppress("unused")
-    constructor(eglCore: EglCore, surfaceTexture: SurfaceTexture)
+    public constructor(eglCore: EglCore, surfaceTexture: SurfaceTexture)
             : super(eglCore, eglCore.createWindowSurface(surfaceTexture))
 
     /**

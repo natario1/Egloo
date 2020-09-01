@@ -1,17 +1,17 @@
 package com.otaliastudios.opengl.core
 
-interface GlBindable {
-    fun bind()
-    fun unbind()
+public interface GlBindable {
+    public fun bind()
+    public fun unbind()
 }
 
-fun GlBindable.use(block: () -> Unit) {
+public fun GlBindable.use(block: () -> Unit) {
     bind()
     block()
     unbind()
 }
 
-fun use(vararg bindables: GlBindable, block: () -> Unit) {
+public fun use(vararg bindables: GlBindable, block: () -> Unit) {
     bindables.forEach { it.bind() }
     block()
     bindables.forEach { it.unbind() }

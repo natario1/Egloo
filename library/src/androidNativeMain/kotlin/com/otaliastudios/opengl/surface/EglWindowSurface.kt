@@ -9,5 +9,5 @@ import platform.egl.EGLNativeWindowType
  * It's good practice to explicitly release() the surface, preferably from a finally block.
  */
 @Suppress("unused")
-actual open class EglWindowSurface(eglCore: EglCore, nativeWindow: EGLNativeWindowType)
+public actual open class EglWindowSurface(eglCore: EglCore, nativeWindow: EGLNativeWindowType)
     : EglNativeWindowSurface(eglCore, eglCore.createWindowSurface(nativeWindow))

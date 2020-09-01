@@ -3,6 +3,8 @@ import com.otaliastudios.tools.publisher.common.Release
 import com.otaliastudios.tools.publisher.bintray.BintrayPublication
 import com.otaliastudios.tools.publisher.local.LocalPublication
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
     id("kotlin-multiplatform")
@@ -11,57 +13,75 @@ plugins {
     id("maven-publish")
 }
 
+fun KotlinMultiplatformExtension.newSourceSet(name: String, parent: KotlinSourceSet): KotlinSourceSet {
+    return sourceSets.maybeCreate(name).apply {
+        dependsOn(parent)
+    }
+}
+
+fun KotlinMultiplatformExtension.androidNative(name: String = "androidNative", configure: KotlinNativeTarget.() -> Unit) {
+    val androidNativeMain = newSourceSet("${name}Main", sourceSets["commonMain"])
+    val androidNativeTest = newSourceSet("${name}Test", sourceSets["commonTest"])
+    val androidNative32BitMain = newSourceSet("${name}32BitMain", androidNativeMain)
+    val androidNative32BitTest = newSourceSet("${name}32BitTest", androidNativeTest)
+    val androidNative64BitMain = newSourceSet("${name}64BitMain", androidNativeMain)
+    val androidNative64BitTest = newSourceSet("${name}64BitTest", androidNativeTest)
+    val targets32 = listOf(androidNativeX86(), androidNativeArm32())
+    val targets64 = listOf(androidNativeX64(), androidNativeArm64())
+    targets32.forEach {
+        newSourceSet(it.compilations["main"].defaultSourceSet.name, androidNative32BitMain)
+        newSourceSet(it.compilations["test"].defaultSourceSet.name, androidNative32BitTest)
+        it.configure()
+    }
+    targets64.forEach {
+        newSourceSet(it.compilations["main"].defaultSourceSet.name, androidNative64BitMain)
+        newSourceSet(it.compilations["test"].defaultSourceSet.name, androidNative64BitTest)
+        it.configure()
+    }
+}
+
 kotlin {
+    explicitApi()
     android("androidJvm") {
         // This enables the KMP android publication.
         publishLibraryVariants("release")
     }
-    val nativeConfig: KotlinNativeTarget.() -> Unit = {
-        val mainSourceSet = compilations["main"].defaultSourceSet.kotlin
-        val testSourceSet = compilations["test"].defaultSourceSet.kotlin
-        mainSourceSet.srcDir("src/androidNativeMain/kotlin")
-        testSourceSet.srcDir("src/androidNativeTest/kotlin")
-        if (name == "androidNativeArm32" || name == "androidNativeX86") {
-            mainSourceSet.srcDir("src/androidNative32BitMain/kotlin")
-        } else if (name == "androidNativeArm64" || name == "androidNativeX64") {
-            mainSourceSet.srcDir("src/androidNative64BitMain/kotlin")
-        }
+    androidNative {
         binaries {
             sharedLib("egloo", listOf(RELEASE))
         }
     }
-    androidNativeX64(configure = nativeConfig)
-    androidNativeX86(configure = nativeConfig)
-    androidNativeArm32(configure = nativeConfig)
-    androidNativeArm64(configure = nativeConfig)
-
     sourceSets {
-        getByName("commonMain") {
-            dependencies {
-                api("org.jetbrains.kotlin:kotlin-stdlib-common")
-            }
-        }
         getByName("androidJvmMain") {
             dependencies {
-                val kotlinVersion = property("kotlinVersion") as String
                 api("androidx.annotation:annotation:1.1.0")
-                api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
             }
+        }
+        configureEach {
+            // We use unsigned types, but do not expose them.
+            // https://kotlinlang.org/docs/reference/opt-in-requirements.html
+            languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalMultiplatform") // optional expectation
         }
     }
 }
 
+// Android JVM configuration
+
 android {
-    setCompileSdkVersion(property("compileSdkVersion") as Int)
+    setCompileSdkVersion(property("androidCompileSdkVersion") as Int)
     defaultConfig {
-        setMinSdkVersion(property("minSdkVersion") as Int)
-        setTargetSdkVersion(property("targetSdkVersion") as Int)
-        versionName = "0.5.2"
+        setMinSdkVersion(property("androidMinSdkVersion") as Int)
+        setTargetSdkVersion(property("androidTargetSdkVersion") as Int)
+        versionName = "0.5.3"
     }
     buildTypes["release"].consumerProguardFile("proguard-rules.pro")
     sourceSets["main"].java.srcDirs("src/androidJvmMain/kotlin")
     sourceSets["main"].manifest.srcFile("src/androidJvmMain/AndroidManifest.xml")
 }
+
+// Publishing
 
 publisher {
     project.group = "com.otaliastudios.opengl"
@@ -103,7 +123,7 @@ publisher {
             "kotlinMultiplatform" to "egloo-multiplatform",
             "metadata" to "egloo-metadata"
     )
-    multiplatformPublications.forEach { mavenPublication, artifactId ->
+    multiplatformPublications.forEach { (mavenPublication, artifactId) ->
         bintray(mavenPublication) {
             auth.user = "BINTRAY_USER"
             auth.key = "BINTRAY_KEY"

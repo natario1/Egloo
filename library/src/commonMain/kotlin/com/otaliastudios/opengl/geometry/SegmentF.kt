@@ -2,11 +2,12 @@ package com.otaliastudios.opengl.geometry
 
 import kotlin.math.*
 
-open class SegmentF(val ix: Float, val iy: Float, val jx: Float, val jy: Float) {
+public open class SegmentF(public val ix: Float, public val iy: Float, public val jx: Float, public val jy: Float) {
 
-    constructor(i: PointF, j: PointF) : this(i.x, i.y, j.x, j.y)
+    @Suppress("unused")
+    public constructor(i: PointF, j: PointF) : this(i.x, i.y, j.x, j.y)
 
-    val length: Float by lazy {
+    public val length: Float by lazy {
         sqrt((ix - jx).pow(2) + (iy - jy).pow(2))
     }
 
@@ -15,7 +16,7 @@ open class SegmentF(val ix: Float, val iy: Float, val jx: Float, val jy: Float) 
      * https://github.com/locationtech/jts/blob/master/modules/core/src/main/java/org/locationtech/jts/algorithm/RobustLineIntersector.java
      * https://stackoverflow.com/questions/3838329/how-can-i-check-if-two-segments-intersect
      */
-    open fun intersects(other: SegmentF): Boolean {
+    public open fun intersects(other: SegmentF): Boolean {
         // Check the envelope for a quick fail.
         val thisMinX = min(ix, jx)
         val thisMaxX = max(ix, jx)
@@ -69,7 +70,7 @@ open class SegmentF(val ix: Float, val iy: Float, val jx: Float, val jy: Float) 
      * 0 if the point is collinear.
      * https://github.com/locationtech/jts/blob/master/modules/core/src/main/java/org/locationtech/jts/algorithm/CGAlgorithmsDD.java#L47-L53
      */
-    fun orientation(x: Float, y: Float): Int {
+    public fun orientation(x: Float, y: Float): Int {
         return ((jx - ix) * (y - jy) - (jy - iy) * (x - jx)).sign.toInt()
     }
 }

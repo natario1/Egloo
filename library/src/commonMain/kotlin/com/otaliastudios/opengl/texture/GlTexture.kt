@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE")
-
 package com.otaliastudios.opengl.texture
 
 import com.otaliastudios.opengl.core.GlBindable
@@ -8,28 +6,29 @@ import com.otaliastudios.opengl.core.use
 import com.otaliastudios.opengl.internal.*
 import kotlin.jvm.JvmOverloads
 
-class GlTexture private constructor(
-        val unit: Int,
-        val target: Int,
+public class GlTexture private constructor(
+        public val unit: Int,
+        public val target: Int,
         id: Int?,
-        width: Int?,
-        height: Int?,
-        format: Int?,
+        public val width: Int?,
+        public val height: Int?,
+        public val format: Int?,
         internalFormat: Int?,
-        type: Int?) : GlBindable {
+        public val type: Int?) : GlBindable {
 
     @JvmOverloads
-    constructor(unit: Int = GL_TEXTURE0.toInt(), target: Int = GL_TEXTURE_EXTERNAL_OES.toInt(), id: Int? = null)
+    public constructor(unit: Int = GL_TEXTURE0.toInt(), target: Int = GL_TEXTURE_EXTERNAL_OES.toInt(), id: Int? = null)
             : this(unit, target, id, null, null, null, null, null)
 
+    @Suppress("unused")
     @JvmOverloads
-    constructor(unit: Int, target: Int, width: Int, height: Int,
+    public constructor(unit: Int, target: Int, width: Int, height: Int,
                 format: Int = GL_RGBA.toInt(),
                 internalFormat: Int = format,
                 type: Int = GL_UNSIGNED_BYTE.toInt())
             : this(unit, target, null, width, height, format, internalFormat, type)
 
-    val id = id ?: run {
+    public val id: Int = id ?: run {
         val textures = UIntArray(1)
         glGenTextures(1, textures)
         Egloo.checkGlError("glGenTextures")
@@ -67,7 +66,7 @@ class GlTexture private constructor(
         Egloo.checkGlError("unbind")
     }
 
-    fun release() {
+    public fun release() {
         glDeleteTextures(1, uintArrayOf(id.toUInt()))
     }
 }

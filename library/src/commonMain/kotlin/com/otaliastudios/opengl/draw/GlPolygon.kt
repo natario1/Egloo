@@ -7,12 +7,13 @@ import com.otaliastudios.opengl.geometry.PointF
 import com.otaliastudios.opengl.types.floatBuffer
 import com.otaliastudios.opengl.internal.GL_TRIANGLE_FAN
 import com.otaliastudios.opengl.internal.glDrawArrays
+import com.otaliastudios.opengl.types.FloatBuffer
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 
 @Suppress("unused")
-open class GlPolygon(private val sides: Int): Gl2dDrawable() {
+public open class GlPolygon(private val sides: Int): Gl2dDrawable() {
     init {
         if (sides < 3) {
             throw IllegalArgumentException("Polygon should have at least 3 sides.")
@@ -28,40 +29,40 @@ open class GlPolygon(private val sides: Int): Gl2dDrawable() {
      * The polygon radius. The value 1 is half the smallest viewport dimension.
      * For example, a [GlCircle] with radius 1 will touch the viewport borders exactly.
      */
-    var radius = 1F
+    public var radius: Float = 1F
         set(value) {
             field = value
             updateArray()
         }
 
-    var rotation = 0F
+    public var rotation: Float = 0F
         set(value) {
             field = value % 360
             updateArray()
         }
 
-    var centerX = 0F
+    public var centerX: Float = 0F
         set(value) {
             field = value
             updateArray()
             onViewportSizeOrCenterChanged()
         }
 
-    var centerY = 0F
+    public var centerY: Float = 0F
         set(value) {
             field = value
             updateArray()
             onViewportSizeOrCenterChanged()
         }
 
-    var center: PointF
+    public var center: PointF
         get() = PointF(centerX, centerY)
         set(value) {
             centerX = value.x
             centerY = value.y
         }
 
-    override var vertexArray = floatBuffer((sides + 2) * coordsPerVertex)
+    override var vertexArray: FloatBuffer = floatBuffer((sides + 2) * coordsPerVertex)
 
     init {
         updateArray()

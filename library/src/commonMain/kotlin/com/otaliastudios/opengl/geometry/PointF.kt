@@ -1,8 +1,8 @@
 package com.otaliastudios.opengl.geometry
 
-expect open class PointF {
-    constructor()
-    constructor(x: Float, y: Float)
-    var x: Float
-    var y: Float
+public expect open class PointF {
+    public constructor()
+    public constructor(x: Float, y: Float)
+    public var x: Float
+    public var y: Float
 }

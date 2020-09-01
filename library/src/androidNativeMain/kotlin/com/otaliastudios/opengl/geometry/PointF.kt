@@ -1,5 +1,5 @@
 package com.otaliastudios.opengl.geometry
 
-actual open class PointF actual constructor(actual var x: Float, actual var y: Float) {
-    actual constructor() : this(0F, 0F)
+public actual open class PointF actual constructor(public actual var x: Float, public actual var y: Float) {
+    public actual constructor() : this(0F, 0F)
 }

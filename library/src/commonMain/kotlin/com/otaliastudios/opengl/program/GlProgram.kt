@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.otaliastudios.opengl.program
 
 import com.otaliastudios.opengl.core.Egloo
@@ -28,24 +26,25 @@ import kotlin.jvm.JvmStatic
  *
  * The vertex shader should then use the two to compute the gl_Position.
  */
-open class GlProgram protected constructor(
-        val handle: Int,
+public open class GlProgram protected constructor(
+        public val handle: Int,
         private val ownsHandle: Boolean,
         private vararg val shaders: GlShader) : GlBindable {
 
-    constructor(handle: Int) : this(handle, false)
+    @Suppress("unused")
+    public constructor(handle: Int) : this(handle, false)
 
-    constructor(vertexShader: String, fragmentShader: String) : this(
+    public constructor(vertexShader: String, fragmentShader: String) : this(
             GlShader(GL_VERTEX_SHADER.toInt(), vertexShader),
             GlShader(GL_FRAGMENT_SHADER.toInt(), fragmentShader))
 
-    constructor(vararg shaders: GlShader)
+    public constructor(vararg shaders: GlShader)
             : this(create(*shaders), true, *shaders)
 
     private var isReleased = false
 
     @Suppress("unused")
-    open fun release() {
+    public open fun release() {
         if (!isReleased) {
             if (ownsHandle) glDeleteProgram(handle.toUInt())
             shaders.forEach { it.release() }
@@ -66,8 +65,8 @@ open class GlProgram protected constructor(
     //  I like the program as an object that manages the single shaders capabilities,
     //  but not quite as the drawer element. It could be a compute program for instance.
     @JvmOverloads
-    fun draw(drawable: GlDrawable,
-             modelViewProjectionMatrix: FloatArray = drawable.modelMatrix) {
+    public fun draw(drawable: GlDrawable,
+                    modelViewProjectionMatrix: FloatArray = drawable.modelMatrix) {
         Egloo.checkGlError("draw start")
         use {
             onPreDraw(drawable, modelViewProjectionMatrix)
@@ -77,29 +76,29 @@ open class GlProgram protected constructor(
         Egloo.checkGlError("draw end")
     }
 
-    open fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {}
+    public open fun onPreDraw(drawable: GlDrawable, modelViewProjectionMatrix: FloatArray) {}
 
-    open fun onDraw(drawable: GlDrawable) {
+    public open fun onDraw(drawable: GlDrawable) {
         drawable.draw()
     }
 
-    open fun onPostDraw(drawable: GlDrawable) {}
+    public open fun onPostDraw(drawable: GlDrawable) {}
 
-    protected fun getAttribHandle(name: String) = GlProgramLocation.getAttrib(handle, name)
+    protected fun getAttribHandle(name: String): GlProgramLocation = GlProgramLocation.getAttrib(handle, name)
 
-    protected fun getUniformHandle(name: String) = GlProgramLocation.getUniform(handle, name)
+    protected fun getUniformHandle(name: String): GlProgramLocation = GlProgramLocation.getUniform(handle, name)
 
-    companion object {
+    public companion object {
 
         @Deprecated(message = "Use create(GlShader) signature.")
         @JvmStatic
-        fun create(vertexShaderSource: String, fragmentShaderSource: String): Int {
+        public fun create(vertexShaderSource: String, fragmentShaderSource: String): Int {
             return create(GlShader(GL_VERTEX_SHADER.toInt(), vertexShaderSource),
                     GlShader(GL_FRAGMENT_SHADER.toInt(), fragmentShaderSource))
         }
 
         @JvmStatic
-        fun create(vararg shaders: GlShader): Int {
+        public fun create(vararg shaders: GlShader): Int {
             val program = glCreateProgram()
             Egloo.checkGlError("glCreateProgram")
             if (program == 0u) {

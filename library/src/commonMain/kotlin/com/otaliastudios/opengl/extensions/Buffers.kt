@@ -9,44 +9,44 @@ import com.otaliastudios.opengl.types.intBuffer
 import com.otaliastudios.opengl.types.ShortBuffer
 import com.otaliastudios.opengl.types.shortBuffer
 
-fun FloatArray.toBuffer() = floatBuffer(size).also {
+public fun FloatArray.toBuffer(): FloatBuffer = floatBuffer(size).also {
     it.put(this)
     it.flip()
 }
 
-fun ShortArray.toBuffer() = shortBuffer(size).also {
+public fun ShortArray.toBuffer(): ShortBuffer = shortBuffer(size).also {
     it.put(this)
     it.flip()
 }
 
-fun IntArray.toBuffer() = intBuffer(size).also {
+public fun IntArray.toBuffer(): IntBuffer = intBuffer(size).also {
     it.put(this)
     it.flip()
 }
 
-fun ByteArray.toBuffer() = byteBuffer(size).also {
+public fun ByteArray.toBuffer(): ByteBuffer = byteBuffer(size).also {
     it.put(this)
     it.flip()
 }
 
-fun floatBufferOf(vararg elements: Float): FloatBuffer {
+public fun floatBufferOf(vararg elements: Float): FloatBuffer {
     return floatArrayOf(*elements).toBuffer()
 }
 
-fun shortBufferOf(vararg elements: Short): ShortBuffer {
+public fun shortBufferOf(vararg elements: Short): ShortBuffer {
     return shortArrayOf(*elements).toBuffer()
 }
 
-fun intBufferOf(vararg elements: Int): IntBuffer {
+public fun intBufferOf(vararg elements: Int): IntBuffer {
     return intArrayOf(*elements).toBuffer()
 }
 
-fun byteBufferOf(vararg elements: Byte): ByteBuffer {
+public fun byteBufferOf(vararg elements: Byte): ByteBuffer {
     return byteArrayOf(*elements).toBuffer()
 }
 
 @Deprecated("Do not use this.", replaceWith = ReplaceWith("FloatBuffer(size)"))
-fun floatBufferOf(size: Int) = floatBuffer(size)
+public fun floatBufferOf(size: Int): FloatBuffer = floatBuffer(size)
 
 @Deprecated("Do not use this.",  replaceWith = ReplaceWith("ByteBuffer(size)"))
-fun byteBufferOf(size: Int) = byteBuffer(size)
+public fun byteBufferOf(size: Int): ByteBuffer = byteBuffer(size)

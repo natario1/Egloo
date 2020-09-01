@@ -1,4 +1,4 @@
-@file:Suppress("unused", "EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+@file:Suppress("unused")
 
 package com.otaliastudios.opengl.texture
 
@@ -8,9 +8,9 @@ import com.otaliastudios.opengl.core.use
 import com.otaliastudios.opengl.internal.*
 import kotlin.jvm.JvmOverloads
 
-class GlFramebuffer(id: Int? = null) : GlBindable {
+public class GlFramebuffer(id: Int? = null) : GlBindable {
 
-    val id = id ?: run {
+    public val id: Int = id ?: run {
         val array = UIntArray(1)
         glGenFramebuffers(1, array)
         Egloo.checkGlError("glGenFramebuffers")
@@ -18,7 +18,7 @@ class GlFramebuffer(id: Int? = null) : GlBindable {
     }
 
     @JvmOverloads
-    fun attach(texture: GlTexture, attachment: Int = GL_COLOR_ATTACHMENT0.toInt()) {
+    public fun attach(texture: GlTexture, attachment: Int = GL_COLOR_ATTACHMENT0.toInt()) {
         use {
             glFramebufferTexture2D(GL_FRAMEBUFFER, attachment.toUInt(),
                     texture.target.toUInt(), texture.id.toUInt(), 0)
@@ -37,7 +37,7 @@ class GlFramebuffer(id: Int? = null) : GlBindable {
         glBindFramebuffer(GL_FRAMEBUFFER, 0u)
     }
 
-    fun release() {
+    public fun release() {
         glDeleteFramebuffers(1, uintArrayOf(id.toUInt()))
     }
 }

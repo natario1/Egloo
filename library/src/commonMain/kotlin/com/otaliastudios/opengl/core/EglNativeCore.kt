@@ -29,9 +29,9 @@ import com.otaliastudios.opengl.internal.eglSwapBuffers
 import com.otaliastudios.opengl.internal.eglTerminate
 import com.otaliastudios.opengl.internal.logv
 
-expect class EglCore : EglNativeCore
+public expect class EglCore : EglNativeCore
 
-open class EglNativeCore internal constructor(sharedContext: EglContext = EGL_NO_CONTEXT, flags: Int = 0) {
+public open class EglNativeCore internal constructor(sharedContext: EglContext = EGL_NO_CONTEXT, flags: Int = 0) {
 
     private var eglDisplay: EglDisplay = EGL_NO_DISPLAY
     private var eglContext: EglContext = EGL_NO_CONTEXT
@@ -197,7 +197,7 @@ open class EglNativeCore internal constructor(sharedContext: EglContext = EGL_NO
         return value[0]
     }
 
-    companion object {
+    public companion object {
         /**
          * Constructor flag: surface must be recordable.  This discourages EGL from using a
          * pixel format that cannot be converted efficiently to something usable by the video
