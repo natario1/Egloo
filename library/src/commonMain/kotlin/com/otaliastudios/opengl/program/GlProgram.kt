@@ -1,5 +1,3 @@
-@file:Suppress("EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
-
 package com.otaliastudios.opengl.program
 
 import com.otaliastudios.opengl.core.Egloo

@@ -48,6 +48,12 @@ kotlin {
                 api("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersion")
             }
         }
+        configureEach {
+            // We use unsigned types, but do not expose them.
+            // https://kotlinlang.org/docs/reference/opt-in-requirements.html
+            languageSettings.useExperimentalAnnotation("kotlin.RequiresOptIn")
+            languageSettings.useExperimentalAnnotation("kotlin.ExperimentalUnsignedTypes")
+        }
     }
 }
 

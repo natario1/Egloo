@@ -1,4 +1,4 @@
-@file:Suppress("unused", "EXPERIMENTAL_API_USAGE", "EXPERIMENTAL_UNSIGNED_LITERALS")
+@file:Suppress("unused")
 
 package com.otaliastudios.opengl.texture
 
