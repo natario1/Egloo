@@ -8,7 +8,7 @@ import com.otaliastudios.opengl.internal.glBufferData
 
 // TODO android must have requiresApi annotation (21)
 @Suppress("unused")
-class GlShaderStorageBuffer(val size: Int, usage: Int)
+class GlShaderStorageBuffer(val size: Int, val usage: Int)
     : GlBuffer(target = GL_SHADER_STORAGE_BUFFER.toInt()) {
 
     init {

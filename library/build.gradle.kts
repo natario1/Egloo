@@ -50,25 +50,6 @@ kotlin {
             sharedLib("egloo", listOf(RELEASE))
         }
     }
-    /* val nativeConfig: KotlinNativeTarget.() -> Unit = {
-        val mainSourceSet = compilations["main"].defaultSourceSet.kotlin
-        val testSourceSet = compilations["test"].defaultSourceSet.kotlin
-        mainSourceSet.srcDir("src/androidNativeMain/kotlin")
-        testSourceSet.srcDir("src/androidNativeTest/kotlin")
-        if (name == "androidNativeArm32" || name == "androidNativeX86") {
-            mainSourceSet.srcDir("src/androidNative32BitMain/kotlin")
-        } else if (name == "androidNativeArm64" || name == "androidNativeX64") {
-            mainSourceSet.srcDir("src/androidNative64BitMain/kotlin")
-        }
-        binaries {
-            sharedLib("egloo", listOf(RELEASE))
-        }
-    }
-    androidNativeX64(configure = nativeConfig)
-    androidNativeX86(configure = nativeConfig)
-    androidNativeArm32(configure = nativeConfig)
-    androidNativeArm64(configure = nativeConfig) */
-
     sourceSets {
         getByName("androidJvmMain") {
             dependencies {
