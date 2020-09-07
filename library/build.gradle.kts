@@ -1,14 +1,12 @@
 import com.otaliastudios.tools.publisher.common.License
 import com.otaliastudios.tools.publisher.common.Release
-import com.otaliastudios.tools.publisher.bintray.BintrayPublication
-import com.otaliastudios.tools.publisher.local.LocalPublication
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 
 plugins {
-    id("kotlin-multiplatform")
     id("com.android.library")
+    id("kotlin-multiplatform")
     id("com.otaliastudios.tools.publisher")
     id("maven-publish")
 }
