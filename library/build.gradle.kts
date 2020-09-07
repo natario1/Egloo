@@ -11,29 +11,37 @@ plugins {
     id("maven-publish")
 }
 
-fun KotlinMultiplatformExtension.newSourceSet(name: String, parent: KotlinSourceSet): KotlinSourceSet {
+fun KotlinMultiplatformExtension.newSourceSet(name: String, vararg parents: KotlinSourceSet): KotlinSourceSet {
     return sourceSets.maybeCreate(name).apply {
-        dependsOn(parent)
+        parents.forEach { dependsOn(it) }
     }
 }
 
+// Ideally we'd have common -> androidNative -> androidNative32/64 -> androidNativeXXX, but the
+// commonizer currently only works on sets whose direct children are the final targets.
+// So we need to move androidNative closer to the final targets and create two chains instead:
+// 1. common -> androidNative -----------------------> androidNativeXXX
+// 2.                   \------> androidNative32/64 -------/
+// https://kotlinlang.org/docs/reference/mpp-share-on-platforms.html
 fun KotlinMultiplatformExtension.androidNative(name: String = "androidNative", configure: KotlinNativeTarget.() -> Unit) {
-    val androidNativeMain = newSourceSet("${name}Main", sourceSets["commonMain"])
-    val androidNativeTest = newSourceSet("${name}Test", sourceSets["commonTest"])
+    val commonMain = sourceSets["commonMain"]
+    val commonTest = sourceSets["commonTest"]
+    val androidNativeMain = newSourceSet("${name}Main", commonMain)
+    val androidNativeTest = newSourceSet("${name}Test", commonTest)
     val androidNative32BitMain = newSourceSet("${name}32BitMain", androidNativeMain)
-    val androidNative32BitTest = newSourceSet("${name}32BitTest", androidNativeTest)
     val androidNative64BitMain = newSourceSet("${name}64BitMain", androidNativeMain)
+    val androidNative32BitTest = newSourceSet("${name}32BitTest", androidNativeTest)
     val androidNative64BitTest = newSourceSet("${name}64BitTest", androidNativeTest)
     val targets32 = listOf(androidNativeX86(), androidNativeArm32())
     val targets64 = listOf(androidNativeX64(), androidNativeArm64())
     targets32.forEach {
-        newSourceSet(it.compilations["main"].defaultSourceSet.name, androidNative32BitMain)
-        newSourceSet(it.compilations["test"].defaultSourceSet.name, androidNative32BitTest)
+        newSourceSet(it.compilations["main"].defaultSourceSetName, androidNativeMain, androidNative32BitMain)
+        newSourceSet(it.compilations["test"].defaultSourceSetName, androidNativeTest, androidNative32BitTest)
         it.configure()
     }
     targets64.forEach {
-        newSourceSet(it.compilations["main"].defaultSourceSet.name, androidNative64BitMain)
-        newSourceSet(it.compilations["test"].defaultSourceSet.name, androidNative64BitTest)
+        newSourceSet(it.compilations["main"].defaultSourceSetName, androidNativeMain, androidNative64BitMain)
+        newSourceSet(it.compilations["test"].defaultSourceSetName, androidNativeTest, androidNative64BitTest)
         it.configure()
     }
 }
