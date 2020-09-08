@@ -21,7 +21,7 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-        maven("https://dl.bintray.com/natario/multiplatform")
+        maven("https://dl.bintray.com/natario/multiplatform/")
     }
 }
 

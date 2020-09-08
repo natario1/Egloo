@@ -1,2 +1,2 @@
 enableFeaturePreview("GRADLE_METADATA") // < required by multiplatform for smart maven klib publications
-include ':library', ':demo'
+include ':library', ':demo', ':bug'
