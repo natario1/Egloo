@@ -11,6 +11,7 @@ import android.opengl.GLES20
 import android.opengl.GLSurfaceView
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.widget.Toast
 import com.google.android.exoplayer2.ExoPlayerFactory
@@ -22,9 +23,7 @@ import com.google.android.exoplayer2.video.VideoListener
 import com.otaliastudios.opengl.core.EglConfigChooser
 import com.otaliastudios.opengl.core.EglContextFactory
 import com.otaliastudios.opengl.draw.*
-import com.otaliastudios.opengl.extensions.makeIdentity
-import com.otaliastudios.opengl.extensions.scaleX
-import com.otaliastudios.opengl.extensions.scaleY
+import com.otaliastudios.opengl.extensions.*
 import com.otaliastudios.opengl.program.GlTextureProgram
 import com.otaliastudios.opengl.scene.GlScene
 import com.otaliastudios.opengl.texture.GlTexture
@@ -146,13 +145,91 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         onVideoOrSurfaceSizeChanged()
     }
 
+    private var animation = 0F
+    private val animationStep = 0.009F
+
     override fun onDrawFrame(gl: GL10) {
         val texture = surfaceTexture ?: return
         val program = glTextureProgram ?: return
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT)
         texture.updateTexImage()
         texture.getTransformMatrix(program.textureTransform)
-        scene.draw(program, glDrawables[glDrawable])
+
+        val drawable = glDrawables[glDrawable]
+        drawable.modelMatrix.clear()
+
+        animation += animationStep
+        if (animation > 1F) animation = animationStep
+        Log.e("DEBUG", "Animation=$animation")
+        val zoom = animation * 2F + 1F
+        val scale = 1F / zoom
+        program.zoom(zoom = zoom, focusX = 0F, focusY = 0F)
+        program.revertZoom(zoom = zoom, focusX = 0F, focusY = 0F)
+
+        // Scale works
+        // program.scale(scale = scale, pivotX = 1F, pivotY = 0.5F)
+        // drawable.scale(scale = 1F / scale, pivotX = 1F, pivotY = 0.5F)
+        scene.draw(program, drawable)
+
+    }
+
+    // Works
+    private fun GlDrawable.zoom(zoom: Float, focusX: Float, focusY: Float) {
+        Log.e("DEBUG", "DRAWABLE_ZOOM zoom=$zoom")
+        val transformedFocusX = focusX * 2F - 1F // -1..1
+        val transformedFocusY = (1 - focusY) * 2F - 1F // -1..1
+        // order matters
+        modelMatrix.scale(x = zoom, y = zoom)
+        modelMatrix.translate(x = -transformedFocusX, y = -transformedFocusY)
+    }
+
+    private fun GlDrawable.revertZoom(zoom: Float, focusX: Float, focusY: Float) {
+        // Scale is enough in case of 0.5,0.5 (0,0)
+        val transformedFocusX = focusX * 2F - 1F // -1..1
+        val transformedFocusY = (1 - focusY) * 2F - 1F // -1..1
+        modelMatrix.translate(x = transformedFocusX, y = transformedFocusY)
+        modelMatrix.scale(x = 1F / zoom, y = 1F / zoom)
+    }
+
+
+
+    // Works
+    private fun GlTextureProgram.zoom(zoom: Float, focusX: Float, focusY: Float) {
+        Log.e("DEBUG", "TEXTURE_ZOOM zoom=$zoom")
+        val newOriginX = focusX - (1F / zoom) / 2F
+        val newOriginY = (1F - focusY) - (1F / zoom) / 2F
+        textureTransform.translate(x = newOriginX, y = newOriginY)
+        textureTransform.scale(x = 1F / zoom, y = 1F / zoom)
+    }
+
+    private fun GlTextureProgram.revertZoom(zoom: Float, focusX: Float, focusY: Float) {
+        val newOriginX = focusX - (1F / zoom) / 2F
+        val newOriginY = (1F - focusY) - (1F / zoom) / 2F
+        textureTransform.scale(x = zoom, y = zoom)
+        textureTransform.translate(x = -newOriginX, y = -newOriginY)
+    }
+
+
+
+
+
+    // Works
+    private fun GlTextureProgram.scale(scale: Float, pivotX: Float, pivotY: Float) {
+        Log.e("DEBUG", "TEXTURE_SCALE scale=$scale")
+        val flippedY = 1F - pivotY
+        textureTransform.translate(x = pivotX, y = flippedY)
+        textureTransform.scale(x = scale, y = scale)
+        textureTransform.translate(x = -pivotX, y = -flippedY)
+    }
+
+    // Works
+    private fun GlDrawable.scale(scale: Float, pivotX: Float, pivotY: Float) {
+        val pivotX = pivotX * 2F - 1F // -1..1
+        val pivotY = (1 - pivotY) * 2F - 1F // -1..1
+        Log.e("DEBUG", "DRAWABLE_SCALE scale=$scale pivotX=$pivotX pivotY=$pivotY")
+        modelMatrix.translate(x = pivotX, y = pivotY)
+        modelMatrix.scale(x = 1F / scale, y = 1F / scale)
+        modelMatrix.translate(x = -pivotX, y = -pivotY)
     }
 
     private fun onSurfaceDestroyed() {
@@ -186,8 +263,8 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         } else {
             viewport = RectF(-1F, 1F, 1F, -1F)
         }
-        glRect.setRect(viewport)
-        glRoundRect.setRect(viewport)
+        // glRect.setRect(viewport)
+        // glRoundRect.setRect(viewport)
         glMesh.modelMatrix.makeIdentity()
         glMesh.modelMatrix.scaleX(viewport.width() / 2F)
         glMesh.modelMatrix.scaleY(-viewport.height() / 2F)
