@@ -161,14 +161,15 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         animation += animationStep
         if (animation > 1F) animation = animationStep
         Log.e("DEBUG", "Animation=$animation")
-        val zoom = animation * 2F + 1F
-        val scale = 1F / zoom
-        program.zoom(zoom = zoom, focusX = 0F, focusY = 0F)
-        program.revertZoom(zoom = zoom, focusX = 0F, focusY = 0F)
-
-        // Scale works
+        // val zoom = animation * 2F + 1F
+        // val scale = 1F / zoom
+        // program.zoom(zoom = zoom, focusX = 0F, focusY = 0F)
+        // program.revertZoom(zoom = zoom, focusX = 0F, focusY = 0F)
         // program.scale(scale = scale, pivotX = 1F, pivotY = 0.5F)
         // drawable.scale(scale = 1F / scale, pivotX = 1F, pivotY = 0.5F)
+        val rotation = animation * 360F
+        program.rotate(rotation, 1F, 0.5F)
+        // drawable.rotate(rotation, 1F, 0.5F)
         scene.draw(program, drawable)
 
     }
@@ -229,6 +230,27 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         Log.e("DEBUG", "DRAWABLE_SCALE scale=$scale pivotX=$pivotX pivotY=$pivotY")
         modelMatrix.translate(x = pivotX, y = pivotY)
         modelMatrix.scale(x = 1F / scale, y = 1F / scale)
+        modelMatrix.translate(x = -pivotX, y = -pivotY)
+    }
+
+
+
+    // Works
+    private fun GlTextureProgram.rotate(rotation: Float, pivotX: Float, pivotY: Float) {
+        Log.e("DEBUG", "TEXTURE_ROTATION rotation=$rotation")
+        val flippedY = 1F - pivotY
+        textureTransform.translate(x = pivotX, y = flippedY)
+        textureTransform.rotateZ(-rotation)
+        textureTransform.translate(x = -pivotX, y = -flippedY)
+    }
+
+    // Works
+    private fun GlDrawable.rotate(rotation: Float, pivotX: Float, pivotY: Float) {
+        val pivotX = pivotX * 2F - 1F // -1..1
+        val pivotY = (1 - pivotY) * 2F - 1F // -1..1
+        Log.e("DEBUG", "DRAWABLE_ROTATION rotation=$rotation pivotX=$pivotX pivotY=$pivotY")
+        modelMatrix.translate(x = pivotX, y = pivotY)
+        modelMatrix.rotateZ(rotation)
         modelMatrix.translate(x = -pivotX, y = -pivotY)
     }
 
