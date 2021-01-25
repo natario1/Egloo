@@ -9,6 +9,10 @@ New versions are released through GitHub, so the reference page is the [GitHub R
 Starting from v0.3.1, you can [support development](https://github.com/sponsors/natario1) through the GitHub Sponsors program. 
 Companies can share a tiny part of their revenue and get private support hours in return. Thanks!
 
+### v0.5.4
+
+- Upgrade to Kotlin 1.4.21 ([#31][31])
+
 ### v0.5.3
 
 - New: Upgrade to Kotlin 1.4 ([#27][27])
