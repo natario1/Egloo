@@ -8,7 +8,7 @@ android {
     setCompileSdkVersion(property("androidCompileSdkVersion") as Int)
 
     defaultConfig {
-        applicationId = "com.otaliastudios.zoom.demo"
+        applicationId = "com.otaliastudios.opengl.demo"
         setMinSdkVersion(property("androidMinSdkVersion") as Int)
         setTargetSdkVersion(property("androidTargetSdkVersion") as Int)
         versionCode = 1
@@ -22,8 +22,8 @@ android {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("androidx.core:core-ktx:1.1.0")
+    implementation("androidx.appcompat:appcompat:1.2.0")
+    implementation("androidx.core:core-ktx:1.3.2")
     implementation("com.google.android.exoplayer:exoplayer-core:2.10.4")
     implementation("com.google.android.exoplayer:exoplayer-ui:2.10.4")
     implementation(project(":library"))

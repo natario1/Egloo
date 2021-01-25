@@ -1,5 +1,5 @@
-import com.otaliastudios.tools.publisher.common.License
-import com.otaliastudios.tools.publisher.common.Release
+import io.deepmedia.tools.publisher.common.License
+import io.deepmedia.tools.publisher.common.Release
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -7,8 +7,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 plugins {
     id("com.android.library")
     id("kotlin-multiplatform")
-    id("com.otaliastudios.tools.publisher")
-    id("maven-publish")
+    id("io.deepmedia.tools.publisher")
 }
 
 fun KotlinMultiplatformExtension.newSourceSet(name: String, vararg parents: KotlinSourceSet): KotlinSourceSet {
@@ -105,16 +104,16 @@ publisher {
         component = "release"
         project.name = "Egloo"
         project.artifact = "egloo"
-        release.setSources(Release.SOURCES_AUTO)
-        release.setDocs(Release.DOCS_AUTO)
+        release.sources = Release.SOURCES_AUTO
+        release.docs = Release.DOCS_AUTO
     }
     directory("legacy") {
         directory = dir
         component = "release"
         project.name = "Egloo"
         project.artifact = "egloo"
-        release.setSources(Release.SOURCES_AUTO)
-        release.setDocs(Release.DOCS_AUTO)
+        release.sources = Release.SOURCES_AUTO
+        release.docs = Release.DOCS_AUTO
     }
 
     // Kotlin creates MavenPublication objects with a specific name.
@@ -126,8 +125,8 @@ publisher {
             "androidNativeArm64" to "egloo-androidnativearm64",
             "androidNativeX86" to "egloo-androidnativex86",
             "androidNativeX64" to "egloo-androidnativex64",
-            "kotlinMultiplatform" to "egloo-multiplatform",
-            "metadata" to "egloo-metadata"
+            "kotlinMultiplatform" to "egloo-multiplatform"
+            // "metadata" to "egloo-metadata" - removed in Kotlin 1.4.20 or so
     )
     multiplatformPublications.forEach { (mavenPublication, artifactId) ->
         bintray(mavenPublication) {
@@ -138,7 +137,7 @@ publisher {
             project.name = artifactId
             project.artifact = artifactId
             if (artifactId == "egloo-android") {
-                release.setDocs(Release.DOCS_AUTO)
+                release.docs = Release.DOCS_AUTO
             }
         }
         directory(mavenPublication) {

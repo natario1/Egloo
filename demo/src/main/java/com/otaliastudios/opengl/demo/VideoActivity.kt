@@ -92,9 +92,9 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         glSurfaceView.setRenderer(this)
         glSurfaceView.renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
         glSurfaceView.holder.addCallback(object : SurfaceHolder.Callback {
-            override fun surfaceCreated(holder: SurfaceHolder?) {}
-            override fun surfaceChanged(holder: SurfaceHolder?, format: Int, width: Int, height: Int) {}
-            override fun surfaceDestroyed(holder: SurfaceHolder?) {
+            override fun surfaceCreated(holder: SurfaceHolder) {}
+            override fun surfaceChanged(holder: SurfaceHolder, format: Int, width: Int, height: Int) {}
+            override fun surfaceDestroyed(holder: SurfaceHolder) {
                 onSurfaceDestroyed()
             }
         })
@@ -198,7 +198,7 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         startActivity(Intent(this, ShapesActivity::class.java))
         onSurfaceDestroyed()
         finish()

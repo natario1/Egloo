@@ -38,17 +38,17 @@ but other targets like iOS can probably be added easily.
 
 ```kotlin
 // Regular Android projects
-implementation("com.otaliastudios.opengl:egloo-android:0.5.3")
+implementation("com.otaliastudios.opengl:egloo-android:0.5.4")
 
 // Kotlin Multiplatform projects: add egloo-multiplatform to your common source set.
-implementation("com.otaliastudios.opengl:egloo-multiplatform:0.5.3")
+implementation("com.otaliastudios.opengl:egloo-multiplatform:0.5.4")
 
 // Kotlin Multiplatform projects: or use the granular dependencies:
-implementation("com.otaliastudios.opengl:egloo-android:0.5.3") // Android AAR
-implementation("com.otaliastudios.opengl:egloo-androidnativex86:0.5.3") // Android Native KLib
-implementation("com.otaliastudios.opengl:egloo-androidnativex64:0.5.3") // Android Native KLib
-implementation("com.otaliastudios.opengl:egloo-androidnativearm32:0.5.3") // Android Native KLib
-implementation("com.otaliastudios.opengl:egloo-androidnativearm64:0.5.3") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-android:0.5.4") // Android AAR
+implementation("com.otaliastudios.opengl:egloo-androidnativex86:0.5.4") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativex64:0.5.4") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativearm32:0.5.4") // Android Native KLib
+implementation("com.otaliastudios.opengl:egloo-androidnativearm64:0.5.4") // Android Native KLib
 ```
 
 ## Features

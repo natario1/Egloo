@@ -1,18 +1,19 @@
 buildscript {
     extra["androidMinSdkVersion"] = 18
-    extra["androidCompileSdkVersion"] = 29
-    extra["androidTargetSdkVersion"] = 29
+    extra["androidCompileSdkVersion"] = 30
+    extra["androidTargetSdkVersion"] = 30
 
     repositories {
         google()
         mavenCentral()
         jcenter()
+        mavenLocal()
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.0")
-        classpath("com.android.tools.build:gradle:4.0.1")
-        classpath("com.otaliastudios.tools:publisher:0.3.3")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21")
+        classpath("com.android.tools.build:gradle:4.1.1")
+        classpath("io.deepmedia.tools:publisher:0.4.1")
     }
 }
 
