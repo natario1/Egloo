@@ -1,5 +1,8 @@
+import com.android.build.gradle.internal.tasks.factory.dependsOn
+import io.deepmedia.tools.publisher.common.GithubScm
 import io.deepmedia.tools.publisher.common.License
 import io.deepmedia.tools.publisher.common.Release
+import io.deepmedia.tools.publisher.sonatype.Sonatype
 import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
@@ -79,7 +82,7 @@ android {
     defaultConfig {
         setMinSdkVersion(property("androidMinSdkVersion") as Int)
         setTargetSdkVersion(property("androidTargetSdkVersion") as Int)
-        versionName = "0.5.4"
+        versionName = "0.6.0"
     }
     buildTypes["release"].consumerProguardFile("proguard-rules.pro")
     sourceSets["main"].java.srcDirs("src/androidJvmMain/kotlin")
@@ -88,37 +91,25 @@ android {
 
 // Publishing
 
+val deploySonatypeSnapshots by tasks.registering
+val deploySonatypeReleases by tasks.registering
+val deployLocally by tasks.registering
+
 publisher {
+    // Common parameters.
     project.group = "com.otaliastudios.opengl"
     project.description = "Simple and lightweight OpenGL ES drawing and EGL management for Android, with object-oriented components based on Google's Grafika."
     project.url = "https://github.com/natario1/Egloo"
-    project.vcsUrl = "https://github.com/natario1/Egloo.git"
+    project.scm = GithubScm("natario1", "Egloo")
     project.addLicense(License.MIT)
+    project.addDeveloper("natario1", "mat.iavarone@gmail.com")
+    release.docs = Release.DOCS_AUTO
     val dir = "../prebuilt"
-
-    // Legacy android release (:egloo)
-    bintray("legacy") {
-        auth.user = "BINTRAY_USER"
-        auth.key = "BINTRAY_KEY"
-        auth.repo = "BINTRAY_REPO_LEGACY"
-        component = "release"
-        project.name = "Egloo"
-        project.artifact = "egloo"
-        release.sources = Release.SOURCES_AUTO
-        release.docs = Release.DOCS_AUTO
-    }
-    directory("legacy") {
-        directory = dir
-        component = "release"
-        project.name = "Egloo"
-        project.artifact = "egloo"
-        release.sources = Release.SOURCES_AUTO
-        release.docs = Release.DOCS_AUTO
-    }
 
     // Kotlin creates MavenPublication objects with a specific name.
     // Make sure to override the weird artifact name that KMP provides for these.
     // Make also sure to not override the packaging, as some are klib, some pom, som aar...
+    // Recent kotlin versions automatically add the sources jar artifact, so we must not add it.
     val multiplatformPublications = mapOf(
             "androidJvmRelease" to "egloo-android",
             "androidNativeArm32" to "egloo-androidnativearm32",
@@ -129,22 +120,69 @@ publisher {
             // "metadata" to "egloo-metadata" - removed in Kotlin 1.4.20 or so
     )
     multiplatformPublications.forEach { (mavenPublication, artifactId) ->
-        bintray(mavenPublication) {
-            auth.user = "BINTRAY_USER"
-            auth.key = "BINTRAY_KEY"
-            auth.repo = "BINTRAY_REPO"
-            publication = mavenPublication
-            project.name = artifactId
-            project.artifact = artifactId
-            if (artifactId == "egloo-android") {
-                release.docs = Release.DOCS_AUTO
-            }
-        }
+        deployLocally.dependsOn("publishToDirectory${mavenPublication.capitalize()}")
         directory(mavenPublication) {
             directory = dir
             publication = mavenPublication
             project.name = artifactId
             project.artifact = artifactId
         }
+
+        deploySonatypeReleases.dependsOn("publishToSonatype${mavenPublication.capitalize()}")
+        sonatype(mavenPublication) {
+            auth.user = "SONATYPE_USER"
+            auth.password = "SONATYPE_PASSWORD"
+            signing.key = "SIGNING_KEY"
+            signing.password = "SIGNING_PASSWORD"
+            publication = mavenPublication
+            project.name = artifactId
+            project.artifact = artifactId
+        }
+
+        // TODO can't work, version overrides the other sonatype version! Need to fix this in publisher plugin
+        /* deploySonatypeSnapshots.dependsOn("publishToSonatype${mavenPublication.capitalize()}Snapshot")
+        sonatype(mavenPublication + "Snapshot") {
+            repository = Sonatype.OSSRH_SNAPSHOT_1
+            release.version = "latest-SNAPSHOT"
+            auth.user = "SONATYPE_USER"
+            auth.password = "SONATYPE_PASSWORD"
+            signing.key = "SIGNING_KEY"
+            signing.password = "SIGNING_PASSWORD"
+            publication = mavenPublication
+            project.name = artifactId
+            project.artifact = artifactId
+        } */
+    }
+
+    // Legacy android release (:egloo)
+    deployLocally.dependsOn("publishToDirectoryLegacy")
+    directory("legacy") {
+        directory = dir
+        component = "release"
+        project.name = "Egloo"
+        project.artifact = "egloo"
+        release.sources = Release.SOURCES_AUTO
+    }
+
+    deploySonatypeReleases.dependsOn("publishToSonatypeLegacy")
+    sonatype("legacy") {
+        auth.user = "SONATYPE_USER"
+        auth.password = "SONATYPE_PASSWORD"
+        signing.key = "SIGNING_KEY"
+        signing.password = "SIGNING_PASSWORD"
+        component = "release"
+        project.name = "Egloo"
+        project.artifact = "egloo"
+        release.sources = Release.SOURCES_AUTO
     }
 }
+
+/* afterEvaluate {
+    val publishing = project.publishing
+    publishing.publications.filterIsInstance<MavenPublication>().forEach {
+        println("Analyzing publication ${it.name}...")
+        it.artifacts.forEach {
+            println("   - artifact ext=${it.extension} classifier=${it.classifier}")
+        }
+    }
+} */

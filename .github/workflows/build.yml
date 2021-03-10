@@ -16,4 +16,4 @@ jobs:
         with:
           java-version: 1.8
       - name: Perform base checks
-        run: ./gradlew demo:assembleDebug library:publishAllDirectory
+        run: ./gradlew demo:assembleDebug library:deployLocally

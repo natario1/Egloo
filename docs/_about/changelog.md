@@ -9,6 +9,11 @@ New versions are released through GitHub, so the reference page is the [GitHub R
 Starting from v0.3.1, you can [support development](https://github.com/sponsors/natario1) through the GitHub Sponsors program. 
 Companies can share a tiny part of their revenue and get private support hours in return. Thanks!
 
+### v0.6.0
+
+- Upgrade to Kotlin 1.4.31 ([#33][33])
+- Publish to Maven Central ([#33][33])
+
 ### v0.5.4
 
 - Upgrade to Kotlin 1.4.21 ([#31][31])
@@ -81,3 +86,5 @@ First versioned release.
 [20]: https://github.com/natario1/Egloo/pull/20
 [22]: https://github.com/natario1/Egloo/pull/22
 [23]: https://github.com/natario1/Egloo/pull/23
+[31]: https://github.com/natario1/Egloo/pull/31
+[33]: https://github.com/natario1/Egloo/pull/33

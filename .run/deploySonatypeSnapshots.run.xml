@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="publishAllDirectory" type="GradleRunConfiguration" factoryName="Gradle">
+  <configuration default="false" name="deploySonatypeSnapshots" type="GradleRunConfiguration" factoryName="Gradle">
     <ExternalSystemSettings>
       <option name="executionName" />
       <option name="externalProjectPath" value="$PROJECT_DIR$/library" />
@@ -10,7 +10,7 @@
       </option>
       <option name="taskNames">
         <list>
-          <option value="publishAllDirectory" />
+          <option value="deploySonatypeSnapshots" />
         </list>
       </option>
       <option name="vmOptions" value="" />
