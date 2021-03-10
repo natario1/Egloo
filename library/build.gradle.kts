@@ -139,7 +139,8 @@ publisher {
             project.artifact = artifactId
         }
 
-        deploySonatypeSnapshots.dependsOn("publishToSonatype${mavenPublication.capitalize()}Snapshot")
+        // TODO can't work, version overrides the other sonatype version! Need to fix this in publisher plugin
+        /* deploySonatypeSnapshots.dependsOn("publishToSonatype${mavenPublication.capitalize()}Snapshot")
         sonatype(mavenPublication + "Snapshot") {
             repository = Sonatype.OSSRH_SNAPSHOT_1
             release.version = "latest-SNAPSHOT"
@@ -150,7 +151,7 @@ publisher {
             publication = mavenPublication
             project.name = artifactId
             project.artifact = artifactId
-        }
+        } */
     }
 
     // Legacy android release (:egloo)
