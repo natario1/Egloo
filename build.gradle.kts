@@ -8,12 +8,21 @@ buildscript {
         mavenCentral()
         jcenter()
         mavenLocal()
+        maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
+    }
+
+    configurations.configureEach {
+        resolutionStrategy {
+            cacheChangingModulesFor(0, TimeUnit.SECONDS)
+        }
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.21")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31")
         classpath("com.android.tools.build:gradle:4.1.1")
-        classpath("io.deepmedia.tools:publisher:0.4.1")
+        classpath("io.deepmedia.tools:publisher:latest-SNAPSHOT") {
+            isChanging = true
+        }
     }
 }
 
@@ -22,7 +31,7 @@ allprojects {
         google()
         mavenCentral()
         jcenter()
-        maven("https://dl.bintray.com/natario/multiplatform")
+        // maven("https://dl.bintray.com/natario/multiplatform")
     }
 }
 
