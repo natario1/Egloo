@@ -74,7 +74,7 @@ android {
     defaultConfig {
         setMinSdkVersion(property("androidMinSdkVersion") as Int)
         setTargetSdkVersion(property("androidTargetSdkVersion") as Int)
-        versionName = "0.6.1-rc05"
+        versionName = "0.6.1"
     }
     buildTypes["release"].consumerProguardFile("proguard-rules.pro")
     sourceSets["main"].java.srcDirs("src/androidJvmMain/kotlin")
