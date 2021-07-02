@@ -22,10 +22,10 @@ android {
 }
 
 dependencies {
-    implementation("androidx.appcompat:appcompat:1.2.0")
-    implementation("androidx.core:core-ktx:1.3.2")
-    implementation("com.google.android.exoplayer:exoplayer-core:2.13.2")
-    implementation("com.google.android.exoplayer:exoplayer-ui:2.13.2")
+    implementation("androidx.appcompat:appcompat:1.3.0")
+    implementation("androidx.core:core-ktx:1.6.0")
+    implementation("com.google.android.exoplayer:exoplayer-core:2.14.1")
+    implementation("com.google.android.exoplayer:exoplayer-ui:2.14.1")
     implementation(project(":library"))
 
     // For testing, instead of the project dependency:

@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.*
 import android.widget.Toast
-import com.google.android.exoplayer2.ExoPlayerFactory
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
@@ -74,12 +74,12 @@ class VideoActivity : AppCompatActivity(), GLSurfaceView.Renderer {
         setContentView(R.layout.activity_video)
 
         // Set up the player
-        player = ExoPlayerFactory.newSimpleInstance(this)
+        player = SimpleExoPlayer.Builder(this).build()
         val dataSourceFactory = DefaultDataSourceFactory(this,
                 Util.getUserAgent(this, "Egloo"))
         val videoSource = ProgressiveMediaSource.Factory(dataSourceFactory)
                 // .createMediaSource(Uri.parse("https://clips.vorwaerts-gmbh.de/big_buck_bunny.mp4"))
-                .createMediaSource(Uri.parse("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
+                .createMediaSource(MediaItem.fromUri("http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"))
         player.prepare(videoSource)
         player.playWhenReady = true
 
