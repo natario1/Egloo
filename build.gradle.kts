@@ -6,8 +6,8 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        jcenter()
         mavenLocal()
+        maven("../MavenPublisher/publisher/build/prebuilt")
         maven("https://s01.oss.sonatype.org/content/repositories/snapshots/")
     }
 
@@ -18,11 +18,9 @@ buildscript {
     }
 
     dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31")
-        classpath("com.android.tools.build:gradle:4.1.1")
-        classpath("io.deepmedia.tools:publisher:latest-SNAPSHOT") {
-            isChanging = true
-        }
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20")
+        classpath("com.android.tools.build:gradle:4.2.2")
+        classpath("io.deepmedia.tools:publisher:0.6.0-rc05")
     }
 }
 
@@ -30,8 +28,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        jcenter()
-        // maven("https://dl.bintray.com/natario/multiplatform")
     }
 }
 
