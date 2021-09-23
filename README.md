@@ -38,7 +38,7 @@ but other targets like iOS can probably be added easily.
 
 ```kotlin
 // Regular Android projects
-implementation("com.otaliastudios.opengl:egloo-android:0.6.1")
+implementation("com.otaliastudios.opengl:egloo:0.6.1")
 
 // Kotlin Multiplatform projects: add egloo-multiplatform to your common source set.
 implementation("com.otaliastudios.opengl:egloo-multiplatform:0.6.1")
