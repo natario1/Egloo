@@ -20,7 +20,7 @@ allprojects {
 Then simply download the latest version. For regular Android projects users:
 
 ```kotlin
-implementation("com.otaliastudios.opengl:egloo-android:{{ site.github_version }}")
+implementation("com.otaliastudios.opengl:egloo:{{ site.github_version }}")
 ```
 
 For Kotlin Multiplatform projects:
